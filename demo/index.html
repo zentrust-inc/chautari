@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>चौतारी — नमुना</title>
+<style>
+:root{--bg:#f6f4ee;--card:#fff;--ink:#1f2a24;--mute:#5d6b63;--line:#e3e0d6;--green:#2f6b4f;--green2:#e4efe8;--amber:#9a5b00;--amber2:#fbf0dc;--red:#a3322a;--red2:#f8e3e1;--blue:#1f5a85;--blue2:#e2eef7}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Devanagari","Mukta","Hind",system-ui,sans-serif;font-size:17px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding:0 12px 96px}
+header{position:sticky;top:0;z-index:5;background:var(--green);color:#fff;padding:10px 12px 8px}
+header .row{display:flex;align-items:center;justify-content:space-between;gap:8px;max-width:560px;margin:0 auto}
+header h1{font-size:22px;margin:0;letter-spacing:.5px}
+header small{display:block;opacity:.85;font-size:13px}
+.who{max-width:560px;margin:6px auto 0;display:flex;gap:6px;align-items:center;font-size:14px}
+.who select{flex:1;font:inherit;padding:6px 8px;border-radius:8px;border:0}
+.sample{background:var(--amber2);color:var(--amber);border:1px solid #ecd3a6;border-radius:10px;padding:8px 10px;margin:10px 0;font-size:14px}
+h2{font-size:19px;margin:18px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:16px;white-space:nowrap}
+.stat span{font-size:13px;color:var(--mute)}
+.item{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item .l{flex:1;min-width:0}
+.item .r{text-align:right;white-space:nowrap}
+.mute{color:var(--mute);font-size:14px}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;margin-left:4px}
+.ok{background:var(--green2);color:var(--green)}
+.wait{background:var(--amber2);color:var(--amber)}
+.bad{background:var(--red2);color:var(--red)}
+.btn{display:inline-block;font:inherit;font-size:16px;border:0;border-radius:10px;padding:10px 14px;background:var(--green);color:#fff;cursor:pointer}
+.btn.alt{background:var(--green2);color:var(--green)}
+.btn.warn{background:var(--red2);color:var(--red)}
+.btn.small{font-size:14px;padding:6px 10px}
+.btn+.btn{margin-left:6px}
+label{display:block;font-size:14px;color:var(--mute);margin-top:8px}
+input,select,textarea{width:100%;font:inherit;padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;z-index:6;padding-bottom:env(safe-area-inset-bottom)}
+nav .in{display:flex;max-width:560px;width:100%}
+nav button{flex:1;border:0;background:none;font:inherit;font-size:12.5px;padding:8px 2px 10px;color:var(--mute);cursor:pointer}
+nav button i{display:block;font-style:normal;font-size:20px}
+nav button.on{color:var(--green);font-weight:600}
+.bill{width:64px;height:64px;border-radius:8px;border:1px solid var(--line);object-fit:cover;flex:none;cursor:pointer;background:#fafafa}
+.bar{height:12px;background:var(--blue);border-radius:6px}
+.mala{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.bead{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--green2);color:var(--green);border:2px solid var(--green)}
+.bead.broken{background:var(--red2);color:var(--red);border-color:var(--red)}
+.sms{background:#e8f5e9;border-radius:14px 14px 14px 4px;padding:10px 12px;margin:8px 0;font-size:15px;max-width:92%}
+.hash{font-family:ui-monospace,monospace;font-size:12px;color:var(--mute);word-break:break-all}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 14px;border-radius:10px;font-size:15px;z-index:9;max-width:90%;display:none}
+dialog{border:0;border-radius:14px;padding:14px;max-width:92%;width:420px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <div><h1>चौतारी</h1><small>हाम्रो साझा खाता · चौथे, ककनी-३</small></div>
+    <button class="btn small alt" id="checkBtn" title="माला जाँच">🔗 जाँच</button>
+  </div>
+  <div class="who">म को हुँ?
+    <select id="who">
+      <option value="public">सबैले देख्ने (सूचना पाटी)</option>
+      <option value="m1">सदस्य: सीता दिदी</option>
+      <option value="keeper">हिसाब राख्ने व्यक्ति</option>
+    </select>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="sample"><b>नमुना मात्र।</b> यहाँका सबै नाम, रकम र अङ्क नक्कली हुन्। गाउँको वास्तविक हिसाब अझै राखिएको छैन। भेलाले स्वीकृत गरे मात्र परीक्षण सुरु हुन्छ।</div>
+  <main id="view"></main>
+</div>
+
+<nav><div class="in">
+  <button data-tab="money" class="on"><i>💰</i>पैसा</button>
+  <button data-tab="work"><i>🛠️</i>काम र पालो</button>
+  <button data-tab="nature"><i>💧</i>पानी र प्रकृति</button>
+  <button data-tab="decide"><i>🤝</i>निर्णय</button>
+  <button data-tab="mine"><i>📒</i>मेरो खाता</button>
+</div></nav>
+
+<div class="toast" id="toast"></div>
+<dialog id="dlg"><div id="dlgBody"></div><p style="text-align:right;margin:10px 0 0"><button class="btn alt small" onclick="dlg.close()">बन्द</button></p></dialog>
+
+<script>
+"use strict";
+/* ---------- Nepali numbers, money, Bikram Sambat dates ---------- */
+const ND="०१२३४५६७८९";
+const nd=s=>String(s).replace(/[0-9]/g,d=>ND[d]);
+const rs=n=>"रु. "+nd(Math.round(n).toLocaleString("en-IN"));
+const BS_MONTHS=["बैशाख","जेठ","असार","साउन","भदौ","असोज","कात्तिक","मंसिर","पुस","माघ","फागुन","चैत"];
+// First day of each BS month in AD (computed with nepali-date-converter; covers 2083–2084)
+const BS_START={2083:["2026-04-14","2026-05-15","2026-06-15","2026-07-17","2026-08-17","2026-09-17","2026-10-18","2026-11-17","2026-12-16","2027-01-15","2027-02-13","2027-03-15"],
+2084:["2027-04-14","2027-05-15","2027-06-15","2027-07-17","2027-08-17","2027-09-17","2027-10-17","2027-11-16","2027-12-16","2028-01-14","2028-02-13","2028-03-14"]};
+function toBS(date){
+  const t=Date.UTC(date.getFullYear(),date.getMonth(),date.getDate());
+  let best=null;
+  for(const y of [2083,2084]) BS_START[y].forEach((s,m)=>{const [a,b,c]=s.split("-").map(Number);const st=Date.UTC(a,b-1,c);if(st<=t)best={y,m,st};});
+  if(!best) return {y:2083,m:0,d:1};
+  return {y:best.y,m:best.m,d:Math.round((t-best.st)/864e5)+1};
+}
+const bsStr=b=>nd(b.y)+" "+BS_MONTHS[b.m]+" "+nd(b.d);
+const today=toBS(new Date());
+const daysAgo=n=>{const x=new Date();x.setDate(x.getDate()-n);return bsStr(toBS(x));};
+
+/* ---------- Sample data (all fictional) ---------- */
+const MEMBERS={
+  m1:{name:"सीता दिदी",house:"घर नं. १४",idno:"नमुना-००१४-ना.प्र."},
+  m2:{name:"राम दाइ",house:"घर नं. ३",idno:"नमुना-०००३-ना.प्र."},
+  m3:{name:"गीता बहिनी",house:"घर नं. २७",idno:"नमुना-००२७-ना.प्र."},
+  m4:{name:"हरि काका",house:"घर नं. ९",idno:"नमुना-०००९-ना.प्र."},
+  m5:{name:"माया दिदी",house:"घर नं. ४१",idno:"नमुना-००४१-ना.प्र."}
+};
+const RATE_PER_HOUR=100;
+let rawEntries=[
+  ["income",{what:"सदस्य शेयर (५ जना × रु. १००)",amount:500},40],
+  ["invest",{member:"m2",amount:50000,rate:10,term:"३ वर्ष"},38],
+  ["invest",{member:"m1",amount:20000,rate:10,term:"३ महिनाको सूचनामा फिर्ता"},36],
+  ["invest",{member:"m4",amount:100000,rate:10,term:"५ वर्ष"},35],
+  ["work",{member:"m2",task:"पोखरी खन्ने",hours:6},30],
+  ["work",{member:"m4",task:"पोखरी खन्ने",hours:6},30],
+  ["work",{member:"m5",task:"पोखरी खन्ने",hours:5},30],
+  ["expense",{what:"पोखरीका लागि प्लास्टिक पाइप",amount:18500,bill:"pipe"},28],
+  ["work",{member:"m3",task:"मूल सफा",hours:3},21],
+  ["expense",{what:"नर्सरीका लागि बीउ र थैली",amount:7200,bill:"seed"},14],
+  ["work",{member:"m1",task:"नर्सरी",hours:4},6],
+  ["nature",{spring:"ठूलो मूल",lpm:4.2},45],
+  ["nature",{spring:"ठूलो मूल",lpm:3.1},15],
+  ["nature",{spring:"ठूलो मूल",lpm:2.6},2],
+  ["correction",{ref:8,note:"पाइपको बिल रु. १८,५०० होइन रु. १८,००० रहेछ; रु. ५०० फिर्ता आयो",amount:500},10],
+  ["decision",{text:"हरेक घण्टाको काम बराबर: रु. १०० प्रति घण्टा (न्यूनतम)",by:"भेला"},25]
+];
+// pending entries (not yet confirmed by the keeper)
+let pending=[
+  {kind:"work",data:{member:"m3",task:"नर्सरी",hours:2},date:daysAgo(1)},
+  {kind:"expense",data:{what:"नर्सरीको जाली",amount:3400,bill:"seed"},date:daysAgo(0)}
+];
+let showWorkPublic=false; // भेलाले तय गर्ने
+let chain=[]; let tampered=null;
+
+/* ---------- Hash chain ("माला") ---------- */
+async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+const body=e=>JSON.stringify({seq:e.seq,date:e.date,kind:e.kind,data:e.data,prev:e.prev});
+async function append(kind,data,date){
+  const prev=chain.length?chain[chain.length-1].hash:"0".repeat(64);
+  const e={seq:chain.length+1,date,kind,data,prev};
+  e.hash=await sha(body(e)); chain.push(e); return e;
+}
+async function verify(){
+  let prev="0".repeat(64);
+  for(const e of chain){
+    if(e.prev!==prev||await sha(body(e))!==e.hash) return e.seq;
+    prev=e.hash;
+  }
+  return 0;
+}
+
+/* ---------- Helpers ---------- */
+const $=s=>document.querySelector(s);
+const who=()=>$("#who").value;
+const isKeeper=()=>who()==="keeper";
+const me=()=>MEMBERS[who()]||null;
+function toast(t){const el=$("#toast");el.textContent=t;el.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>el.style.display="none",2600);}
+function billSVG(kind){
+  const title=kind==="pipe"?"पाइप पसल":"कृषि पसल";
+  return "data:image/svg+xml;utf8,"+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='200' height='260'><rect width='200' height='260' fill='#fffdf6'/><text x='100' y='34' font-size='18' text-anchor='middle' font-family='sans-serif'>${title}</text><line x1='20' y1='50' x2='180' y2='50' stroke='#999'/><g stroke='#ccc'>${[80,105,130,155,180].map(y=>`<line x1='20' y1='${y}' x2='180' y2='${y}'/>`).join("")}</g><text x='100' y='235' font-size='15' fill='#b33' text-anchor='middle' font-family='sans-serif'>नमुना बिल</text></svg>`);
+}
+function showBill(src,label){$("#dlgBody").innerHTML=`<p><b>${label}</b></p><img src="${src}" style="width:100%;border-radius:8px;border:1px solid #ddd">`;dlg.showModal();}
+const memberName=id=>MEMBERS[id]?MEMBERS[id].name:"—";
+const confirmed=k=>chain.filter(e=>e.kind===k);
+
+/* ---------- Totals ---------- */
+function totals(){
+  let inc=0,exp=0,inv=0;
+  for(const e of chain){
+    if(e.kind==="income")inc+=e.data.amount;
+    if(e.kind==="invest")inv+=e.data.amount;
+    if(e.kind==="expense")exp+=e.data.amount;
+    if(e.kind==="correction")exp-=e.data.amount;
+  }
+  const hours=confirmed("work").reduce((a,e)=>a+e.data.hours,0);
+  return {inc,exp,inv,hours,bal:inc+inv-exp};
+}
+
+/* ---------- Views ---------- */
+const V={};
+V.money=()=>{
+  const t=totals();
+  const rows=chain.filter(e=>["income","expense","correction","invest"].includes(e.kind)).slice().reverse().map(e=>{
+    if(e.kind==="invest"){
+      const mine=me()&&e.data.member===who();
+      const name=(isKeeper()||mine)?memberName(e.data.member):"एक लगानीकर्ता";
+      return `<div class="item"><div class="l">लगानी: ${name}<div class="mute">${e.date} · वार्षिक ${nd(e.data.rate)}%</div></div><div class="r">+ ${rs(e.data.amount)}<br><span class="tag ok">पुष्टि</span></div></div>`;
+    }
+    if(e.kind==="expense") return `<div class="item"><img class="bill" src="${e.data.photo||billSVG(e.data.bill)}" onclick="showBill(this.src,'${e.data.what}')" alt="बिल"><div class="l">${e.data.what}<div class="mute">${e.date} · दाना नं. ${nd(e.seq)}</div></div><div class="r">− ${rs(e.data.amount)}<br><span class="tag ok">पुष्टि</span></div></div>`;
+    if(e.kind==="correction") return `<div class="item"><div class="l">सच्याइएको: ${e.data.note}<div class="mute">${e.date} · दाना नं. ${nd(e.data.ref)} लाई सच्याउने नयाँ लेखोट</div></div><div class="r">+ ${rs(e.data.amount)}<br><span class="tag ok">पुष्टि</span></div></div>`;
+    return `<div class="item"><div class="l">${e.data.what}<div class="mute">${e.date}</div></div><div class="r">+ ${rs(e.data.amount)}<br><span class="tag ok">पुष्टि</span></div></div>`;
+  }).join("");
+  const pend=pending.filter(p=>p.kind==="expense");
+  return `<h2>समूहको पैसा</h2>
+  <div class="stats"><div class="stat"><b>${rs(t.inc+t.inv)}</b><span>आएको</span></div><div class="stat"><b>${rs(t.exp)}</b><span>खर्च</span></div><div class="stat"><b>${rs(t.bal)}</b><span>बाँकी</span></div></div>
+  <p class="mute">आएको मध्ये लगानी ${rs(t.inv)} (वार्षिक १०% ब्याज सहित फिर्ता हुने)। हरेक खर्चको बिलको फोटो छ; थिचेर हेर्नुहोस्।</p>
+  ${pend.length?`<div class="card"><b>पुष्टि हुन बाँकी</b>${pend.map(p=>`<div class="item"><div class="l">${p.data.what}<div class="mute">${p.date}</div></div><div class="r">− ${rs(p.data.amount)}<br><span class="tag wait">बाँकी</span></div></div>`).join("")}</div>`:""}
+  <div class="card">${rows}</div>
+  <div class="card"><b>नयाँ खर्च टिप्ने</b>
+    <label>के किनियो?</label><input id="exWhat" placeholder="जस्तै: सिमेन्ट">
+    <label>रकम (रु.)</label><input id="exAmt" inputmode="numeric" placeholder="जस्तै: 2500">
+    <label>बिलको फोटो</label><input id="exPhoto" type="file" accept="image/*" capture="environment">
+    <p class="mute">पछि एपले बिल पढेर रकम र मिति भर्न सुझाव दिनेछ। यो नमुनामा रकम आफैं भर्नुहोस्।</p>
+    <button class="btn" onclick="addExpense()">पठाउने</button>
+  </div>`;
+};
+V.work=()=>{
+  const t=totals(); const ws=confirmed("work");
+  const byTask={}; ws.forEach(e=>byTask[e.data.task]=(byTask[e.data.task]||0)+e.data.hours);
+  const max=Math.max(1,...Object.values(byTask));
+  const canSeeNames=showWorkPublic||isKeeper();
+  const list=ws.slice().reverse().map(e=>{
+    const mine=me()&&e.data.member===who();
+    const name=(canSeeNames||mine)?memberName(e.data.member):"एक सदस्य";
+    return `<div class="item"><div class="l">${name} — ${e.data.task}<div class="mute">${e.date}</div></div><div class="r">${nd(e.data.hours)} घण्टा<br><span class="tag ok">पुष्टि</span></div></div>`;}).join("");
+  const pend=pending.filter(p=>p.kind==="work");
+  return `<h2>काम र पालो</h2>
+  <div class="stats"><div class="stat"><b>${nd(t.hours)}</b><span>कुल घण्टा</span></div><div class="stat"><b>${rs(RATE_PER_HOUR)}</b><span>प्रति घण्टा</span></div><div class="stat"><b>${rs(t.hours*RATE_PER_HOUR)}</b><span>कामको मूल्य</span></div></div>
+  <div class="card"><b>कुन काममा कति घण्टा</b>${Object.entries(byTask).map(([k,v])=>`<div style="margin-top:8px">${k} <span class="mute">${nd(v)} घण्टा</span><div class="bar" style="width:${v/max*100}%"></div></div>`).join("")}</div>
+  <p class="mute">${canSeeNames?"":"कसले कति घण्टा काम गर्यो भन्ने अहिले निजी राखिएको छ (भेलाले तय गर्ने)। आफ्नो घण्टा \"मेरो खाता\" मा देखिन्छ।"}</p>
+  ${pend.length?`<div class="card"><b>पुष्टि हुन बाँकी</b>${pend.map(p=>`<div class="item"><div class="l">${canSeeNames?memberName(p.data.member):"एक सदस्य"} — ${p.data.task}<div class="mute">${p.date}</div></div><div class="r">${nd(p.data.hours)} घण्टा<br><span class="tag wait">बाँकी</span></div></div>`).join("")}</div>`:""}
+  <div class="card">${list}</div>
+  <div class="card"><b>कामको घण्टा टिप्ने</b>
+    <label>को?</label><select id="wkWho">${Object.entries(MEMBERS).map(([k,m])=>`<option value="${k}" ${k===who()?"selected":""}>${m.name}</option>`).join("")}</select>
+    <label>के काम?</label><select id="wkTask"><option>नर्सरी</option><option>पोखरी खन्ने</option><option>मूल सफा</option><option>बिरुवा रोप्ने</option><option>गोरेटो मर्मत</option></select>
+    <label>कति घण्टा?</label><input id="wkHrs" inputmode="numeric" value="4">
+    <button class="btn" style="margin-top:10px" onclick="addWork()">पठाउने</button>
+  </div>`;
+};
+V.nature=()=>{
+  const sp=confirmed("nature");
+  return `<h2>पानी र प्रकृति</h2>
+  <div class="card"><b>ठूलो मूलको पानी (लिटर प्रति मिनेट)</b>
+  ${sp.map(e=>`<div style="margin-top:8px">${e.date} <span class="mute">${nd(e.data.lpm)} लि./मि.</span><div class="bar" style="width:${e.data.lpm/5*100}%"></div></div>`).join("")}
+  <p class="mute">हरेक महिना एकै ठाउँ, एकै तरिकाले नापेर टिपिन्छ। नमुना अङ्कले सुक्खा याममा पानी घटेको देखाउँछ।</p></div>
+  <div class="stats"><div class="stat"><b>${nd(6)}</b><span>पोखरी</span></div><div class="stat"><b>${nd(0)}</b><span>नर्सरीका बिरुवा</span></div><div class="stat"><b>${nd(150)}</b><span>हेक्टर वन</span></div></div>
+  <div class="card"><b>प्रकृतिको खाता</b><p class="mute" style="margin:4px 0 0">पैसा र कामजस्तै वन र पानीको पनि हिसाब: मूलको पानी, पोखरीमा जम्मा पानी, रोपिएका र बाँचेका बिरुवा। यही हिसाबबाट डिभिजन वन कार्यालयको वार्षिक प्रतिवेदन बनाउने योजना छ।</p></div>`;
+};
+V.decide=()=>{
+  const ds=confirmed("decision");
+  return `<h2>निर्णय र सूचना</h2>
+  <div class="card"><b>भेलाका निर्णय</b>${ds.map(e=>`<div class="item"><div class="l">${e.data.text}<div class="mute">${e.date} · ${e.data.by}</div></div></div>`).join("")}</div>
+  <div class="card" style="border-color:#ecd3a6"><b>💡 एपको सुझाव</b><p style="margin:6px 0">बजेटबाहिरको खर्च कति रकमसम्म सिधै गर्न मिल्छ भन्ने नियम छैन। अर्को भेलामा छलफल गर्ने?</p><p class="mute" style="margin:0">एपले सुझाव मात्र दिन्छ। नियम बदल्ने निर्णय भेलाले सहमतिबाट मात्र गर्छ।</p></div>
+  <div class="card"><b>भेलाले तय गर्ने: कसले कति घण्टा काम गर्यो, सबैले देख्ने?</b>
+    <p class="mute">नमुनामा थिचेर दुवै तरिका हेर्नुहोस्।</p>
+    <button class="btn ${showWorkPublic?"":"alt"} small" onclick="setWork(true)">सबैले देख्ने</button><button class="btn ${showWorkPublic?"alt":""} small" onclick="setWork(false)">निजी राख्ने</button>
+  </div>
+  <div class="card"><b>📱 एसएमएस सूचना (नमुना)</b>
+    <div class="sms">चौतारी: सामुदायिक वन उपभोक्ता समूहको भेला ${daysAgo(-7)} बिहान ११ बजे सामुदायिक भवनमा। विषय: चौतारी एपको परीक्षण। उपस्थितिको अनुरोध।</div>
+    <p class="mute">फोन नभएका सदस्यलाई छापिएको सूचना र सघाउने व्यक्तिमार्फत खबर।</p>
+  </div>`;
+};
+V.mine=()=>{
+  const m=me();
+  if(isKeeper()){
+    return `<h2>हिसाब राख्ने व्यक्ति</h2>
+    <p class="mute">भेलाले छानेका व्यक्तिले मिलाएर "पुष्टि" थिच्छन्। एपले आफैँ केही दर्ता गर्दैन, भुक्तानी पनि गर्दैन।</p>
+    <div class="card"><b>पुष्टि हुन बाँकी (${nd(pending.length)})</b>
+    ${pending.length?pending.map((p,i)=>`<div class="item"><div class="l">${p.kind==="work"?memberName(p.data.member)+" — "+p.data.task+" · "+nd(p.data.hours)+" घण्टा":p.data.what+" · "+rs(p.data.amount)}<div class="mute">${p.date}</div></div><div class="r"><button class="btn small" onclick="approve(${i})">पुष्टि</button></div></div>`).join(""):`<p class="mute">सबै पुष्टि भइसक्यो।</p>`}</div>`;
+  }
+  if(!m) return `<h2>मेरो खाता</h2><div class="card"><p>आफ्नो हिसाब पासबुक जस्तै आफैंले मात्र देख्नुहुन्छ।</p><p class="mute">नमुनामा हेर्न माथि "म को हुँ?" बाट <b>सदस्य: सीता दिदी</b> छान्नुहोस्।</p></div>`;
+  const mineW=confirmed("work").filter(e=>e.data.member===who());
+  const hrs=mineW.reduce((a,e)=>a+e.data.hours,0);
+  const inv=confirmed("invest").filter(e=>e.data.member===who());
+  const invAmt=inv.reduce((a,e)=>a+e.data.amount,0);
+  return `<h2>मेरो खाता — ${m.name}</h2>
+  <div class="stats"><div class="stat"><b>${nd(hrs)}</b><span>मेरो घण्टा</span></div><div class="stat"><b>${rs(100)}</b><span>मेरो शेयर</span></div><div class="stat"><b>${rs(invAmt)}</b><span>मेरो लगानी</span></div></div>
+  <div class="card"><b>मेरो काम</b>${mineW.map(e=>`<div class="item"><div class="l">${e.data.task}<div class="mute">${e.date}</div></div><div class="r">${nd(e.data.hours)} घण्टा</div></div>`).join("")||`<p class="mute">अहिलेसम्म छैन।</p>`}</div>
+  <div class="card"><b>मेरो लगानी</b>${inv.map(e=>`<div class="item"><div class="l">${rs(e.data.amount)} · वार्षिक ${nd(e.data.rate)}%<div class="mute">${e.date} · ${e.data.term}</div></div><div class="r">वर्षको ब्याज<br>${rs(e.data.amount*e.data.rate/100)}</div></div>`).join("")}</div>
+  <div class="card"><b>मेरो परिचयपत्र</b><p class="mute" style="margin:4px 0">यो आफूबाहेक कसैले देख्दैन।</p><span id="idno">••••••••••</span> <button class="btn small alt" onclick="document.getElementById('idno').textContent='${m.idno}'">देखाउने</button></div>`;
+};
+
+/* ---------- Actions ---------- */
+let tab="money";
+function render(){ $("#view").innerHTML=V[tab](); window.scrollTo(0,0); }
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));render();});
+$("#who").onchange=render;
+function setWork(v){showWorkPublic=v;render();}
+function addWork(){
+  const h=Number(String($("#wkHrs").value).replace(/[०-९]/g,d=>ND.indexOf(d)));
+  if(!(h>0&&h<=12)){toast("घण्टा १ देखि १२ सम्म लेख्नुहोस्");return;}
+  pending.push({kind:"work",data:{member:$("#wkWho").value,task:$("#wkTask").value,hours:h},date:bsStr(today)});
+  toast("पठाइयो। हिसाब राख्ने व्यक्तिले पुष्टि गरेपछि खातामा चढ्छ।"); render();
+}
+function addExpense(){
+  const w=$("#exWhat").value.trim(); const a=Number(String($("#exAmt").value).replace(/[०-९]/g,d=>ND.indexOf(d)).replace(/,/g,""));
+  if(!w||!(a>0)){toast("के किनियो र रकम दुवै लेख्नुहोस्");return;}
+  const f=$("#exPhoto").files[0];
+  pending.push({kind:"expense",data:{what:w,amount:a,bill:"seed",photo:f?URL.createObjectURL(f):null},date:bsStr(today)});
+  toast("पठाइयो। बिल मिलाएर पुष्टि भएपछि सबैले देख्छन्।"); render();
+}
+async function approve(i){
+  const p=pending.splice(i,1)[0];
+  const e=await append(p.kind,p.data,p.date);
+  toast("पुष्टि भयो — मालाको दाना नं. "+nd(e.seq)+" बन्यो"); render();
+}
+async function openCheck(){
+  const bad=await verify();
+  const beads=chain.map(e=>`<div class="bead ${bad&&e.seq>=bad?"broken":""}">${nd(e.seq)}</div>`).join("");
+  const last=chain[chain.length-1];
+  $("#dlgBody").innerHTML=`<h2 style="margin-top:0">🔗 मालाको जाँच</h2>
+  <p>${bad?`<span class="tag bad">माला टुट्यो</span> दाना नं. ${nd(bad)} मा कसैले लुकाएर फेरबदल गरेको देखियो।`:`<span class="tag ok">माला ठीक छ</span> सबै ${nd(chain.length)} दाना एकअर्कासँग मिल्छन्। कसैले लुकाएर केही बदलेको छैन।`}</p>
+  <div class="mala">${beads}</div>
+  <p class="mute">हरेक लेखोट अघिल्लो लेखोटसँग उनिएको हुन्छ। गल्ती भए सच्याउने नयाँ लेखोट थपिन्छ; पुरानो पनि देखिइरहन्छ।</p>
+  <p class="hash">अन्तिम दानाको छाप: ${last.hash}</p>
+  <p>${tampered?`<button class="btn alt" onclick="restore()">फेरबदल हटाउने</button>`:`<button class="btn warn" onclick="tamper()">नमुना: बीचको दाना फेरेर हेर्ने</button>`}</p>`;
+  if(!dlg.open) dlg.showModal();
+}
+function tamper(){
+  const e=chain.find(x=>x.kind==="expense");
+  tampered={e,old:e.data.amount}; e.data.amount=1850; // someone quietly changes 18,500 → 1,850
+  toast("कसैले लुकाएर पाइपको बिल रु. १८,५०० बाट रु. १,८५० बनायो…"); openCheck(); render();
+}
+function restore(){ tampered.e.data.amount=tampered.old; tampered=null; openCheck(); render(); }
+$("#checkBtn").onclick=openCheck;
+
+(async()=>{
+  rawEntries.sort((a,b)=>b[2]-a[2]);
+  for(const [k,d,ago] of rawEntries){
+    if(k==="correction") d.ref=chain.find(x=>x.kind==="expense"&&x.data.bill==="pipe").seq;
+    await append(k,d,daysAgo(ago));
+  }
+  render();
+})();
+</script>
+</body>
+</html>
