@@ -282,6 +282,19 @@ const PARTS: Part[] = [
         open: { route: 'worklog', label: ['काम र घण्टा लेख्ने खोल्नुहोस्', 'Open Record work hours'] },
       },
       {
+        id: 'nosignal', title: ['सिग्नल नहुँदा फाराम भर्ने', 'Filling forms with no signal'],
+        who: ['लेखापाल, सुपरिवेक्षक, प्रकृति हेरालु', 'Ledger keeper, supervisor, nature guardian'],
+        steps: [
+          ['कामको घण्टा र पानी-वर्षा नाप सिग्नल नभए पनि भर्न सकिन्छ। "मेरो नाममा लेख्नुहोस्" थिच्दा फोनमा राखियो भनेर देखिन्छ।', 'Work hours and water-and-rain readings can be filled in with no signal. When you tap "Record in my name" it says the entry is kept on the phone.'],
+          ['माथि ↑ र सङ्ख्या देखिन्छ: त्यति इन्ट्री पठाउन बाँकी छन्। काम बाँकीको "पठाउन बाँकी" मा तिनको सूची छ।', 'An ↑ with a number shows at the top: that many entries are waiting to be sent. "Waiting to send" in To do lists them.'],
+          ['सिग्नल आएपछि एप खोल्दा ती आफैं पठाइन्छन्, फोटोसहित। "अहिले पठाउनुहोस्" थिचेर पनि पठाउन सकिन्छ। एउटै इन्ट्री दुई पटक लेखिँदैन।', 'When there is signal and the app is open they are sent by themselves, with their photos. You can also tap "Send now". An entry is never recorded twice.'],
+          ['नियमले नमिल्ने इन्ट्री (जस्तै एक दिनमा १२ घण्टाभन्दा बढी) कारणसहित रातो देखिन्छ। हटाएर, मिलाएर फेरि लेख्नुहोस्।', 'An entry the rules refuse (for example more than 12 hours in a day) shows in red with the reason. Remove it, put it right and record it again.'],
+          ['पठाउनुअघि फोन नफेर्नुहोस् र एपको डेटा नमेटाउनुहोस्; पठाउन बाँकी इन्ट्री त्यही फोनमा मात्र हुन्छन्।', 'Do not change phones or clear the app’s data before they are sent; entries waiting to be sent exist only on that phone.'],
+        ],
+        tip: ['बिलको फोटो पढ्न, भुक्तानीमा हस्ताक्षर र स्वीकृति गर्न सिग्नल चाहिन्छ, किनकि ती ताजा हिसाब हेरेर गरिन्छन्।', 'Reading a bill’s photo, signing payments and approving hours need signal, because they are done against the latest figures.'],
+        open: { route: 'tasks', label: ['काम बाँकी खोल्नुहोस्', 'Open To do'] },
+      },
+      {
         id: 'approve', title: ['कामको घण्टा स्वीकृत गर्ने', 'Approve work hours'],
         who: ['सुपरिवेक्षक', 'Supervisor'],
         steps: [
@@ -378,7 +391,7 @@ const PARTS: Part[] = [
       },
       {
         id: 'offline', title: ['इन्टरनेट नहुँदा?', 'No internet?'],
-        steps: [['एपले पछिल्लो पटक भरिएको हिसाब देखाउँछ र माथि "इन्टरनेट छैन" लेख्छ। जङ्गलमा भरेका फाराम सिग्नल आएपछि पठाइन्छन्।', 'The app shows the last saved figures and says "Offline" at the top. Forms filled in the forest are sent when there is signal.']],
+        steps: [['एपले पछिल्लो पटक भरिएको हिसाब देखाउँछ र माथि "इन्टरनेट छैन" लेख्छ। जङ्गलमा भरेका काम र नापका फाराम फोनमा राखिन्छन् र सिग्नल आएपछि आफैं पठाइन्छन् (माथिको ↑ सङ्ख्या)।', 'The app shows the last saved figures and says "Offline" at the top. Work and reading forms filled in the forest are kept on the phone and sent by themselves when there is signal (the ↑ number at the top).']],
       },
       {
         id: 'sample', title: ['यी नाम र अङ्क साँचो हुन्?', 'Are these names and figures real?'],
