@@ -1,7 +1,7 @@
 # चौतारी (Chautari)
 
 **हाम्रो साझा खाता** — a phone-first, Nepali-language, transparent ledger for the Thumki Danda Gairikharka community forest user group (CFUG), the Kakani Multipurpose Cooperative and the Chauthe Guthi in Chauthe (Kakani-3), Nuwakot. It records money, work hours, decisions and nature's account. It records; it never pays, lends or registers anything by itself.
-
+**Chautari is not software for managing villagers. It is infrastructure that helps a village manage itself.**
 This repository is the single home of the code, the database, the tests and the one demo.
 
 ## Status
