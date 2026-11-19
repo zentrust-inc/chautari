@@ -325,6 +325,10 @@ export function parseCashbook(rawLines) {
     const firstAmt = amts[0]?.index ?? after.length;
     const particulars = after.slice(0, firstAmt).replace(/[^\p{L}\p{M}\d ,.()\-]/gu, ' ').replace(/\s+/g, ' ').trim();
     const vals = amts.map((a) => a.value);
+    // a minus (or bracket) before the balance: keep the sign, and mark cash below zero for the person.
+    // Reading the balance without its sign once made a false sum close on the next row.
+    const lastAmt = amts.at(-1);
+    const negative = lastAmt && /[-–(]\s*$/.test(after.slice(0, lastAmt.index));
     const row = { date_bs: d.bs, date_ad: d.ad, particulars, receipt: null, payment: null, balance: null, status: 'check', why: null };
     if (vals.length === 0) { row.why = 'not_found'; }
     else if (prev == null) {
@@ -343,6 +347,7 @@ export function parseCashbook(rawLines) {
         row.implied = Math.abs(delta);
       }
     } else { row.why = 'garbled'; row.receipt = null; row.payment = null; row.amount_read = vals[0]; }
+    if (negative) { row.status = 'check'; row.why = 'negative_balance'; row.balance = row.balance != null ? -row.balance : null; }
     if (row.balance != null && row.status === 'ok') prev = row.balance;
     else if (row.balance != null && prev != null && row.why === 'sum_mismatch') prev = row.balance; // keep following the page's own balance
     rows.push(row);

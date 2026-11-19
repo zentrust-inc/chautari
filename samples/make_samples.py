@@ -47,7 +47,7 @@ def lakh(n, decimals=0):
     return ip + ("." + fp if fp else "")
 
 def num(n, dev, decimals=0):
-    s = lakh(n, decimals)
+    s = ("-" if n < 0 else "") + lakh(n, decimals)  # a cash book that went below zero shows the minus
     return s.translate(DEV) if dev else s
 
 def digits(s, dev):

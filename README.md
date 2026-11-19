@@ -128,10 +128,15 @@ How the reader decides what to tick: it reads each photo four ways (different cl
 cd reader && npm install
 node cli.mjs photo.jpg                 # one reading as JSON (add --cashbook for a cash-book page)
 node eval.mjs                          # score against samples/truth.json -> samples/READER-REPORT.md
+node eval.mjs --hard                   # hand-written cash books and faded receipts -> samples/HARD-REPORT.md
 node --test test/*.test.mjs            # the reader's checks
 SUPABASE_URL=… SUPABASE_SERVICE_KEY=… DOCS_DIR=/srv/chautari/documents node server.mjs   # the service the app calls (bills: POST /read; work photos: POST /photo)
 ```
 
-Needs `tesseract` (with `hin` and `eng`) and ImageMagick `convert` on the server. The app finds the service through `VITE_READER_URL`.
+Needs `tesseract` 5 and ImageMagick `convert` on the server, with three trained models: **`nep` from tessdata_best** (github.com/tesseract-ocr/tessdata_best; the `tesseract-ocr-nep` system package is the weaker "fast" model), and `hin` and `eng` (the system packages are fine). The reader uses `nep+hin+eng`; set `CHAUTARI_OCR_LANG` to change it. The app finds the service through `VITE_READER_URL`.
 
-**Measured so far on SAMPLE bills only** (`samples/READER-REPORT.md`): no figure marked ✓ was wrong; totals were ticked on 7 of 11 bills; cash-book tables read poorly (most rows go to the person). Real Chauthe bills will read worse until it is tuned on them. Old cash-book rows are read and checked, but how history enters the record is not decided yet (see the status log).
+Why `nep+hin+eng` (measured 19 Nov 2026 on the SAMPLE bills): figures read and ticked right went from 37 (`hin+eng`) to 51 (`nep+eng`) and 59 (`nep+hin+eng`), with none ticked wrongly in any of them. The cost is speed: one reading of a bill takes about twice as long (1.3 s instead of 0.6 s on a 2-core machine; the reader makes four readings per photo).
+
+**Hard samples** (`samples/hard/`, made by `samples/make_hard_samples.py`, scored by `node eval.mjs --hard` into `samples/HARD-REPORT.md`): four faded thermal receipts and four hand-written cash-book pages. Tesseract cannot read these: whichever model, almost nothing gets a tick, and nothing is ticked wrongly, so every figure goes to the person. Hand-writing needs a different reading engine (to be tried on our own server); a badly faded receipt needs a new photo or the shop's copy.
+
+**Measured so far on SAMPLE bills only** (`samples/READER-REPORT.md`): no figure marked ✓ was wrong; totals were ticked on 9 of 11 bills; 6 of 14 cash-book rows were ticked (the rest go to the person). Real Chauthe bills will read worse until it is tuned on them. Old cash-book rows are read and checked, but how history enters the record is not decided yet (see the status log).
