@@ -4,10 +4,11 @@ import { readFile, stat } from 'node:fs/promises';
 import { extname } from 'node:path';
 import * as tesseract from './engine-tesseract.mjs';
 import * as claude from './engine-claude.mjs';
+import * as mix from './engine-mix.mjs';
 
-// Which engine reads: CHAUTARI_READER=claude (two Claude models, outside service, needs ANTHROPIC_API_KEY)
-// or tesseract (default, on our own server).
-export const DEFAULT_ENGINE = process.env.CHAUTARI_READER === 'claude' ? claude : tesseract;
+// Which engine reads: CHAUTARI_READER=mix (Claude + Gemini, outside services, needs ANTHROPIC_API_KEY and
+// GEMINI_API_KEY), claude (two Claude models), or tesseract (default, on our own server).
+export const DEFAULT_ENGINE = { mix, claude }[process.env.CHAUTARI_READER] ?? tesseract;
 import { parseBill, parseCashbook, mergePasses, mergeCashbookPasses } from './parse.mjs';
 
 export const READER_VERSION = '0.1.0';
