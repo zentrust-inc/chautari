@@ -328,7 +328,8 @@ export function parseCashbook(rawLines) {
     // a minus (or bracket) before the balance: keep the sign, and mark cash below zero for the person.
     // Reading the balance without its sign once made a false sum close on the next row.
     const lastAmt = amts.at(-1);
-    const negative = lastAmt && /[-–(]\s*$/.test(after.slice(0, lastAmt.index));
+    // "/-" after an amount (३१,२५०/-) is the usual way to close a figure, not a minus
+  const negative = lastAmt && /(^|[^\/])[-–(]\s*$/.test(after.slice(0, lastAmt.index));
     const row = { date_bs: d.bs, date_ad: d.ad, particulars, receipt: null, payment: null, balance: null, status: 'check', why: null };
     if (vals.length === 0) { row.why = 'not_found'; }
     else if (prev == null) {
@@ -383,18 +384,29 @@ export function mergeCashbookPasses(sets) {
   const out = []; let prevSet = null;
   for (const c of cand) {
     const row = { date_bs: c.date_bs, date_ad: c.date_ad, particulars: c.particulars, receipt: null, payment: null, balance: null, status: 'check', why: 'sum_mismatch' };
+    // how many readings show this balance with this amount on the row: a tick needs two when there are two or more
+    const support = (b, a) => c.rows.filter((r) => r.balance != null && near(r.balance, b) && [r.receipt, r.payment, r.amount_read].some((v) => v != null && near(v, a))).length;
+    const enough = (k) => k >= Math.min(2, sets.length);
     if (prevSet == null) {
-      const open = c.bal.find((b) => c.amt.some((a) => near(a, b)));
-      if (open != null) { Object.assign(row, { receipt: open, balance: open, opening: true, status: 'ok', why: null }); prevSet = [open]; }
+      const opens = c.bal.filter((b) => c.amt.some((a) => near(a, b))).sort((x, y) => support(y, y) - support(x, x));
+      const open = opens[0];
+      if (open != null) {
+        Object.assign(row, { receipt: open, balance: open, opening: true, status: 'ok', why: null }); prevSet = [open];
+        if (!enough(support(open, open))) Object.assign(row, { status: 'check', why: 'readings_differ', alts: { balances: c.bal, amounts: c.amt } });
+      }
       else { row.balance = c.bal[0] ?? null; prevSet = c.bal; }
       out.push(row); continue;
     }
     let hit = null;
     for (const p of prevSet) for (const b of c.bal) for (const a of c.amt) {
-      if (!hit && near(p + a, b)) hit = { b, receipt: a };
-      if (!hit && near(p - a, b)) hit = { b, payment: a };
+      const k = support(b, a);
+      if (near(p + a, b) && (!hit || k > hit.k)) hit = { b, receipt: a, k };
+      if (near(p - a, b) && (!hit || k > hit.k)) hit = { b, payment: a, k };
     }
-    if (hit) { Object.assign(row, { balance: hit.b, receipt: hit.receipt ?? null, payment: hit.payment ?? null, status: 'ok', why: null }); prevSet = [hit.b]; }
+    if (hit) {
+      Object.assign(row, { balance: hit.b, receipt: hit.receipt ?? null, payment: hit.payment ?? null, status: 'ok', why: null }); prevSet = [hit.b];
+      if (!enough(hit.k)) Object.assign(row, { status: 'check', why: 'readings_differ', alts: { balances: c.bal, amounts: c.amt } });
+    }
     else {
       const best = c.rows.find((r) => r.receipt != null || r.payment != null) ?? c.rows[0];
       // which column it was in is not known: the person says receipt or payment
