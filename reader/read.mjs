@@ -3,6 +3,11 @@ import { createHash } from 'node:crypto';
 import { readFile, stat } from 'node:fs/promises';
 import { extname } from 'node:path';
 import * as tesseract from './engine-tesseract.mjs';
+import * as claude from './engine-claude.mjs';
+
+// Which engine reads: CHAUTARI_READER=claude (two Claude models, outside service, needs ANTHROPIC_API_KEY)
+// or tesseract (default, on our own server).
+export const DEFAULT_ENGINE = process.env.CHAUTARI_READER === 'claude' ? claude : tesseract;
 import { parseBill, parseCashbook, mergePasses, mergeCashbookPasses } from './parse.mjs';
 
 export const READER_VERSION = '0.1.0';
@@ -12,7 +17,7 @@ export async function sha256File(file) {
 }
 
 /** @param kind 'bill' | 'cashbook' (the person says which when they photograph it) */
-export async function readDocument(file, { kind = 'bill', engine = tesseract, today } = {}) {
+export async function readDocument(file, { kind = 'bill', engine = DEFAULT_ENGINE, today } = {}) {
   const sha = await sha256File(file);
   const { size } = await stat(file);
   const readings = await engine.readLines(file);

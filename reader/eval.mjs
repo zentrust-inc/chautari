@@ -8,14 +8,19 @@ import { dirname, join } from 'node:path';
 import { readDocument } from './read.mjs';
 import { normalizeDigits } from './parse.mjs';
 import * as tesseract from './engine-tesseract.mjs';
+import * as claude from './engine-claude.mjs';
+import * as easyocr from './engine-easyocr.mjs';
 
-// node reader/eval.mjs [--hard] [id ...]   --hard scores samples/hard-truth.json into HARD-REPORT.md
+// node reader/eval.mjs [--hard] [--claude] [id ...]   --hard scores samples/hard-truth.json into HARD-REPORT.md;
+// --claude reads with engine-claude.mjs (needs ANTHROPIC_API_KEY) and writes *-claude.md
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'samples');
 const args = process.argv.slice(2);
 const hard = args.includes('--hard');
 const truth = JSON.parse(await readFile(join(root, hard ? 'hard-truth.json' : 'truth.json'), 'utf8'));
 const only = args.filter((a) => !a.startsWith('--'));
-const lang = tesseract.LANG;
+const useClaude = args.includes('--claude') || args.includes('--engine=claude');
+const engine = useClaude ? claude : args.includes('--engine=easyocr') ? easyocr : tesseract;
+const lang = useClaude ? `claude ${claude.MODELS.join(' + ')}` : `${engine.name} ${engine.LANG}`;
 
 const asc = (s) => normalizeDigits(String(s ?? ''));
 const lev = (a, b) => { const m = a.length, n = b.length; const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]); for (let j = 1; j <= n; j++) d[0][j] = j;
@@ -39,7 +44,7 @@ const perBill = [], outputs = {};
 
 for (const t of truth.bills) {
   if (only.length && !only.includes(t.id)) continue;
-  const r = await readDocument(join(root, t.file), { kind: 'bill', today: '2026-11-19' });
+  const r = await readDocument(join(root, t.file), { kind: 'bill', today: '2026-11-19', engine });
   outputs[t.id] = r;
   const row = { id: t.id, q: t.quality, layout: t.layout, cells: {} };
   for (const f of FIELDS) {
@@ -56,7 +61,7 @@ for (const t of truth.bills) {
 const cashRows = [];
 for (const c of truth.cashbooks) {
   if (only.length && !only.includes(c.id)) continue;
-  const r = await readDocument(join(root, c.file), { kind: 'cashbook', today: '2026-11-19' });
+  const r = await readDocument(join(root, c.file), { kind: 'cashbook', today: '2026-11-19', engine });
   outputs[c.id] = r;
   const res = { id: c.id, rows: c.rows.length, found: 0, ok_right: 0, ok_wrong: 0, check: 0 };
   for (const tr of c.rows) {
@@ -87,12 +92,22 @@ if (cashRows.length) {
 const wrongTotal = FIELDS.reduce((a, f) => a + tally[f].ok_wrong, 0) + cashRows.reduce((a, c) => a + c.ok_wrong, 0);
 const rightTotal = FIELDS.reduce((a, f) => a + tally[f].ok_right, 0) + cashRows.reduce((a, c) => a + c.ok_right, 0);
 md += `\n**Read but wrong, all fields: ${wrongTotal}.** Read and right: ${rightTotal}.\n`;
+if (useClaude) {
+  const pages = perBill.length + cashRows.length;
+  const usd = claude.usage.reduce((a, u) => a + u.usd, 0);
+  const byModel = {};
+  for (const u of claude.usage) { const m = (byModel[u.model] ??= { calls: 0, in: 0, out: 0, usd: 0 }); m.calls++; m.in += u.input_tokens; m.out += u.output_tokens; m.usd += u.usd; }
+  md += `\n## Cost (list prices)\n\n| model | readings | input tokens | output tokens | USD |\n|---|---|---|---|---|\n`;
+  for (const [m, v] of Object.entries(byModel)) md += `| ${m} | ${v.calls} | ${v.in} | ${v.out} | ${v.usd.toFixed(4)} |\n`;
+  md += `\n**${pages} pages, USD ${usd.toFixed(3)} in all, USD ${(usd / Math.max(pages, 1)).toFixed(4)} per page.**\n`;
+}
 console.log(md);
 if (!only.length && !process.env.EVAL_NO_WRITE) {
-  if (hard) await writeFile(join(root, 'HARD-REPORT.md'), md);
+  const sfx = useClaude ? '-claude' : '';
+  if (hard) { await writeFile(join(root, `HARD-REPORT${sfx}.md`), md); if (useClaude) await writeFile(join(root, 'hard-output-claude.json'), JSON.stringify(outputs, null, 1)); }
   else {
-    await writeFile(join(root, 'READER-REPORT.md'), md);
-    await writeFile(join(root, 'reader-output.json'), JSON.stringify(outputs, null, 1));
+    await writeFile(join(root, `READER-REPORT${sfx}.md`), md);
+    await writeFile(join(root, `reader-output${sfx}.json`), JSON.stringify(outputs, null, 1));
   }
 }
 process.exitCode = wrongTotal ? 1 : 0;

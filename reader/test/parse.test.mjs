@@ -103,12 +103,35 @@ test('cash book: the running balance decides receipt or payment, and only a clos
   assert.equal(rows[3].status, 'check'); assert.equal(rows[3].receipt, null); assert.equal(rows[3].payment, null);
 });
 
-test('cash book: another reading can supply the figure that closes the sum', () => {
+test('cash book: a figure only one reading saw is suggested but goes to the person', () => {
+  // two readers misreading the same digit the same way is what sums cannot catch, so a tick needs two readings
   const a = parseCashbook(['2083/07/01 बाँकी 5,000 5,000', '2083/07/02 तार 1,800 4,100']);
   const b = parseCashbook(['2083/07/01 बाँकी 5,000 5,000', '2083/07/02 तार 900 4,100']);
   const rows = mergeCashbookPasses([a, b]);
+  assert.equal(rows[0].status, 'ok');
+  assert.equal(rows[1].payment, 900);
+  assert.equal(rows[1].status, 'check');
+  assert.equal(rows[1].why, 'readings_differ');
+});
+
+test('cash book: two readings that agree get the tick', () => {
+  const a = parseCashbook(['2083/07/01 बाँकी 5,000 5,000', '2083/07/02 तार 900 4,100']);
+  const rows = mergeCashbookPasses([a, structuredClone(a)]);
   assert.equal(rows[1].payment, 900);
   assert.equal(rows[1].status, 'ok');
+});
+
+test('cash book: an opening balance the readings disagree on is not ticked', () => {
+  const a = parseCashbook(['२०८३/९/७  अघिल्लो बाँकी  २१२३६  २१२३६']);
+  const b = parseCashbook(['२०८३/९/७  अघिल्लो बाँकी  २९२३५  २९२३५']);
+  const rows = mergeCashbookPasses([a, b]);
+  assert.equal(rows[0].status, 'check');
+});
+
+test('cash book: "/-" closing a figure is not a minus sign', () => {
+  const rows = parseCashbook(['२०८३/०८/०३  अघिल्लो बाँकी  ३१,२५०/-  ३१,२५०', '२०८३/०८/०४  सदस्यता शुल्क  ३००/-  ३१,५५०']);
+  assert.equal(rows[0].balance, 31250); assert.equal(rows[0].status, 'ok');
+  assert.equal(rows[1].receipt, 300); assert.equal(rows[1].balance, 31550); assert.equal(rows[1].status, 'ok');
 });
 
 test('a cash balance below zero keeps its sign and is marked for the person', () => {
