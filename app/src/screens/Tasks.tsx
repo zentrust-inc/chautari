@@ -4,6 +4,7 @@ import { rs, num, bsDate, hours, fiscalYear } from '../lib/format';
 import { me, officerRoles, pub, loadAll } from '../state';
 import { source, DemoWrite, type OfficerQueues } from '../data/source';
 import { Screen, Section, Pill } from '../ui';
+import { go } from '../state';
 
 type Row = Record<string, any>;
 export type SentState = null | { ok: true; seq: number } | { demo: Row } | { error: string };
@@ -11,12 +12,12 @@ export type SentState = null | { ok: true; seq: number } | { demo: Row } | { err
 // What happened after pressing a button. In sample mode it shows the exact entry the real
 // system would add to the record, so people can see what a signature is.
 export function Sent({ s }: { s: Exclude<SentState, null> }) {
-  if ('ok' in s) return <p class="sent ok">✓ {t('sent')} · {lang.value === 'np' ? 'इन्ट्री नं.' : 'entry'} {num(s.seq)}</p>;
+  if ('ok' in s) return <p class="sent ok">✓ {s.seq ? <>{t('sent')} · {lang.value === 'np' ? 'इन्ट्री नं.' : 'entry'} {num(s.seq)}</> : (lang.value === 'np' ? 'भयो' : 'Done')}</p>;
   if ('error' in s) return <p class="sent error">{s.error}</p>;
   return (
     <div class="sent demo">
-      <p>{t('demo_write')}:</p>
-      <pre>{JSON.stringify({ type: s.demo.type, payload: s.demo.payload }, null, 1)}</pre>
+      <p>{s.demo.note === 'reject' ? (lang.value === 'np' ? 'नमुना: वास्तविक प्रणालीमा यो निर्णय (कारणसहित) राखिन्थ्यो; हिसाबमा केही थपिँदैन' : 'Sample: in the real system this decision (with its reason) would be kept; nothing enters the books') : t('demo_write')}:</p>
+      <pre>{JSON.stringify({ type: s.demo.type, payload: s.demo.payload, ...(s.demo.evidence ? { evidence: s.demo.evidence } : {}) }, null, 1)}</pre>
     </div>
   );
 }
@@ -49,16 +50,31 @@ export function Tasks() {
   const nameOf = (e: string) => pub.value?.bodies.find((b) => b.id === e)?.name_np ?? e;
   const signerRoles = ['treasurer', 'chair', 'secretary'];
 
+  const canRead = roles.some((r) => ['treasurer', 'ledger_keeper'].includes(r.role));
+  const canMeasure = roles.some((r) => ['ledger_keeper', 'nature_guardian'].includes(r.role));
+  const np = lang.value === 'np';
   return (
     <Screen title={t('tasks')} back={false}>
+      {(canRead || canMeasure) && (
+        <div class="row-gap">
+          {canRead && <button class="btn" onClick={() => go('capture')}>{np ? 'बिलको फोटोबाट हिसाब' : 'From a bill’s photo'}</button>}
+          {canMeasure && <button class="btn btn-quiet" onClick={() => go('readings')}>{np ? 'पानी र वर्षा नाप' : 'Water and rain readings'}</button>}
+        </div>
+      )}
       {entities.map((entity) => {
         const q = queues[entity] ?? {};
         const mine = roles.filter((r) => r.entity === entity).map((r) => r.role);
         const myRole = mine.find((r) => signerRoles.includes(r));
-        const total = (q.payments_waiting?.length ?? 0) + (q.work_waiting?.length ?? 0) + (q.questions?.filter((x) => x.status === 'open').length ?? 0);
+        const total = (q.payments_waiting?.length ?? 0) + (q.work_waiting?.length ?? 0) + (q.questions?.filter((x) => x.status === 'open').length ?? 0) + (q.suggestions?.length ?? 0);
         return (
           <Section key={entity} title={nameOf(entity)} note={mine.map(roleName).join(', ')}>
             {total === 0 && <p class="empty">{t('no_tasks')}</p>}
+            {(q.suggestions?.length ?? 0) > 0 && (
+              <article class="task">
+                <div class="row-between"><span class="item-title">{np ? 'एआईले पढेका बिल, पुष्टि पर्खँदै' : 'Bills read by the AI, waiting for you'}</span><span class="item-amount">{num(q.suggestions!.length)}</span></div>
+                <button class="btn" onClick={() => go('capture')}>{np ? 'हेर्नुहोस्' : 'Review'}</button>
+              </article>
+            )}
 
             {q.payments_waiting?.map((x) => {
               const signed: Row[] = x.signed_by;

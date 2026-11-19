@@ -21,8 +21,7 @@
   "fields": {
    "total": {
     "value": 16125.1,
-    "status": "check",
-    "why": "items_mismatch"
+    "status": "ok"
    },
    "subtotal": {
     "value": 14270,
@@ -37,7 +36,7 @@
     "status": "ok"
    },
    "date_ad": {
-    "value": "2026-10-21",
+    "value": "2026-10-22",
     "status": "ok"
    },
    "bill_no": {
@@ -76,12 +75,6 @@
    }
   },
   "flags": [
-   {
-    "field": "total",
-    "code": "items_mismatch",
-    "np": "वस्तुको जोड मिलेन",
-    "en": "the items do not add up"
-   },
    {
     "field": "bill_no",
     "code": "readings_differ",
@@ -283,7 +276,7 @@
    "total": {
     "value": 750,
     "status": "check",
-    "why": "sum_mismatch",
+    "why": "items_mismatch",
     "alts": [
      1450,
      140
@@ -303,7 +296,7 @@
     "status": "ok"
    },
    "date_ad": {
-    "value": "2026-10-28",
+    "value": "2026-10-29",
     "status": "ok"
    },
    "bill_no": {
@@ -346,9 +339,9 @@
   "flags": [
    {
     "field": "total",
-    "code": "sum_mismatch",
-    "np": "जोड मिलेन",
-    "en": "the figures do not add up"
+    "code": "items_mismatch",
+    "np": "वस्तुको जोड मिलेन",
+    "en": "the items do not add up"
    },
    {
     "field": "subtotal",
@@ -427,8 +420,7 @@
   "fields": {
    "total": {
     "value": 2892.8,
-    "status": "check",
-    "why": "items_mismatch"
+    "status": "ok"
    },
    "subtotal": {
     "value": 2560,
@@ -444,7 +436,7 @@
     "why": "short_date"
    },
    "date_ad": {
-    "value": "2026-10-21",
+    "value": "2026-10-22",
     "status": "check",
     "why": "short_date"
    },
@@ -483,12 +475,6 @@
    }
   },
   "flags": [
-   {
-    "field": "total",
-    "code": "items_mismatch",
-    "np": "वस्तुको जोड मिलेन",
-    "en": "the items do not add up"
-   },
    {
     "field": "date_bs",
     "code": "short_date",
@@ -568,7 +554,7 @@
    "total": {
     "value": 222,
     "status": "check",
-    "why": "sum_mismatch",
+    "why": "garbled",
     "alts": [
      7222
     ]
@@ -592,7 +578,7 @@
     "why": "short_date"
    },
    "date_ad": {
-    "value": "2026-10-24",
+    "value": "2026-10-25",
     "status": "check",
     "why": "short_date"
    },
@@ -638,9 +624,9 @@
   "flags": [
    {
     "field": "total",
-    "code": "sum_mismatch",
-    "np": "जोड मिलेन",
-    "en": "the figures do not add up"
+    "code": "garbled",
+    "np": "अङ्क अस्पष्ट",
+    "en": "figure unclear"
    },
    {
     "field": "subtotal",
@@ -720,8 +706,7 @@
   "fields": {
    "total": {
     "value": 110740,
-    "status": "check",
-    "why": "items_mismatch"
+    "status": "ok"
    },
    "subtotal": {
     "value": 98000,
@@ -737,7 +722,7 @@
     "status": "ok"
    },
    "date_ad": {
-    "value": "2026-11-06",
+    "value": "2026-11-07",
     "status": "ok"
    },
    "bill_no": {
@@ -774,12 +759,6 @@
    }
   },
   "flags": [
-   {
-    "field": "total",
-    "code": "items_mismatch",
-    "np": "वस्तुको जोड मिलेन",
-    "en": "the items do not add up"
-   },
    {
     "field": "subtotal",
     "code": "repaired",
@@ -842,8 +821,7 @@
   "fields": {
    "total": {
     "value": 6000,
-    "status": "check",
-    "why": "sum_mismatch"
+    "status": "ok"
    },
    "subtotal": {
     "value": null,
@@ -859,7 +837,7 @@
     "status": "ok"
    },
    "date_ad": {
-    "value": "2026-11-09",
+    "value": "2026-11-10",
     "status": "ok"
    },
    "bill_no": {
@@ -901,12 +879,6 @@
    }
   },
   "flags": [
-   {
-    "field": "total",
-    "code": "sum_mismatch",
-    "np": "जोड मिलेन",
-    "en": "the figures do not add up"
-   },
    {
     "field": "subtotal",
     "code": "sum_mismatch",
@@ -984,7 +956,7 @@
     "status": "ok"
    },
    "date_ad": {
-    "value": "2026-11-12",
+    "value": "2026-11-13",
     "status": "ok"
    },
    "bill_no": {
@@ -1097,7 +1069,7 @@
    "total": {
     "value": 90.6,
     "status": "check",
-    "why": "sum_mismatch",
+    "why": "items_mismatch",
     "alts": [
      37990.6,
      7
@@ -1118,7 +1090,7 @@
     "status": "ok"
    },
    "date_ad": {
-    "value": "2026-11-16",
+    "value": "2026-11-17",
     "status": "ok"
    },
    "bill_no": {
@@ -1168,9 +1140,9 @@
   "flags": [
    {
     "field": "total",
-    "code": "sum_mismatch",
-    "np": "जोड मिलेन",
-    "en": "the figures do not add up"
+    "code": "items_mismatch",
+    "np": "वस्तुको जोड मिलेन",
+    "en": "the items do not add up"
    },
    {
     "field": "subtotal",
@@ -1308,7 +1280,7 @@
     "status": "ok"
    },
    "date_ad": {
-    "value": "2026-11-17",
+    "value": "2026-11-18",
     "status": "ok"
    },
    "bill_no": {
@@ -1439,8 +1411,7 @@
   "fields": {
    "total": {
     "value": 100,
-    "status": "check",
-    "why": "sum_mismatch"
+    "status": "ok"
    },
    "subtotal": {
     "value": null,
@@ -1456,7 +1427,7 @@
     "status": "ok"
    },
    "date_ad": {
-    "value": "2026-10-19",
+    "value": "2026-10-20",
     "status": "ok"
    },
    "bill_no": {
@@ -1495,12 +1466,6 @@
    }
   },
   "flags": [
-   {
-    "field": "total",
-    "code": "sum_mismatch",
-    "np": "जोड मिलेन",
-    "en": "the figures do not add up"
-   },
    {
     "field": "subtotal",
     "code": "sum_mismatch",
@@ -1563,77 +1528,144 @@
   "kind": "cashbook",
   "rows": [
    {
-    "date_bs": "2083/07/03",
-    "date_ad": "2026-10-19",
-    "particulars": "सदस्यता शुल्क",
-    "receipt": null,
+    "date_bs": "2083/06/28",
+    "date_ad": "2026-10-14",
+    "particulars": ". अधिल्लो बाँकी",
+    "receipt": 24300,
     "payment": null,
-    "balance": 24800,
-    "status": "check",
-    "why": "garbled"
+    "balance": 24300,
+    "status": "ok",
+    "why": null,
+    "opening": true
+   },
+   {
+    "date_bs": "2083/07/03",
+    "date_ad": "2026-10-20",
+    "particulars": "सदस्यता शुल्क",
+    "receipt": 100,
+    "payment": null,
+    "balance": 24400,
+    "status": "ok",
+    "why": null
    },
    {
     "date_bs": "2083/07/05",
-    "date_ad": "2026-10-21",
+    "date_ad": "2026-10-22",
     "particulars": "तार, किला खरिद",
     "receipt": null,
     "payment": null,
-    "balance": 8275,
+    "balance": 8274,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": 16124,
+    "alts": {
+     "balances": [
+      8275,
+      8274
+     ],
+     "amounts": [
+      16124
+     ]
+    }
    },
    {
     "date_bs": "2083/07/09",
-    "date_ad": "2026-10-25",
-    "particulars": "favat खरिद",
+    "date_ad": "2026-10-26",
+    "particulars": "बिख्वा खरिद",
     "receipt": null,
     "payment": null,
-    "balance": 375,
+    "balance": 3514,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": 1900,
+    "alts": {
+     "balances": [
+      35154,
+      375,
+      3514
+     ],
+     "amounts": [
+      1900
+     ]
+    }
    },
    {
     "date_bs": "2083/07/12",
-    "date_ad": "2026-10-28",
+    "date_ad": "2026-10-29",
     "particulars": "भैला चिया खाजा",
     "receipt": null,
     "payment": null,
     "balance": 375,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": 150,
+    "alts": {
+     "balances": [
+      375
+     ],
+     "amounts": [
+      150
+     ]
+    }
    },
    {
-    "date_bs": "2083/07/15",
-    "date_ad": "2026-10-31",
+    "date_bs": "2083/07/25",
+    "date_ad": "2026-11-11",
     "particulars": "कागज र छपाई",
     "receipt": null,
     "payment": null,
-    "balance": 3,
+    "balance": 33268,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": 2893,
+    "alts": {
+     "balances": [
+      33268
+     ],
+     "amounts": [
+      2893
+     ]
+    }
    },
    {
     "date_bs": "2083/07/20",
-    "date_ad": "2026-11-05",
+    "date_ad": "2026-11-06",
     "particulars": "काठ बिक्री",
     "receipt": null,
     "payment": null,
     "balance": 8732,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": 12000,
+    "alts": {
+     "balances": [
+      8732
+     ],
+     "amounts": [
+      12000
+     ]
+    }
    },
    {
     "date_bs": "2083/07/24",
-    "date_ad": "2026-11-09",
+    "date_ad": "2026-11-10",
     "particulars": "हल भाडा",
     "receipt": null,
     "payment": null,
     "balance": 2732,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": 4,
+    "alts": {
+     "balances": [
+      2732
+     ],
+     "amounts": [
+      4
+     ]
+    }
    }
-  ],
-  "chosen_pass": "plain"
+  ]
  },
  "cb02": {
   "doc": {
@@ -1657,55 +1689,84 @@
   "rows": [
    {
     "date_bs": "2083/07/27",
-    "date_ad": "2026-11-12",
+    "date_ad": "2026-11-13",
     "particulars": "Opening balance l",
     "receipt": null,
     "payment": null,
     "balance": 8250,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch"
    },
    {
     "date_bs": "2083/07/28",
-    "date_ad": "2026-11-13",
+    "date_ad": "2026-11-14",
     "particulars": "Chainsaw vent a i Md",
     "receipt": null,
     "payment": null,
     "balance": 435,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": null,
+    "alts": {
+     "balances": [
+      435,
+      3899
+     ],
+     "amounts": []
+    }
    },
    {
     "date_bs": "2083/07/29",
-    "date_ad": "2026-11-14",
+    "date_ad": "2026-11-15",
     "particulars": "Timber eile ao.",
     "receipt": null,
     "payment": null,
     "balance": 3435,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": null,
+    "alts": {
+     "balances": [
+      3435
+     ],
+     "amounts": []
+    }
    },
    {
     "date_bs": "2083/08/02",
-    "date_ad": "2026-11-17",
+    "date_ad": "2026-11-18",
     "particulars": "Memberainp i",
     "receipt": null,
     "payment": null,
     "balance": 3340,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": null,
+    "alts": {
+     "balances": [
+      3340,
+      8290
+     ],
+     "amounts": []
+    }
    },
    {
     "date_bs": "2083/08/02",
-    "date_ad": "2026-11-17",
+    "date_ad": "2026-11-18",
     "particulars": "Saplings ie E",
     "receipt": null,
     "payment": null,
     "balance": 8290,
     "status": "check",
-    "why": "garbled"
+    "why": "sum_mismatch",
+    "amount_read": null,
+    "alts": {
+     "balances": [
+      8290
+     ],
+     "amounts": []
+    }
    }
-  ],
-  "chosen_pass": "plain"
+  ]
  }
 }

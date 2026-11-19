@@ -6,23 +6,23 @@ Legend: ✓ = reader called it "read" (two readings agree and the bill's own sum
 
 | bill | photo | layout | total | subtotal | vat | date_bs | bill_no | pan | vendor | method | head | kind |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| hw01 | clean | invoice | ? | ✓ | ✓ | ✓ | ? | ✓ | ? | ? | ✓ | ✓ |
+| hw01 | clean | invoice | ✓ | ✓ | ✓ | ✓ | ? | ✓ | ? | ? | ✓ | ✓ |
 | nur01 | phone | thermal | ✓ | ✓ | ? | ?✗ | ✓ | ✓ | ✓ | ? | ✓ | ✓ |
 | tea01 | phone | memo | ? | ? | ? | ✓ | ? | ? | ? | ✓ | ✓ | ✓ |
-| stat01 | clean | thermal | ? | ✓ | ✓ | ?✗ | ✓ | ?✗ | ✓ | ? | ✓ | ✓ |
+| stat01 | clean | thermal | ✓ | ✓ | ✓ | ?✗ | ✓ | ?✗ | ✓ | ? | ✓ | ✓ |
 | fuel01 | phone | thermal | ?✗ | ?✗ | ? | ?✗ | ?✗ | ?✗ | ✓ | ? | ✓ | ✓ |
-| jcb01 | clean | invoice | ? | ? | ✓ | ✓ | ✓ | ✓ | ✓ | ? | ✓ | ✓ |
-| hall01 | clean | memo | ? | ? | ? | ✓ | ? | ? | ? | ? | ✓ | ✓ |
+| jcb01 | clean | invoice | ✓ | ? | ✓ | ✓ | ✓ | ✓ | ✓ | ? | ✓ | ✓ |
+| hall01 | clean | memo | ✓ | ? | ? | ✓ | ? | ? | ? | ? | ✓ | ✓ |
 | tool01 | clean | thermal | ✓ | ✓ | ✓ | ✓ | ?✗ | ?✗ | ✓ | ? | ✓ | ✓ |
 | hw02 | poor | invoice | ?✗ | ?✗ | ?✗ | ✓ | ?✗ | ?✗ | ? | ? | – | ✓ |
 | nur02 | poor | thermal | ?✗ | ? | ? | ✓ | ? | ?✗ | ? | ? | ✓ | ✓ |
-| rec01 | phone | memo | ? | ? | ? | ✓ | ?✗ | ? | ? | ✓ | ✓ | ✓ |
+| rec01 | phone | memo | ✓ | ? | ? | ✓ | ?✗ | ? | ? | ✓ | ✓ | ✓ |
 
 ## Per field
 
 | field | read & right | read but WRONG | check (was right) | check (was wrong) |
 |---|---|---|---|---|
-| total | 2 | **0** | 6 | 3 |
+| total | 7 | **0** | 1 | 3 |
 | subtotal | 4 | **0** | 5 | 2 |
 | vat | 4 | **0** | 6 | 1 |
 | date_bs | 8 | **0** | 0 | 3 |
@@ -37,7 +37,7 @@ Legend: ✓ = reader called it "read" (two readings agree and the bill's own sum
 
 | page | rows | rows found | read & right | read but WRONG | check |
 |---|---|---|---|---|---|
-| cb01 | 8 | 6 | 0 | **0** | 6 |
+| cb01 | 8 | 7 | 2 | **0** | 5 |
 | cb02 | 6 | 5 | 0 | **0** | 5 |
 
 **Read but wrong, all fields: 0.**

@@ -25,6 +25,8 @@ Open `demo/index.html` in any browser. No build step and no server; the page wor
 - मेरो (pick a sample person): own record, and मेरो खाता with the project loan and the "give notice" button
 - काम बाँकी (officers): sign and release payments, approve hours, answer questions; in the demo each button shows the exact entry it would add
 - जाँच: the phone re-checks every fingerprint in the record; "change one figure" shows the chain break
+- बिलको फोटोबाट हिसाब (treasurer, ledger keeper): photograph a bill; the AI reads it and suggests the entry; the person compares it with the photo and confirms in their own name. The sample has three fictional bills with what the reader really read from them, mistakes included
+- पानी र वर्षा नाप (nature guardian, ledger keeper): record a spring's flow or the rain gauge
 - मद्दत (कसरी चलाउने?): a step-by-step guide to every function, in Nepali and English, each topic with a button that opens its screen (`app/src/screens/Guide.tsx`; update it whenever a function changes)
 
 To rebuild it after a change: `cd app && npm install && npm run build:preview` (writes `demo/index.html`).
@@ -42,9 +44,12 @@ supabase/migrations/   the database: every rule lives here, so no screen or logi
   …0700  मेरो खाता and the cooperative's public views
   …0800  fix: the balance check works when the app writes
   …0900  the cooperative follows draft bylaws v4.15
+  …1000  the document reader's suggestions and a person's confirmation
 seed/demo.sql          sample activity with fictional people (never load into the real database)
 tests/                 the rules as tests (run.sh)
-scripts/               chain verifier, sample snapshot export, demo page builder
+reader/                the document reader (Tesseract on our own server): photo in, suggested entry out
+samples/               SAMPLE bills and cash-book pages (fictional, stamped नमूना), their truth, and the reader's score
+scripts/               chain verifier, sample snapshot export, demo page builder, demo bill readings
 app/                   the Nepali-first phone app (Vite + Preact PWA)
 demo/index.html        the demo, built from app/
 ```
@@ -99,3 +104,21 @@ Measured 11 Nov 2026: first load 263 KB compressed (budget 300 KB); the home scr
 - **C:** offline queue for writes in the app.
 - **D:** printed vouchers, cash book and the annual report to the Division Forest Office; nightly public export with OpenTimestamps.
 - **E:** deploy on our own server (ZenTrust's Azure credits), keys held by two officers. Legal review of the Cooperatives Act and privacy law before members' project loans go live.
+
+## The document reader
+
+A photo of a bill becomes a **suggestion**, never an entry. A named treasurer or ledger keeper checks it against the photo and confirms it in their own name (`public.confirm_suggestion`), and the entry then goes through every normal rule. The confirmed event says, in public, `ai_read: {reader, suggestion, changed}`: that the reader read it, and which fields the person corrected. The photo stays on our server; the chain carries its SHA-256. `public.reader_record` shows everyone how often the reader was right (counts only).
+
+How the reader decides what to tick: it reads each photo four ways (different clean-ups) and marks a figure ✓ only when the readings agree **and** an independent check fits: sub-total + 13% VAT = total, or the item lines add up to the total, or (in a cash book) the running balance closes. Identifiers (bill no., PAN, shop) need every reading to agree. Everything else is ! for the person.
+
+```
+cd reader && npm install
+node cli.mjs photo.jpg                 # one reading as JSON (add --cashbook for a cash-book page)
+node eval.mjs                          # score against samples/truth.json -> samples/READER-REPORT.md
+node --test test/*.test.mjs            # the reader's checks
+SUPABASE_URL=… SUPABASE_SERVICE_KEY=… DOCS_DIR=/srv/chautari/documents node server.mjs   # the service the app calls
+```
+
+Needs `tesseract` (with `hin` and `eng`) and ImageMagick `convert` on the server. The app finds the service through `VITE_READER_URL`.
+
+**Measured so far on SAMPLE bills only** (`samples/READER-REPORT.md`): no figure marked ✓ was wrong; totals were ticked on 7 of 11 bills; cash-book tables read poorly (most rows go to the person). Real Chauthe bills will read worse until it is tuned on them. Old cash-book rows are read and checked, but how history enters the record is not decided yet (see the status log).

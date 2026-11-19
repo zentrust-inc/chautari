@@ -39,4 +39,4 @@ export const byEntity = <T extends Record<string, any>>(rows: T[] | undefined, e
 
 export const myRoles = computed(() => me.value?.roles ?? []);
 export const officerRoles = computed(() =>
-  myRoles.value.filter((r) => ['chair', 'secretary', 'treasurer', 'accounts_committee', 'supervisor'].includes(r.role)));
+  myRoles.value.filter((r) => ['chair', 'secretary', 'treasurer', 'accounts_committee', 'supervisor', 'ledger_keeper', 'nature_guardian'].includes(r.role)));

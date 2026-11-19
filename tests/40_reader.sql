@@ -58,9 +58,11 @@ select t.rejects('without a signed-in person nothing is confirmed',
 -- ---------------------------------------------------------------------------
 set role authenticated;
 select t.as_person(9);   -- Tek, a member with no office
+select t.rejects('a member without an office does not see the payee list', $$select * from public.officer_payees('thumki-cfug')$$, 'this view is for');
 select t.rejects('a member without an office does not see waiting bills',
   $$select * from public.officer_suggestions('thumki-cfug')$$, 'this view is for');
 select t.as_person(4);   -- ledger keeper
+select t.ok('the ledger keeper sees the registered payees to choose from', exists (select 1 from public.officer_payees('thumki-cfug') where name = 'ककनी कृषि पसल'));
 select t.ok('the ledger keeper sees the three waiting bills', (select count(*) from public.officer_suggestions('thumki-cfug')) = 3);
 
 -- ---------------------------------------------------------------------------

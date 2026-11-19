@@ -88,6 +88,18 @@ begin
   order by s.created_at;
 end $$;
 
+-- the registered payees to choose from when confirming (a bill is paid only to a registered payee)
+create or replace function public.officer_payees(p_entity text)
+returns table (payee_id uuid, kind text, name text)
+language plpgsql stable security definer set search_path = '' as $$
+begin
+  perform ww.require_office(p_entity, ww.reader_roles() || array['chair', 'secretary', 'accounts_committee']);
+  return query
+  select p.id, p.kind, coalesce(p.name, pp.display_name)
+  from ww.payees p left join ww.persons pp on pp.id = p.person_id
+  where p.entity_id = p_entity order by p.kind, 3;
+end $$;
+
 -- ---------------------------------------------------------------------------
 -- A person confirms: the entry goes through record_event's rules, in their own name
 -- ---------------------------------------------------------------------------
@@ -120,7 +132,7 @@ begin
 
   -- what the person changed, compared with what the reader suggested
   sp := coalesce(s.suggested->'payload', '{}'::jsonb);
-  for k in select unnest(array['amount', 'account_code', 'payee_id', 'method', 'budget_line_id', 'memo_np', 'receipt_no', 'estimated']) loop
+  for k in select unnest(array['amount', 'account_code', 'payee_id', 'method', 'budget_line_id', 'memo_np', 'receipt_no', 'bill_no', 'estimated']) loop
     if (sp->k) is distinct from (p_payload->k) and not (sp->k is null and p_payload->k is null) then
       -- 7900 and 7900.00 are the same amount
       if k = 'amount' and (sp->>k) ~ '^[0-9.]+$' and (p_payload->>k) ~ '^[0-9.]+$'
@@ -185,6 +197,7 @@ group by s.entity_id;
 revoke all on public.reader_record from public;
 revoke all on function public.record_suggestion(text, text, text, text, text, jsonb) from public;
 revoke all on function public.officer_suggestions(text) from public;
+revoke all on function public.officer_payees(text) from public;
 revoke all on function public.confirm_suggestion(uuid, text, jsonb, date, text, jsonb) from public;
 revoke all on function public.reject_suggestion(uuid, text) from public;
 do $$ begin
@@ -193,6 +206,7 @@ do $$ begin
     execute 'grant select on public.reader_record to anon, authenticated';
     execute 'grant execute on function public.record_suggestion(text, text, text, text, text, jsonb) to service_role';
     execute 'grant execute on function public.officer_suggestions(text) to authenticated';
+    execute 'grant execute on function public.officer_payees(text) to authenticated';
     execute 'grant execute on function public.confirm_suggestion(uuid, text, jsonb, date, text, jsonb) to authenticated';
     execute 'grant execute on function public.reject_suggestion(uuid, text) to authenticated';
   end if;

@@ -244,12 +244,18 @@ export function mergePasses(passes, { today = new Date().toISOString().slice(0, 
   const winRec = recs.find(({ r }) => key(r.total) === key(T.value)) ?? recs[0];
   const agreed = T.votes >= 2 || n === 1;
   const sumsOk = winRec.r.total_ok;
+  // a tick needs two independent supports: the 13% VAT triple (sub-total + VAT = total), or, without VAT,
+  // the item lines adding up to the total. One misread line cannot satisfy either by itself.
+  const R = winRec.r;
+  const vatTriple = R.subtotal != null && R.vat != null && R.total != null && near(R.subtotal + R.vat, R.total) && near(R.subtotal * VAT_RATE, R.vat, 1.01);
+  const noVat = winRec.p.vat == null;
+  const itemsSupport = R.items_ok === true && (winRec.p.subtotal == null || near(winRec.p.subtotal, T.value));
   let totalStatus = 'check', totalWhy = null;
   if (T.value == null) totalWhy = 'not_found';
-  else if (!sumsOk) totalWhy = 'sum_mismatch';
-  else if (winRec.r.items_ok === false) totalWhy = 'items_mismatch';
+  else if (winRec.p.total_garbled) totalWhy = 'garbled';
+  else if (R.repaired.includes('total')) totalWhy = 'from_parts';
+  else if (!(vatTriple || (noVat && itemsSupport))) totalWhy = noVat && R.items_ok === false ? 'items_mismatch' : 'sum_mismatch';
   else if (T.votes < 2 && n > 1) totalWhy = 'one_reading';
-  else if (winRec.r.repaired.includes('total')) totalWhy = 'from_parts';
   else totalStatus = 'ok';
   out.fields.total = fld(T.value, totalStatus, totalWhy, T.alts);
   out.fields.subtotal = fld(S.value, winRec.r.repaired.includes('subtotal') ? 'check' : (sumsOk && S.votes >= 1 ? 'ok' : 'check'),
