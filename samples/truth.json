@@ -1,0 +1,495 @@
+{
+ "_note": "SAMPLE data. Everything here is fictional; see samples/README.md.",
+ "bills": [
+  {
+   "file": "bills/hw01.jpg",
+   "id": "hw01",
+   "kind": "expense",
+   "layout": "invoice",
+   "quality": "clean",
+   "digits": "devanagari",
+   "vendor": "नमूना हार्डवेयर तथा निर्माण सामग्री",
+   "vendor_en": "Namuna Hardware & Construction Materials",
+   "pan": "100200301",
+   "bill_no": "0417",
+   "date_bs": "2083/07/05",
+   "date_ad": "2026-10-22",
+   "items": [
+    {
+     "name": "GI तार नं. १२ (बन्डल)",
+     "qty": 4,
+     "rate": 3200,
+     "amount": 12800
+    },
+    {
+     "name": "किला (केजी)",
+     "qty": 5,
+     "rate": 180,
+     "amount": 900
+    },
+    {
+     "name": "कटर ब्लेड (थान)",
+     "qty": 6,
+     "rate": 95,
+     "amount": 570
+    }
+   ],
+   "subtotal": 14270,
+   "vat": 1855.1,
+   "total": 16125.1,
+   "method": "cash",
+   "suggested_account": "EX-2.01",
+   "note": "वन संरक्षण — घेराबार"
+  },
+  {
+   "file": "bills/nur01.jpg",
+   "id": "nur01",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "phone",
+   "digits": "devanagari",
+   "vendor": "नमूना कृषि नर्सरी तथा बीउ केन्द्र",
+   "vendor_en": "Namuna Agro Nursery",
+   "pan": "100200302",
+   "bill_no": "2291",
+   "date_bs": "2083/07/09",
+   "date_ad": "2026-10-26",
+   "items": [
+    {
+     "name": "लप्सी बिरुवा",
+     "qty": 50,
+     "rate": 80,
+     "amount": 4000
+    },
+    {
+     "name": "ऐसेलु बिरुवा",
+     "qty": 40,
+     "rate": 60,
+     "amount": 2400
+    },
+    {
+     "name": "टिमुर बिरुवा",
+     "qty": 30,
+     "rate": 50,
+     "amount": 1500
+    }
+   ],
+   "subtotal": 7900,
+   "vat": 0.0,
+   "total": 7900.0,
+   "method": "cash",
+   "suggested_account": "EX-2.02",
+   "note": "कृषि उपज — VAT छैन"
+  },
+  {
+   "file": "bills/tea01.jpg",
+   "id": "tea01",
+   "kind": "expense",
+   "layout": "memo",
+   "quality": "phone",
+   "digits": "devanagari",
+   "vendor": "नमूना चिया पसल",
+   "vendor_en": "Namuna Tea Shop",
+   "pan": null,
+   "bill_no": "११",
+   "date_bs": "2083/07/12",
+   "date_ad": "2026-10-29",
+   "items": [
+    {
+     "name": "चिया (कप)",
+     "qty": 15,
+     "rate": 20,
+     "amount": 300
+    },
+    {
+     "name": "समोसा (थान)",
+     "qty": 15,
+     "rate": 30,
+     "amount": 450
+    }
+   ],
+   "subtotal": 750,
+   "vat": 0.0,
+   "total": 750.0,
+   "method": "cash",
+   "suggested_account": "EX-1.02",
+   "note": "भेला"
+  },
+  {
+   "file": "bills/stat01.jpg",
+   "id": "stat01",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "clean",
+   "digits": "latin",
+   "vendor": "Sample Stationers & Printing",
+   "vendor_en": "Sample Stationers & Printing",
+   "pan": "100200304",
+   "bill_no": "8836",
+   "date_bs": "2083/07/15",
+   "date_ad": "2026-11-01",
+   "items": [
+    {
+     "name": "A4 paper (ream)",
+     "qty": 2,
+     "rate": 650,
+     "amount": 1300
+    },
+    {
+     "name": "Register (pc)",
+     "qty": 3,
+     "rate": 220,
+     "amount": 660
+    },
+    {
+     "name": "Notice printing (copy)",
+     "qty": 50,
+     "rate": 12,
+     "amount": 600
+    }
+   ],
+   "subtotal": 2560,
+   "vat": 332.8,
+   "total": 2892.8,
+   "method": "cash",
+   "suggested_account": "EX-1.04",
+   "note": ""
+  },
+  {
+   "file": "bills/fuel01.jpg",
+   "id": "fuel01",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "phone",
+   "digits": "latin",
+   "vendor": "Sample Petroleum Pump",
+   "vendor_en": "Sample Petroleum Pump",
+   "pan": "100200305",
+   "bill_no": "55102",
+   "date_bs": "2083/07/18",
+   "date_ad": "2026-11-04",
+   "items": [
+    {
+     "name": "Petrol (litre)",
+     "qty": 6.5,
+     "rate": 188,
+     "amount": 1222.0
+    }
+   ],
+   "subtotal": 1222.0,
+   "vat": 0.0,
+   "total": 1222.0,
+   "method": "cash",
+   "suggested_account": "EX-1.08",
+   "note": ""
+  },
+  {
+   "file": "bills/jcb01.jpg",
+   "id": "jcb01",
+   "kind": "expense",
+   "layout": "invoice",
+   "quality": "clean",
+   "digits": "devanagari",
+   "vendor": "नमूना भारी मेसिनरी सेवा",
+   "vendor_en": "Namuna Heavy Machinery Service",
+   "pan": "100200306",
+   "bill_no": "0093",
+   "date_bs": "2083/07/21",
+   "date_ad": "2026-11-07",
+   "items": [
+    {
+     "name": "JCB भाडा (घण्टा)",
+     "qty": 28,
+     "rate": 3500,
+     "amount": 98000
+    }
+   ],
+   "subtotal": 98000,
+   "vat": 12740.0,
+   "total": 110740.0,
+   "method": "bank",
+   "suggested_account": "EX-2.01",
+   "note": "माटो संरक्षण — खाल्डा/पैनी"
+  },
+  {
+   "file": "bills/hall01.jpg",
+   "id": "hall01",
+   "kind": "expense",
+   "layout": "memo",
+   "quality": "clean",
+   "digits": "devanagari",
+   "vendor": "नमूना सभा हल",
+   "vendor_en": "Namuna Meeting Hall",
+   "pan": null,
+   "bill_no": "४०",
+   "date_bs": "2083/07/24",
+   "date_ad": "2026-11-10",
+   "items": [
+    {
+     "name": "हल भाडा (दिन)",
+     "qty": 2,
+     "rate": 3000,
+     "amount": 6000
+    }
+   ],
+   "subtotal": 6000,
+   "vat": 0.0,
+   "total": 6000.0,
+   "method": "cash",
+   "suggested_account": "EX-1.03",
+   "note": "तालिम"
+  },
+  {
+   "file": "bills/tool01.jpg",
+   "id": "tool01",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "clean",
+   "digits": "latin",
+   "vendor": "Sample Tools & Rental",
+   "vendor_en": "Sample Tools & Rental",
+   "pan": "100200308",
+   "bill_no": "1204",
+   "date_bs": "2083/07/27",
+   "date_ad": "2026-11-13",
+   "items": [
+    {
+     "name": "Chainsaw rent (day)",
+     "qty": 2,
+     "rate": 1500,
+     "amount": 3000
+    },
+    {
+     "name": "Bar oil (bottle)",
+     "qty": 1,
+     "rate": 450,
+     "amount": 450
+    }
+   ],
+   "subtotal": 3450,
+   "vat": 448.5,
+   "total": 3898.5,
+   "method": "cash",
+   "suggested_account": "EX-1.06",
+   "note": ""
+  },
+  {
+   "file": "bills/hw02.jpg",
+   "id": "hw02",
+   "kind": "expense",
+   "layout": "invoice",
+   "quality": "poor",
+   "digits": "devanagari",
+   "vendor": "नमूना हार्डवेयर तथा निर्माण सामग्री",
+   "vendor_en": "Namuna Hardware & Construction Materials",
+   "pan": "100200301",
+   "bill_no": "0431",
+   "date_bs": "2083/08/01",
+   "date_ad": "2026-11-17",
+   "items": [
+    {
+     "name": "सिमेन्ट बोरा",
+     "qty": 20,
+     "rate": 1020,
+     "amount": 20400
+    },
+    {
+     "name": "बालुवा (ट्रिप)",
+     "qty": 1,
+     "rate": 8500,
+     "amount": 8500
+    },
+    {
+     "name": "रड नं. १० (केजी)",
+     "qty": 40,
+     "rate": 118,
+     "amount": 4720
+    }
+   ],
+   "subtotal": 33620,
+   "vat": 4370.6,
+   "total": 37990.6,
+   "method": "cash",
+   "suggested_account": "EX-2.01",
+   "note": "चेक ड्याम"
+  },
+  {
+   "file": "bills/nur02.jpg",
+   "id": "nur02",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "poor",
+   "digits": "devanagari",
+   "vendor": "नमूना कृषि नर्सरी तथा बीउ केन्द्र",
+   "vendor_en": "Namuna Agro Nursery",
+   "pan": "100200302",
+   "bill_no": "2310",
+   "date_bs": "2083/08/02",
+   "date_ad": "2026-11-18",
+   "items": [
+    {
+     "name": "नेपाली ओखर बिरुवा",
+     "qty": 25,
+     "rate": 150,
+     "amount": 3750
+    },
+    {
+     "name": "प्लास्टिक ट्रे (थान)",
+     "qty": 10,
+     "rate": 120,
+     "amount": 1200
+    }
+   ],
+   "subtotal": 4950,
+   "vat": 0.0,
+   "total": 4950.0,
+   "method": "cash",
+   "suggested_account": "EX-2.02",
+   "note": ""
+  },
+  {
+   "file": "bills/rec01.jpg",
+   "id": "rec01",
+   "kind": "income",
+   "layout": "memo",
+   "quality": "phone",
+   "digits": "devanagari",
+   "vendor": "थुम्की डाँडा सामुदायिक वन उपभोक्ता समूह",
+   "vendor_en": "Thumki Danda CFUG (our own receipt)",
+   "pan": null,
+   "bill_no": "१८",
+   "date_bs": "2083/07/03",
+   "date_ad": "2026-10-20",
+   "items": [
+    {
+     "name": "उपभोक्ता सदस्यता शुल्क",
+     "qty": 1,
+     "rate": 100,
+     "amount": 100
+    }
+   ],
+   "subtotal": 100,
+   "vat": 0.0,
+   "total": 100.0,
+   "method": "cash",
+   "suggested_account": null,
+   "note": "नमूना रसिद — हामीले दिएको"
+  }
+ ],
+ "cashbooks": [
+  {
+   "file": "bills/cb01.jpg",
+   "id": "cb01",
+   "quality": "phone",
+   "digits": "devanagari",
+   "rows": [
+    {
+     "date_bs": "2083/06/28",
+     "particulars": "अघिल्लो बाँकी",
+     "receipt": 24300,
+     "payment": 0,
+     "balance": 24300
+    },
+    {
+     "date_bs": "2083/07/03",
+     "particulars": "सदस्यता शुल्क",
+     "receipt": 100,
+     "payment": 0,
+     "balance": 24400
+    },
+    {
+     "date_bs": "2083/07/05",
+     "particulars": "तार, किला खरिद",
+     "receipt": 0,
+     "payment": 16125,
+     "balance": 8275
+    },
+    {
+     "date_bs": "2083/07/09",
+     "particulars": "बिरुवा खरिद",
+     "receipt": 0,
+     "payment": 7900,
+     "balance": 375
+    },
+    {
+     "date_bs": "2083/07/12",
+     "particulars": "भेला चिया खाजा",
+     "receipt": 0,
+     "payment": 750,
+     "balance": -375
+    },
+    {
+     "date_bs": "2083/07/15",
+     "particulars": "कागज र छपाई",
+     "receipt": 0,
+     "payment": 2893,
+     "balance": -3268
+    },
+    {
+     "date_bs": "2083/07/20",
+     "particulars": "काठ बिक्री",
+     "receipt": 12000,
+     "payment": 0,
+     "balance": 8732
+    },
+    {
+     "date_bs": "2083/07/24",
+     "particulars": "हल भाडा",
+     "receipt": 0,
+     "payment": 6000,
+     "balance": 2732
+    }
+   ]
+  },
+  {
+   "file": "bills/cb02.jpg",
+   "id": "cb02",
+   "quality": "clean",
+   "digits": "latin",
+   "rows": [
+    {
+     "date_bs": "2083/07/27",
+     "particulars": "Opening balance",
+     "receipt": 18250,
+     "payment": 0,
+     "balance": 18250
+    },
+    {
+     "date_bs": "2083/07/28",
+     "particulars": "Chainsaw rent",
+     "receipt": 0,
+     "payment": 3899,
+     "balance": 14351
+    },
+    {
+     "date_bs": "2083/07/29",
+     "particulars": "Timber sale",
+     "receipt": 20000,
+     "payment": 0,
+     "balance": 34351
+    },
+    {
+     "date_bs": "2083/08/01",
+     "particulars": "Cement, sand, rod",
+     "receipt": 0,
+     "payment": 37991,
+     "balance": -3640
+    },
+    {
+     "date_bs": "2083/08/02",
+     "particulars": "Membership fee",
+     "receipt": 300,
+     "payment": 0,
+     "balance": -3340
+    },
+    {
+     "date_bs": "2083/08/02",
+     "particulars": "Saplings",
+     "receipt": 0,
+     "payment": 4950,
+     "balance": -8290
+    }
+   ]
+  }
+ ]
+}

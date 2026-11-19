@@ -1,0 +1,17 @@
+{
+  "name": "chautari-reader",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The document reader: a photo of a bill or cash-book page in, a suggested entry out. It only suggests; a named person confirms every entry. Runs on our own server (Tesseract), no outside AI service.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "eval": "node eval.mjs",
+    "read": "node cli.mjs"
+  },
+  "dependencies": {
+    "nepali-date-converter": "^3.4.2"
+  },
+  "engines": { "node": ">=20" }
+}

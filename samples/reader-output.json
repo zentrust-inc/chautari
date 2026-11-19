@@ -1,0 +1,1711 @@
+{
+ "hw01": {
+  "doc": {
+   "sha256": "4a2068bb8313c5f7dc004481fbf4fc25ef6a977d716aac62fa61f84e7ded3c24",
+   "bytes": 259998,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 16125.1,
+    "status": "check",
+    "why": "items_mismatch"
+   },
+   "subtotal": {
+    "value": 14270,
+    "status": "ok"
+   },
+   "vat": {
+    "value": 1855.1,
+    "status": "ok"
+   },
+   "date_bs": {
+    "value": "2083/07/05",
+    "status": "ok"
+   },
+   "date_ad": {
+    "value": "2026-10-21",
+    "status": "ok"
+   },
+   "bill_no": {
+    "value": "0417",
+    "status": "check",
+    "why": "readings_differ"
+   },
+   "pan": {
+    "value": "100200301",
+    "status": "ok"
+   },
+   "vendor": {
+    "value": "नमूना हार्डवेयर तथा निर्माण सामग्री",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "नमूना SSAA तथा निर्माण सामग्री"
+    ]
+   },
+   "method": {
+    "value": "cash",
+    "status": "check",
+    "why": "readings_differ"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-2.01",
+    "status": "check"
+   },
+   "memo_np": {
+    "value": "GIAR नं. 92 (बन्डल), किला (केजी)",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "items_mismatch",
+    "np": "वस्तुको जोड मिलेन",
+    "en": "the items do not add up"
+   },
+   {
+    "field": "bill_no",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "vendor",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "items",
+    "code": "sum_mismatch",
+    "np": "वस्तुहरूको जोड मिलेन",
+    "en": "the items do not add up to the sub-total"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "GIAR नं. 92 (बन्डल)",
+    "qty": 4,
+    "rate": 3200,
+    "amount": 13800,
+    "ocr_amount": 13800
+   },
+   {
+    "name": "किला (केजी)",
+    "qty": 5,
+    "rate": 1680,
+    "amount": 900,
+    "ocr_amount": 900
+   }
+  ],
+  "items_ok": false,
+  "text": [
+   "हार्डवेयर",
+   "नमूना हार्डवेयर तथा निर्माण सामग्री",
+   "नुवाकोट बजार, नुवाकोट",
+   "करदाता दर्ता नं. (PAN): १००२००३०१",
+   "कर बिजक / बिल",
+   "बिल नं.: ०४१७ मिति; २०८३/०७/०५",
+   "ग्राहक: चौतारी / थुम्की Sst CFUG",
+   "क्र. विवरण परिमाण दर रकम",
+   "१ GIAR नं. 92 (बन्डल) ४ ३,२०० १३,८००",
+   "२ किला (केजी) ५ १६८० ९००",
+   "३ कटर ब्लेड (थान) & ९५ ५७०",
+   "उप-जम्मा: १४,२७०",
+   "FSX (१३%): १,८५५.१०",
+   "भुक्तानी: नगद कुल WAT: १६,१२५.१०",
+   "नमूना ब्रिल -- काल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a real bill"
+  ]
+ },
+ "nur01": {
+  "doc": {
+   "sha256": "4f905a3b6fef55a31e5f1551321096121409b063dba938f4abe012b4db57a3ee",
+   "bytes": 80256,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 7900,
+    "status": "ok"
+   },
+   "subtotal": {
+    "value": 7900,
+    "status": "ok"
+   },
+   "vat": {
+    "value": null,
+    "status": "check"
+   },
+   "date_bs": {
+    "value": null,
+    "status": "check",
+    "why": "invalid_date"
+   },
+   "date_ad": {
+    "value": null,
+    "status": "check",
+    "why": "invalid_date"
+   },
+   "bill_no": {
+    "value": "2291",
+    "status": "ok"
+   },
+   "pan": {
+    "value": "100200302",
+    "status": "ok"
+   },
+   "vendor": {
+    "value": "नमूना कृषि नर्सरी तथा बीउ केन्द्र",
+    "status": "ok"
+   },
+   "method": {
+    "value": "cash",
+    "status": "check",
+    "why": "assumed"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-2.02",
+    "status": "check"
+   },
+   "memo_np": {
+    "value": "लप्सी बिरुवा, vo, टिमुर बिरुवा",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "date_bs",
+    "code": "invalid_date",
+    "np": "मिति मिलेन",
+    "en": "not a valid date"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "लप्सी बिरुवा",
+    "qty": 50,
+    "rate": 2,
+    "amount": 4000,
+    "ocr_amount": 4000
+   },
+   {
+    "name": "vo",
+    "qty": 40,
+    "rate": 60,
+    "amount": 2400,
+    "ocr_amount": 2400
+   },
+   {
+    "name": "टिमुर बिरुवा",
+    "qty": 30,
+    "rate": 50,
+    "amount": 1500,
+    "ocr_amount": 1500
+   }
+  ],
+  "items_ok": true,
+  "text": [
+   "नमूना कृषि नर्सरी तथा बीउ केन्द्र",
+   "तारकेश्वर-४, नुवाकोट",
+   "PAN: १००२००३०२",
+   "बिल नं. २२९१",
+   "मिति २०८३/०७/० ९",
+   "लप्सी बिरुवा",
+   "५० २ Lo ४,०००",
+   "ऐसेलु बिरुवा",
+   "vox ६० २,४००",
+   "टिमुर बिरुवा",
+   "30 x ५० १,५००",
+   "उप-जम्मा ७,९००",
+   "जम्मा ७,९००",
+   "धन्यवाद, फेरि आउनुहोला",
+   "नमूना बिल — काल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a rea | bill"
+  ]
+ },
+ "tea01": {
+  "doc": {
+   "sha256": "5652a310e9c3827c2570fae72d71975b5b68a3c7f67e469c54a0e57b0a12f94a",
+   "bytes": 74108,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 750,
+    "status": "check",
+    "why": "sum_mismatch",
+    "alts": [
+     1450,
+     140
+    ]
+   },
+   "subtotal": {
+    "value": null,
+    "status": "check",
+    "why": "sum_mismatch"
+   },
+   "vat": {
+    "value": null,
+    "status": "check"
+   },
+   "date_bs": {
+    "value": "2083/07/12",
+    "status": "ok"
+   },
+   "date_ad": {
+    "value": "2026-10-28",
+    "status": "ok"
+   },
+   "bill_no": {
+    "value": "11",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "22"
+    ]
+   },
+   "pan": {
+    "value": null,
+    "status": "check"
+   },
+   "vendor": {
+    "value": "नमूना चिया पसल",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "-नगदरसिद/बिल- जय"
+    ]
+   },
+   "method": {
+    "value": "cash",
+    "status": "ok"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-1.02",
+    "status": "check"
+   },
+   "memo_np": {
+    "value": "चिया (कप), समोसा (थान)",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "subtotal",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "bill_no",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "vendor",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "items",
+    "code": "sum_mismatch",
+    "np": "वस्तुहरूको जोड मिलेन",
+    "en": "the items do not add up to the sub-total"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "चिया (कप)",
+    "qty": 15,
+    "rate": 20,
+    "amount": 300,
+    "ocr_amount": 300
+   },
+   {
+    "name": "समोसा (थान)",
+    "qty": 2,
+    "rate": 15,
+    "amount": 30,
+    "ocr_amount": 30
+   }
+  ],
+  "items_ok": false,
+  "text": [
+   "नमूना चिया पसल",
+   "चौतारा, काकानी",
+   "नगद रसिद / बिल",
+   "नं. ११ fifa: २०८३/०७/१२",
+   "चिया (कप) 9५ X20 ३००",
+   "समोसा (थान) १५ X30 eyo",
+   "AAS",
+   "जम्मा रु. ७५०",
+   "नमूना बिल — फाल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a real bill"
+  ]
+ },
+ "stat01": {
+  "doc": {
+   "sha256": "a8b2069d2b4500607c71755c851f9c4f151821610ba8da75f2dd5fc845f5c137",
+   "bytes": 208512,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 2892.8,
+    "status": "check",
+    "why": "items_mismatch"
+   },
+   "subtotal": {
+    "value": 2560,
+    "status": "ok"
+   },
+   "vat": {
+    "value": 332.8,
+    "status": "ok"
+   },
+   "date_bs": {
+    "value": "2083/07/05",
+    "status": "check",
+    "why": "short_date"
+   },
+   "date_ad": {
+    "value": "2026-10-21",
+    "status": "check",
+    "why": "short_date"
+   },
+   "bill_no": {
+    "value": "8836",
+    "status": "ok"
+   },
+   "pan": {
+    "value": "00200304",
+    "status": "check",
+    "why": "pan_length",
+    "alts": [
+     "700200304"
+    ]
+   },
+   "vendor": {
+    "value": "Sample Stationers & Printing",
+    "status": "ok"
+   },
+   "method": {
+    "value": "cash",
+    "status": "check",
+    "why": "assumed"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-1.04",
+    "status": "check"
+   },
+   "memo_np": {
+    "value": "Register (pc), Notice printing (copy)",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "items_mismatch",
+    "np": "वस्तुको जोड मिलेन",
+    "en": "the items do not add up"
+   },
+   {
+    "field": "date_bs",
+    "code": "short_date",
+    "np": "महिना/दिन एक अङ्कको छ — फोटोसँग मिलाउनुहोस्",
+    "en": "month or day has one digit — compare with the photo"
+   },
+   {
+    "field": "pan",
+    "code": "pan_length",
+    "np": "PAN ९ अङ्कको हुनुपर्छ",
+    "en": "a PAN has 9 digits"
+   },
+   {
+    "field": "items",
+    "code": "sum_mismatch",
+    "np": "वस्तुहरूको जोड मिलेन",
+    "en": "the items do not add up to the sub-total"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "Register (pc)",
+    "qty": 3,
+    "rate": 220,
+    "amount": 660,
+    "ocr_amount": 660
+   },
+   {
+    "name": "Notice printing (copy)",
+    "qty": 50,
+    "rate": 2,
+    "amount": 600,
+    "ocr_amount": 600
+   }
+  ],
+  "items_ok": false,
+  "text": [
+   "Sample Stationers & Printing",
+   "Trishuli Bazaar, Nuwakot",
+   "PAN: 00200304",
+   "Bill No: 8836",
+   "Date: 2083/07//5",
+   "A4 paper (ream)",
+   "2 x 650 ,300",
+   "Register (pc)",
+   "3 x 220 660",
+   "Notice printing (copy)",
+   "50 x2 600",
+   "Sub-total 2,560",
+   "VAT 3% 332.80",
+   "TOTAL 2,892.80",
+   "Thank you, visit again",
+   "नमूना बिल — काल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a real bill"
+  ]
+ },
+ "fuel01": {
+  "doc": {
+   "sha256": "0a1afa0f531ab20fb7745e6f3bb8de062802fff3dfa12f2795e9d684bccd9f25",
+   "bytes": 97272,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 222,
+    "status": "check",
+    "why": "sum_mismatch",
+    "alts": [
+     7222
+    ]
+   },
+   "subtotal": {
+    "value": 7222,
+    "status": "check",
+    "why": "sum_mismatch",
+    "alts": [
+     4222,
+     222
+    ]
+   },
+   "vat": {
+    "value": null,
+    "status": "check"
+   },
+   "date_bs": {
+    "value": "2083/07/08",
+    "status": "check",
+    "why": "short_date"
+   },
+   "date_ad": {
+    "value": "2026-10-24",
+    "status": "check",
+    "why": "short_date"
+   },
+   "bill_no": {
+    "value": "5502",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "55402"
+    ]
+   },
+   "pan": {
+    "value": "700200305",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "00200305",
+     "400200305"
+    ]
+   },
+   "vendor": {
+    "value": "Sample Petroleum Pump",
+    "status": "ok"
+   },
+   "method": {
+    "value": "cash",
+    "status": "check",
+    "why": "assumed"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-1.08",
+    "status": "check"
+   },
+   "memo_np": {
+    "value": "Petrol (litre)",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "subtotal",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "date_bs",
+    "code": "short_date",
+    "np": "महिना/दिन एक अङ्कको छ — फोटोसँग मिलाउनुहोस्",
+    "en": "month or day has one digit — compare with the photo"
+   },
+   {
+    "field": "bill_no",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "pan",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "items",
+    "code": "sum_mismatch",
+    "np": "वस्तुहरूको जोड मिलेन",
+    "en": "the items do not add up to the sub-total"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "Petrol (litre)",
+    "qty": 6.5,
+    "rate": 88,
+    "amount": 222,
+    "ocr_amount": 222
+   }
+  ],
+  "items_ok": false,
+  "text": [
+   "Sample Petroleum Pump",
+   "Kakani, Nuwakot",
+   "PAN: 00200305",
+   "Bill No: 55402",
+   "Date: 2083/07/8",
+   "Petrol (litre)",
+   "6.5 x 88.00 /,222.00",
+   "Sub-total 4,222.00",
+   "TOTAL ,222.00",
+   "Thank you, visit again",
+   "नमूना बिल — काल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a real bill"
+  ]
+ },
+ "jcb01": {
+  "doc": {
+   "sha256": "917d5f88e2d036eba8c469895c92f259cceb9b746f19a3b69ee701b5709e81e7",
+   "bytes": 230205,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 110740,
+    "status": "check",
+    "why": "items_mismatch"
+   },
+   "subtotal": {
+    "value": 98000,
+    "status": "check",
+    "why": "repaired"
+   },
+   "vat": {
+    "value": 12740,
+    "status": "ok"
+   },
+   "date_bs": {
+    "value": "2083/07/21",
+    "status": "ok"
+   },
+   "date_ad": {
+    "value": "2026-11-06",
+    "status": "ok"
+   },
+   "bill_no": {
+    "value": "0093",
+    "status": "ok"
+   },
+   "pan": {
+    "value": "100200306",
+    "status": "ok"
+   },
+   "vendor": {
+    "value": "नमूना भारी मेसिनरी सेवा",
+    "status": "ok"
+   },
+   "method": {
+    "value": "bank",
+    "status": "check",
+    "why": "readings_differ"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-2.01",
+    "status": "check",
+    "alts": [
+     "EX-1.06"
+    ]
+   },
+   "memo_np": {
+    "value": "JCB भाडा (घण्टा)",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "items_mismatch",
+    "np": "वस्तुको जोड मिलेन",
+    "en": "the items do not add up"
+   },
+   {
+    "field": "subtotal",
+    "code": "repaired",
+    "np": "बिलको जोडबाट सच्याइयो",
+    "en": "corrected from the bill's own sums"
+   },
+   {
+    "field": "items",
+    "code": "sum_mismatch",
+    "np": "वस्तुहरूको जोड मिलेन",
+    "en": "the items do not add up to the sub-total"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "JCB भाडा (घण्टा)",
+    "qty": 26,
+    "rate": 3400,
+    "amount": 96000,
+    "ocr_amount": 96000
+   }
+  ],
+  "items_ok": false,
+  "text": [
+   "मेसिनरी =",
+   "नमूना भारी मेसिनरी सेवा",
+   "विदुर, नुवाकोट",
+   "करदाता Gat नं. (PAN): १००२००३०६",
+   "कर बिजक / बिल",
+   "बिलनं.: ००९३ मिति: २०८३/०७/२१",
+   "ग्राहक: चौतारी / थुम्की डाँडा CFUG",
+   "क्र. विवरण परिमाण दर रकम",
+   "१ JCB भाडा (घण्टा) २६ 3,400.00 ९६,०००.००",
+   "उप-जम्माः ९६,०००.००",
+   "मू.अ.कर (१३%): १२,७४०.००",
+   "भुक्तानी: बैंक कुल WaT: १,१०,७४०.००",
+   "नमूना बिल — काल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a real bill"
+  ]
+ },
+ "hall01": {
+  "doc": {
+   "sha256": "f71173d41cb8d8b551a74c19388a4c10421cc438beefeaed5285e4e2d8494ac5",
+   "bytes": 166488,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 6000,
+    "status": "check",
+    "why": "sum_mismatch"
+   },
+   "subtotal": {
+    "value": null,
+    "status": "check",
+    "why": "sum_mismatch"
+   },
+   "vat": {
+    "value": null,
+    "status": "check"
+   },
+   "date_bs": {
+    "value": "2083/07/24",
+    "status": "ok"
+   },
+   "date_ad": {
+    "value": "2026-11-09",
+    "status": "ok"
+   },
+   "bill_no": {
+    "value": "40",
+    "status": "check",
+    "why": "readings_differ"
+   },
+   "pan": {
+    "value": null,
+    "status": "check"
+   },
+   "vendor": {
+    "value": "नमूना सभा हल",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "नमूनासभा हल >>"
+    ]
+   },
+   "method": {
+    "value": "cash",
+    "status": "check",
+    "why": "readings_differ"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-1.03",
+    "status": "check",
+    "alts": [
+     "EX-1.06"
+    ]
+   },
+   "memo_np": {
+    "value": "हल भाडा (दिन)",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "subtotal",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "bill_no",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "vendor",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "हल भाडा (दिन)",
+    "qty": 2,
+    "rate": 3000,
+    "amount": 6000,
+    "ocr_amount": 6000
+   }
+  ],
+  "items_ok": true,
+  "text": [
+   "नमूना सभा हल",
+   "काकानी-३",
+   "नगद रसिद / बिल",
+   "a. vo मित्ति; २०८३/०७/२४",
+   "हल भाडा (दिन) २ X ३,००० ६,०००",
+   "जम्मा रु ६,०००",
+   "नमूना बिल -- काल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a real bill"
+  ]
+ },
+ "tool01": {
+  "doc": {
+   "sha256": "f81cd1b8aba7f2a6ab2d684c6de5c570353d85894ce6ac00b74c92b02d34df0d",
+   "bytes": 218678,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 3898.5,
+    "status": "ok"
+   },
+   "subtotal": {
+    "value": 3450,
+    "status": "ok"
+   },
+   "vat": {
+    "value": 448.5,
+    "status": "ok"
+   },
+   "date_bs": {
+    "value": "2083/07/27",
+    "status": "ok"
+   },
+   "date_ad": {
+    "value": "2026-11-12",
+    "status": "ok"
+   },
+   "bill_no": {
+    "value": "204",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "7204"
+    ]
+   },
+   "pan": {
+    "value": "00200308",
+    "status": "check",
+    "why": "pan_length",
+    "alts": [
+     "700200308"
+    ]
+   },
+   "vendor": {
+    "value": "Sample Tools & Rental",
+    "status": "ok"
+   },
+   "method": {
+    "value": "cash",
+    "status": "check",
+    "why": "assumed"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-1.06",
+    "status": "check"
+   },
+   "memo_np": {
+    "value": "Chainsaw rent (day), Bar oil (bottle)",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "bill_no",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "pan",
+    "code": "pan_length",
+    "np": "PAN ९ अङ्कको हुनुपर्छ",
+    "en": "a PAN has 9 digits"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "Chainsaw rent (day)",
+    "qty": 2,
+    "rate": 50000,
+    "amount": 3000,
+    "ocr_amount": 3000
+   },
+   {
+    "name": "Bar oil (bottle)",
+    "qty": 7,
+    "rate": 450,
+    "amount": 450,
+    "ocr_amount": 450
+   }
+  ],
+  "items_ok": true,
+  "text": [
+   "Sample Tools & Rental",
+   "Bidur, Nuwakot",
+   "PAN: 00200308",
+   "Bill No: 204",
+   "Date: 2083/07/27",
+   "Chainsaw rent (day)",
+   "2 x ॥50000 3,000.00",
+   "Bar oil (bottle)",
+   "7 x 450.00 450.00",
+   "Sub-total 3,450.00",
+   "VAT 3% 448.50",
+   "TOTAL 3,898.50",
+   "Thank you, visit again",
+   "नमूना बिल — काल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a real bill"
+  ]
+ },
+ "hw02": {
+  "doc": {
+   "sha256": "b9093da76fc7dd200c09ba6c817989d4932fe24f4ede4de24131110f01ece60f",
+   "bytes": 37084,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 90.6,
+    "status": "check",
+    "why": "sum_mismatch",
+    "alts": [
+     37990.6,
+     7
+    ]
+   },
+   "subtotal": {
+    "value": 93420,
+    "status": "check",
+    "why": "sum_mismatch"
+   },
+   "vat": {
+    "value": 0,
+    "status": "check",
+    "why": "sum_mismatch"
+   },
+   "date_bs": {
+    "value": "2083/08/01",
+    "status": "ok"
+   },
+   "date_ad": {
+    "value": "2026-11-16",
+    "status": "ok"
+   },
+   "bill_no": {
+    "value": null,
+    "status": "check",
+    "why": "not_found"
+   },
+   "pan": {
+    "value": "40020030",
+    "status": "check",
+    "why": "pan_length",
+    "alts": [
+     "100200",
+     "170200",
+     "100200301"
+    ]
+   },
+   "vendor": {
+    "value": "Fe हार्डवेयर तथा निर्माण सामग्री",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "नमना हार्डवेयर तथा निर्माण सामयी",
+     "नमना हार्डवेयर तथा निर्माण सामग्री",
+     "नमूना हार्डवेयर तथा निर्माण सामयी"
+    ]
+   },
+   "method": {
+    "value": "cash",
+    "status": "check",
+    "why": "assumed"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": null,
+    "status": "check",
+    "why": "not_found"
+   },
+   "memo_np": {
+    "value": "दिल न॑ 635 जिलि 208, eer a . e, cat oes . …",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "subtotal",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "vat",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "bill_no",
+    "code": "not_found",
+    "np": "फोटोमा भेटिएन",
+    "en": "not found in the photo"
+   },
+   {
+    "field": "pan",
+    "code": "pan_length",
+    "np": "PAN ९ अङ्कको हुनुपर्छ",
+    "en": "a PAN has 9 digits"
+   },
+   {
+    "field": "vendor",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "items",
+    "code": "sum_mismatch",
+    "np": "वस्तुहरूको जोड मिलेन",
+    "en": "the items do not add up to the sub-total"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "दिल न॑ 635 जिलि 208",
+    "qty": 3,
+    "rate": 0,
+    "amount": 8401,
+    "ocr_amount": 8401
+   },
+   {
+    "name": "eer a . e",
+    "qty": 7,
+    "rate": 20,
+    "amount": 70,
+    "ocr_amount": 70
+   },
+   {
+    "name": "cat oes .",
+    "qty": null,
+    "rate": 600,
+    "amount": 50,
+    "ocr_amount": 50
+   },
+   {
+    "name": "- aé कही",
+    "qty": 4,
+    "rate": 20,
+    "amount": 0,
+    "ocr_amount": 0
+   },
+   {
+    "name": "आकर (",
+    "qty": null,
+    "rate": 13,
+    "amount": 10.64,
+    "ocr_amount": 10.64
+   }
+  ],
+  "items_ok": false,
+  "text": [
+   "Fe हार्डवेयर तथा निर्माण सामग्री",
+   "गुवाकौट बजार बृवाकोट",
+   "करदाला eet न॑ (PAN) 40020030%",
+   "कर बिजक / बिल",
+   "| faa. ०४३१ fA २०८३/०८/०१",
+   "। om चौतारी | थुम्की ater ( FUG",
+   "= विवरण 7 दर ww",
+   "| जब के ५ ६.७००.०० ८,५००,००",
+   "। yo ११८.०० ४,७२०.००",
+   "| रड ने. १० (2",
+   "| उप जम्मा 93,420.00",
+   "| हर अं कर (१३ ¥, ३७०. ६०",
+   "। कुल जम्मा छत्तन«छ",
+   "fe oan i"
+  ]
+ },
+ "nur02": {
+  "doc": {
+   "sha256": "be837687ae3d37c6b84743e91460a771741ad3d88231eb9b45e4d40cbbcf8482",
+   "bytes": 32585,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 43950,
+    "status": "check",
+    "why": "sum_mismatch",
+    "alts": [
+     4,
+     3
+    ]
+   },
+   "subtotal": {
+    "value": 4950,
+    "status": "check",
+    "why": "sum_mismatch"
+   },
+   "vat": {
+    "value": null,
+    "status": "check"
+   },
+   "date_bs": {
+    "value": "2083/08/02",
+    "status": "ok"
+   },
+   "date_ad": {
+    "value": "2026-11-17",
+    "status": "ok"
+   },
+   "bill_no": {
+    "value": "2310",
+    "status": "check",
+    "why": "readings_differ"
+   },
+   "pan": {
+    "value": "900200302",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "00200302",
+     "100200302"
+    ]
+   },
+   "vendor": {
+    "value": "नमूना कृषि नर्सरी तथा बीउ केन्द्र",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "नमूना कृषि नर्सरी तथा as केन्द्र"
+    ]
+   },
+   "method": {
+    "value": "cash",
+    "status": "check",
+    "why": "assumed"
+   },
+   "kind": {
+    "value": "expense",
+    "status": "check"
+   },
+   "account_code": {
+    "value": "EX-2.02",
+    "status": "check"
+   },
+   "memo_np": {
+    "value": "नेपाली ओखर बिरुवा, प्लास्टिक ट्रे (धान)",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "subtotal",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "bill_no",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "pan",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   },
+   {
+    "field": "vendor",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "नेपाली ओखर बिरुवा",
+    "qty": 25,
+    "rate": 150,
+    "amount": 3750,
+    "ocr_amount": 3750
+   },
+   {
+    "name": "प्लास्टिक ट्रे (धान)",
+    "qty": 10,
+    "rate": 127,
+    "amount": 1200,
+    "ocr_amount": 1200
+   }
+  ],
+  "items_ok": true,
+  "text": [
+   "नमूना कृषि नर्सरी तथा बीउ केन्द्र",
+   "तारकेश्वर-४, नुवाकोट",
+   "PAN: 900200302",
+   "बिल नं. २३१०",
+   "मिति २०८३/०८/०२",
+   "नेपाली ओखर बिरुवा",
+   "२५ x १५० ३,७५०",
+   "प्लास्टिक ट्रे (धान)",
+   "१० x १२७ १,२००",
+   "उप-जम्मा ४,९५०",
+   "जम्मा ४3,९५०",
+   "धन्यवाद, फैरि आउनुहोला",
+   "sept बिल -- काल्यनिक, वास्तविक्त SPT SAMPLE — fictional, not a real t"
+  ]
+ },
+ "rec01": {
+  "doc": {
+   "sha256": "fcf171b0936268d7f0cb7b5378d018ad9ed4270c14d115b9d1fef4a19b9ee9ea",
+   "bytes": 79426,
+   "ext": "jpg",
+   "kind": "bill"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "bill",
+  "fields": {
+   "total": {
+    "value": 100,
+    "status": "check",
+    "why": "sum_mismatch"
+   },
+   "subtotal": {
+    "value": null,
+    "status": "check",
+    "why": "sum_mismatch"
+   },
+   "vat": {
+    "value": null,
+    "status": "check"
+   },
+   "date_bs": {
+    "value": "2083/07/03",
+    "status": "ok"
+   },
+   "date_ad": {
+    "value": "2026-10-19",
+    "status": "ok"
+   },
+   "bill_no": {
+    "value": null,
+    "status": "check",
+    "why": "not_found"
+   },
+   "pan": {
+    "value": null,
+    "status": "check"
+   },
+   "vendor": {
+    "value": "थुम्की डाडा सामुदायिक वन उपभोक्ता समूह",
+    "status": "check",
+    "why": "readings_differ",
+    "alts": [
+     "थुम्की डॉडा सामुदायिक वन उपभोक्ता समूह"
+    ]
+   },
+   "method": {
+    "value": "cash",
+    "status": "ok"
+   },
+   "kind": {
+    "value": "income",
+    "status": "check"
+   },
+   "account_code": {
+    "value": null,
+    "status": "check",
+    "why": "not_found"
+   },
+   "memo_np": {
+    "value": "उपभोक्ता सदस्यता शुल्क",
+    "status": "check"
+   }
+  },
+  "flags": [
+   {
+    "field": "total",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "subtotal",
+    "code": "sum_mismatch",
+    "np": "जोड मिलेन",
+    "en": "the figures do not add up"
+   },
+   {
+    "field": "bill_no",
+    "code": "not_found",
+    "np": "फोटोमा भेटिएन",
+    "en": "not found in the photo"
+   },
+   {
+    "field": "vendor",
+    "code": "readings_differ",
+    "np": "पढाइहरू फरक परे",
+    "en": "the readings differ"
+   }
+  ],
+  "passes": 4,
+  "items": [
+   {
+    "name": "उपभोक्ता सदस्यता शुल्क",
+    "qty": 0,
+    "rate": 138100,
+    "amount": 100,
+    "ocr_amount": 100
+   }
+  ],
+  "items_ok": true,
+  "text": [
+   "थुम्की डॉडा सामुदायिक वन उपभोक्ता समूह",
+   "चौतारी, काकानी -३",
+   "नगद रसिद / बिल",
+   "T. 9c Taft: २०८३/०७/०३",
+   "श्री नमूना सदस्य बाट",
+   "उपभोक्ता सदस्यता शुल्क १३८१०० १००",
+   "जम्मा रु. १००",
+   "नमूना बिल -- काल्पनिक, वास्तविक होइन - SAMPLE — fictional, not a real bill"
+  ]
+ },
+ "cb01": {
+  "doc": {
+   "sha256": "677ee5a69c3c31967b7da7dc59977701042e8c487a9845a365e37b46b30fcc62",
+   "bytes": 98972,
+   "ext": "jpg",
+   "kind": "cashbook"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "cashbook",
+  "rows": [
+   {
+    "date_bs": "2083/07/03",
+    "date_ad": "2026-10-19",
+    "particulars": "सदस्यता शुल्क",
+    "receipt": null,
+    "payment": null,
+    "balance": 24800,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/07/05",
+    "date_ad": "2026-10-21",
+    "particulars": "तार, किला खरिद",
+    "receipt": null,
+    "payment": null,
+    "balance": 8275,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/07/09",
+    "date_ad": "2026-10-25",
+    "particulars": "favat खरिद",
+    "receipt": null,
+    "payment": null,
+    "balance": 375,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/07/12",
+    "date_ad": "2026-10-28",
+    "particulars": "भैला चिया खाजा",
+    "receipt": null,
+    "payment": null,
+    "balance": 375,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/07/15",
+    "date_ad": "2026-10-31",
+    "particulars": "कागज र छपाई",
+    "receipt": null,
+    "payment": null,
+    "balance": 3,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/07/20",
+    "date_ad": "2026-11-05",
+    "particulars": "काठ बिक्री",
+    "receipt": null,
+    "payment": null,
+    "balance": 8732,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/07/24",
+    "date_ad": "2026-11-09",
+    "particulars": "हल भाडा",
+    "receipt": null,
+    "payment": null,
+    "balance": 2732,
+    "status": "check",
+    "why": "garbled"
+   }
+  ],
+  "chosen_pass": "plain"
+ },
+ "cb02": {
+  "doc": {
+   "sha256": "6b973a5d8db1a007e3e76fb9929293fd1b4aeac93a4bc09442a7293767a7dd2f",
+   "bytes": 217110,
+   "ext": "jpg",
+   "kind": "cashbook"
+  },
+  "reader": {
+   "name": "chautari-reader/0.1.0",
+   "engine": "tesseract",
+   "engine_version": "tesseract 5.3.4",
+   "passes": [
+    "plain",
+    "gray-250",
+    "levels-300",
+    "deskew-local"
+   ]
+  },
+  "kind": "cashbook",
+  "rows": [
+   {
+    "date_bs": "2083/07/27",
+    "date_ad": "2026-11-12",
+    "particulars": "Opening balance l",
+    "receipt": null,
+    "payment": null,
+    "balance": 8250,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/07/28",
+    "date_ad": "2026-11-13",
+    "particulars": "Chainsaw vent a i Md",
+    "receipt": null,
+    "payment": null,
+    "balance": 435,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/07/29",
+    "date_ad": "2026-11-14",
+    "particulars": "Timber eile ao.",
+    "receipt": null,
+    "payment": null,
+    "balance": 3435,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/08/02",
+    "date_ad": "2026-11-17",
+    "particulars": "Memberainp i",
+    "receipt": null,
+    "payment": null,
+    "balance": 3340,
+    "status": "check",
+    "why": "garbled"
+   },
+   {
+    "date_bs": "2083/08/02",
+    "date_ad": "2026-11-17",
+    "particulars": "Saplings ie E",
+    "receipt": null,
+    "payment": null,
+    "balance": 8290,
+    "status": "check",
+    "why": "garbled"
+   }
+  ],
+  "chosen_pass": "plain"
+ }
+}
