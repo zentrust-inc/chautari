@@ -11,10 +11,12 @@ export interface Pub {
   bodies: Row[]; money_status: Row[]; income_and_spending: Row[]; budget_status: Row[]; spending_shares: Row[];
   payments: Row[]; fair_turns: Row[]; project_hours: Row[]; office_holders: Row[]; nature_readings: Row[];
   questions: Row[]; rules: Row[]; mpc_summary: Row[]; loan_register: Row[]; grant_register: Row[];
-  enterprise_results: Row[]; surplus_allocations: Row[]; chain_heads: Row[];
+  enterprise_results: Row[]; surplus_allocations: Row[]; chain_heads: Row[]; price_list?: Row[];
 }
 export interface Person { id: string; name: string; house_no?: number; roles: { entity: string; role: string }[] }
-export interface OfficerQueues { payments_waiting?: Row[]; work_waiting?: Row[]; questions?: Row[]; suggestions?: Row[]; workers?: Row[] }
+export interface OfficerQueues { payments_waiting?: Row[]; work_waiting?: Row[]; questions?: Row[]; suggestions?: Row[]; workers?: Row[]; flagged?: Row[] }
+// a check on a bill (ww.bill_checks): a blocking one stops confirmation, a flag is shown and kept
+export interface BillCheck { code: string; block: boolean; np: string; en: string; seq?: number; item?: string }
 // a photo attached to an entry: it stays on our own server, the chain carries its SHA-256
 export interface Evidence { sha256: string; kind: string; path: string }
 
@@ -33,6 +35,8 @@ export interface Reading {
   fields: Record<string, { value: any; status: 'ok' | 'check'; why?: string; alts?: any[] }>;
   flags: { field: string; code: string; np: string; en: string }[];
   items: { name: string; qty: number | null; rate: number | null; amount: number }[];
+  checks?: BillCheck[];
+  suggested_payload?: Row; suggested_date?: string | null;
 }
 // The fields a person can change; the database compares the same ones (confirm_suggestion)
 export const CONFIRM_KEYS = ['amount', 'account_code', 'payee_id', 'method', 'budget_line_id', 'memo_np', 'receipt_no', 'bill_no', 'estimated'];
@@ -62,6 +66,10 @@ export interface Source {
   readBill?(entity: string, file: File): Promise<Reading>;
   confirmSuggestion(entity: string, reading: Reading, type: string, payload: Row, occurredOn: string, fiscalYear: string): Promise<Row>;
   rejectSuggestion(reading: Reading, reason: string): Promise<void>;
+  // the database's checks on what the person is about to confirm (duplicates, price list)
+  checkBill(entity: string, reading: Reading, payload: Row, occurredOn: string | null): Promise<BillCheck[]>;
+  // bills the reader has read and that wait for a person (live: from our server)
+  waitingBills?(entity: string): Promise<Reading[]>;
 }
 
 // what the person changed from the reader's suggestion (shown in the sample; the database works it out for real)
@@ -76,6 +84,28 @@ export function changedFields(suggested: Row, payload: Row, suggestedDate: strin
   return ch;
 }
 
+// the sample's version of two database checks (ww.bill_checks): a bill number already recorded, and a rate
+// above the village price list. The real checks run in the database; these only make the sample show them.
+const normNo = (t: any) => String(t ?? '').replace(/[\s\-/.]/g, '').replace(/[०-९]/g, (d) => String('०१२३४५६७८९'.indexOf(d))).toLowerCase();
+const normName = (t: any) => String(t ?? '').replace(/[\s\p{P}]/gu, '').toLowerCase();
+export function sampleChecks(reading: Reading, payload: Row, prices: Row[], recorded: Row[], pct: number): BillCheck[] {
+  const out: BillCheck[] = [];
+  const hit = recorded.find((r) => r.payee_id === payload.payee_id && normNo(r.bill_no) === normNo(payload.bill_no) && normNo(payload.bill_no));
+  if (hit) out.push({ code: 'same_bill', block: true,
+    np: 'यही पसलको यही बिल नं. पहिले नै लेखिइसकेको छ (नमुनामा यस्तो मानिएको)।', en: 'This shop’s bill with this number is already recorded (assumed in the sample).' });
+  for (const it of reading.items ?? []) {
+    const rate = it.rate ?? (it.qty ? it.amount / it.qty : null);
+    const p = prices.find((p) => normName(p.item_np).length >= 2 && normName(it.name).includes(normName(p.item_np)));
+    if (p && rate != null && rate > Number(p.price) * (1 + pct / 100)) {
+      const over = Math.round((rate / Number(p.price) - 1) * 100);
+      out.push({ code: 'over_price', block: false, item: it.name,
+        np: `${it.name}: दर रु ${Math.round(rate)}, मूल्यसूचीमा रु ${Math.round(Number(p.price))}/${p.unit} (${over}% बढी)।`,
+        en: `${it.name}: rate Rs ${Math.round(rate)}, price list Rs ${Math.round(Number(p.price))}/${p.unit} (${over}% above).` });
+    }
+  }
+  return out;
+}
+
 // SHA-256 of a photo, as hex. crypto.subtle exists on https and on the phone's own files; the sample needs nothing else.
 export async function sha256Hex(b: Blob): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-256', await b.arrayBuffer());
@@ -84,7 +114,7 @@ export async function sha256Hex(b: Blob): Promise<string> {
 
 const VIEWS: (keyof Pub)[] = ['bodies', 'money_status', 'income_and_spending', 'budget_status', 'spending_shares',
   'payments', 'fair_turns', 'project_hours', 'office_holders', 'nature_readings', 'questions', 'rules',
-  'mpc_summary', 'loan_register', 'grant_register', 'enterprise_results', 'surplus_allocations', 'chain_heads'];
+  'mpc_summary', 'loan_register', 'grant_register', 'enterprise_results', 'surplus_allocations', 'chain_heads', 'price_list'];
 
 // the last good public data is kept so the notice board still opens without internet
 const CACHE = 'wwos.public.v1';
@@ -125,13 +155,18 @@ function sampleSource(): Source {
       const changed = changedFields(suggested, payload, (reading as any).suggested_date ?? null, occurredOn);
       throw new DemoWrite({
         entity, type,
-        payload: { ...payload, ai_read: { reader: reading.reader, suggestion: '(नमुना)', changed } },
+        payload: { ...payload, ai_read: { reader: reading.reader, suggestion: '(नमुना)', changed, checks: ((reading as any).current_checks ?? []).map((c: BillCheck) => c.code) } },
         evidence: [{ sha256: reading.doc.sha256, kind: 'bill_photo', path: `documents/${entity}/${reading.doc.sha256}.jpg` }],
       });
     },
     async rejectSuggestion(reading, reason) {
       throw new DemoWrite({ entity: '', type: 'suggestion rejected (not an entry)', payload: { reason, photo_sha256: reading.doc.sha256 },
         note: 'reject' });
+    },
+    // the sample has no database: the same two checks the database makes most often, on sample data
+    async checkBill(entity, reading, payload) {
+      const s = await get(); const sr = (await import('./sample-readings.json')).default as any;
+      return sampleChecks(reading, payload, (s.public.price_list ?? []).filter((p: Row) => p.entity_id === entity), sr.recorded ?? [], 25);
     },
   };
 }
@@ -191,7 +226,10 @@ function liveSource(url: string, key: string): Source {
       if (money) q.payments_waiting = ok(await c.rpc('officer_payments_waiting', { p_entity: entity }));
       if (roles.some((r) => r === 'supervisor' || r === 'accounts_committee'))
         q.work_waiting = ok(await c.rpc('officer_work_waiting', { p_entity: entity }));
-      if (roles.includes('accounts_committee')) q.questions = ok(await c.rpc('officer_questions', { p_entity: entity }));
+      if (roles.includes('accounts_committee')) {
+        q.questions = ok(await c.rpc('officer_questions', { p_entity: entity }));
+        q.flagged = ok(await c.rpc('officer_flagged_bills', { p_entity: entity }));
+      }
       if (roles.some((r) => r === 'treasurer' || r === 'ledger_keeper'))
         q.suggestions = ok(await c.rpc('officer_suggestions', { p_entity: entity }));
       return q;
@@ -261,6 +299,26 @@ function liveSource(url: string, key: string): Source {
     },
     async rejectSuggestion(reading, reason) {
       ok(await (await sb()).rpc('reject_suggestion', { p_suggestion: reading.suggestion_id, p_reason: reason }));
+    },
+    async checkBill(_entity, reading, payload, occurredOn) {
+      if (!reading.suggestion_id) return [];
+      return ok(await (await sb()).rpc('check_bill', { p_suggestion: reading.suggestion_id, p_payload: payload, p_occurred_on: occurredOn })) as BillCheck[];
+    },
+    async waitingBills(entity) {
+      const rows = ok(await (await sb()).rpc('officer_suggestions', { p_entity: entity })) as Row[];
+      const c = await sb(); const { data } = await c.auth.getSession();
+      return Promise.all(rows.map(async (r) => {
+        // the photo stays on our server; it is fetched with the person's sign-in, never a public link
+        let image: string | undefined;
+        try {
+          const res = await fetch(`${READER}/${r.doc_path}`, { headers: { authorization: `Bearer ${data.session?.access_token ?? ''}` } });
+          if (res.ok) image = URL.createObjectURL(await res.blob());
+        } catch { /* shown without the photo */ }
+        const sg = r.suggested ?? {};
+        return { suggestion_id: r.suggestion_id, image, doc: { sha256: r.doc_sha256 }, reader: r.reader,
+          fields: sg.fields ?? {}, flags: sg.flags ?? [], items: sg.items ?? [], checks: r.checks ?? [],
+          suggested_payload: sg.payload, suggested_date: sg.occurred_on ?? null, label: sg.fields?.vendor?.value } as Reading;
+      }));
     },
   };
 }

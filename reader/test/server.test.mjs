@@ -35,7 +35,7 @@ test('the service: sign in, keep the photo, suggest to the database', async () =
     fields: { total: { value: 100, status: 'ok' }, date_ad: { value: '2026-10-22', status: 'ok' }, vendor: { value: 'नमूना हार्डवेयर तथा निर्माण सामग्री' },
       account_code: { value: 'EX-2.01', status: 'check' }, method: { value: 'cash' }, memo_np: { value: 'तार' }, bill_no: { value: '0417' }, kind: { value: 'expense' } },
   };
-  const srv = makeServer({ docsDir: docs, supabaseUrl: `http://127.0.0.1:${dbPort}`, serviceKey: 'svc', read: async () => fake });
+  const srv = makeServer({ docsDir: docs, supabaseUrl: `http://127.0.0.1:${dbPort}`, serviceKey: 'svc', read: async () => fake, fp: async () => '0123456789abcdef' });
   const port = await listen(srv);
   const base = `http://127.0.0.1:${port}`;
   const photo = Buffer.from('not really a jpeg, but bytes are bytes');
@@ -56,6 +56,7 @@ test('the service: sign in, keep the photo, suggest to the database', async () =
   assert.equal(sug.p_suggested.payload.payee_id, 'p1');
   assert.equal(sug.p_suggested.payload.budget_line_id, 'l1');
   assert.equal(sug.p_suggested.fiscal_year, '2083/84');
+  assert.equal(sug.p_suggested.dhash, '0123456789abcdef', 'the picture fingerprint goes with the suggestion');
   const kept = join(docs, 'thumki-cfug', `${sug.p_doc_sha256}.jpg`);
   assert.ok((await stat(kept)).size === photo.length, 'the photo is kept under its fingerprint');
 

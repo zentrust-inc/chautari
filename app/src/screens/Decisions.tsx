@@ -40,6 +40,7 @@ export function Decisions() {
     'notice_days', 'fixed_term_min_months', 'fixed_term_max_months', 'reserve_pct', 'promotion_pct', 'split_community_pct',
     'split_member_pct', 'active_min_hours'].includes(r.key));
   const officers = byEntity(p.office_holders, CFUG);
+  const prices = byEntity(p.price_list ?? [], CFUG);
 
   return (
     <Screen title={t('decisions')}>
@@ -76,6 +77,15 @@ export function Decisions() {
           ))}
         </ul>
       </Section>
+
+      {prices.length > 0 && (
+        <Section title={lang.value === 'np' ? 'गाउँको मूल्यसूची' : 'Village price list'}
+          note={lang.value === 'np' ? 'बिलमा कुनै वस्तुको दर यसभन्दा धेरै बढी भए जाँच्न देखाइन्छ। मूल्य समितिको निर्णयले तय हुन्छ।'
+            : 'A bill item priced well above this is flagged for checking. Prices are set by committee decision.'}>
+          <ul class="mini">{prices.map((p) => <li key={p.item_np + p.unit}><span>{p.item_np} / {p.unit}</span><span>{rs(p.price)}</span></li>)}</ul>
+          <p class="item-meta">{t('decided')}: {[...new Set(prices.map((p) => p.decision_ref))].join(', ')}</p>
+        </Section>
+      )}
     </Screen>
   );
 }

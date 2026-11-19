@@ -53,6 +53,7 @@ supabase/migrations/   the database: every rule lives here, so no screen or logi
   …1000  the document reader's suggestions and a person's confirmation
   …1100  the work-hours form: the worker list for officers; work needs a before and an after photo (by SHA-256)
   …1200  record_event_once: an entry kept on a phone is recorded once, however often it is sent
+  …1300  checks on a bill: same photo / same bill number refused, near-identical photo, same-day amount and price-list flags
 seed/demo.sql          sample activity with fictional people (never load into the real database)
 tests/                 the rules as tests (run.sh)
 reader/                the document reader (Tesseract on our own server): photo in, suggested entry out
@@ -82,6 +83,7 @@ node scripts/verify-chain.mjs export.json --head <published head>
 | Spending stays within its approved budget line | Constitution s.8, s.15 |
 | Payments only to registered payees; expenses need a receipt photo or are marked estimated, capped at 5% | Plan |
 | Supervisors never approve their own or their household's hours | Plan |
+| A bill's photo or the same shop's bill number cannot be recorded twice (a second page needs a public reason); rates more than 25% above the village price list, near-identical photos and same-day amounts are flagged to the person and the accounts committee | PRD module 8 |
 | Work hours: at most 12 a person a day; a before and an after photo unless a supervisor records them; the worker's name stays private (the public sees hours by house number) | Plan |
 | The cooperative takes no savings, never lends; one share of Rs 100 per member; members from 16 | Bylaws v4.15 s.4, s.6, s.7 |
 | Members' project loans all earn one rate (now 10%); up to Rs 1 lakh back with interest on 3 months' notice given in चौतारी; above Rs 1 lakh a fixed 3–5 years; loans from others at most 10% | Bylaws v4.15 s.8 |
@@ -111,7 +113,7 @@ Measured 11 Nov 2026: first load 263 KB compressed (budget 300 KB); the home scr
 
 Field capture happens in this app, not in ODK (decided 2026-11-19): the forms already exist here, ledger keepers learn one tool, and no importer is needed.
 
-- **B:** duplicate-bill and price-list checks in the reader; test the reader on 50 real bills.
+- **B:** duplicate-bill and price-list checks done (migration 0013); still to do: test the reader on 50 real bills.
 - **C:** done for the field forms (work hours, readings): kept on the phone and sent once when there is signal. Bill reading, signing and approving stay online-only, because they are done against the latest figures.
 - **D:** printed vouchers, cash book and the annual report to the Division Forest Office; nightly public export with OpenTimestamps.
 - **E:** deploy on our own server (ZenTrust's Azure credits), keys held by two officers. Legal review of the Cooperatives Act and privacy law before members' project loans go live.

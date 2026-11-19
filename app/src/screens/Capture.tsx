@@ -5,7 +5,7 @@ import NepaliDate from 'nepali-date-converter';
 import { lang, roleName } from '../lib/i18n';
 import { rs, num, digits, fiscalYear } from '../lib/format';
 import { me, officerRoles, pub, go } from '../state';
-import { source, DemoWrite, type Reading } from '../data/source';
+import { source, DemoWrite, type Reading, type BillCheck } from '../data/source';
 import { Screen, Section, Pill } from '../ui';
 import { Sent, type SentState } from './Tasks';
 
@@ -67,8 +67,11 @@ function bestPayee(payees: Row[], vendor: string | null): string {
 export function Capture() {
   const roles = officerRoles.value.filter((r) => READER_ROLES.includes(r.role));
   const entities = [...new Set(roles.map((r) => r.entity))];
-  const [entity, setEntity] = useState(entities[0] ?? '');
+  const [picked, setEntity] = useState('');
+  // the person may load after the first render (sign-in, or opening #capture directly)
+  const entity = entities.includes(picked) ? picked : entities[0] ?? '';
   const [samples, setSamples] = useState<Reading[]>([]);
+  const [waiting, setWaiting] = useState<Reading[]>([]);
   const [payees, setPayees] = useState<Row[]>([]);
   const [reading, setReading] = useState<Reading | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
@@ -79,6 +82,9 @@ export function Capture() {
     if (source.sampleReadings) source.sampleReadings().then((d) => setSamples(d.bills));
   }, []);
   useEffect(() => { if (entity) source.officerPayees(entity).then(setPayees).catch(() => setPayees([])); }, [entity]);
+  // bills the reader has already read on our server, waiting for a person (live only)
+  const loadWaiting = () => { if (entity && source.waitingBills) source.waitingBills(entity).then(setWaiting).catch(() => setWaiting([])); };
+  useEffect(loadWaiting, [entity, me.value?.id]);
 
   if (!me.value || !roles.length) {
     return <Screen title={L('बिलको फोटोबाट हिसाब', 'From a bill’s photo')}>
@@ -123,6 +129,19 @@ export function Capture() {
           <p class="item-meta">{L('पूरा बिल देखिने गरी, उज्यालोमा, सिधा माथिबाट खिच्नुहोस्।', 'The whole bill, in good light, straight from above.')}</p>
           {photo && <img class="bill-photo" src={photo} alt="" />}
           {err && <p class="sent error">{err}</p>}
+          {waiting.length > 0 && <>
+            <h3 class="sub">{L('पढिसकेका, पुष्टि पर्खँदै', 'Already read, waiting for you')} ({num(waiting.length)})</h3>
+            <div class="sample-bills">
+              {waiting.map((b) => (
+                <button key={b.suggestion_id} class="sample-bill" onClick={() => { setErr(null); setPhoto(null); setReading(b); }}>
+                  {b.image && <img src={b.image} alt="" />}
+                  <span>{b.label ?? L('बिल', 'bill')}</span>
+                  {b.fields.total?.value != null && <span class="item-meta">{rs(b.fields.total.value)}</span>}
+                  {(b.checks ?? []).length > 0 && <Pill tone={(b.checks ?? []).some((c) => c.block) ? 'bad' : 'warn'}>! {num((b.checks ?? []).length)} {L('जाँच', 'checks')}</Pill>}
+                </button>
+              ))}
+            </div>
+          </>}
           {samples.length > 0 && <>
             <h3 class="sub">{L('नमुना बिल (काल्पनिक) — एआईले साँच्चै पढेको नतिजा', 'Sample bills (fictional) — what the AI really read')}</h3>
             <div class="sample-bills">
@@ -139,7 +158,7 @@ export function Capture() {
       )}
 
       {reading && <Review key={reading.doc.sha256} entity={entity} reading={reading} photo={reading.image ?? photo} payees={payees}
-        onDone={() => { setReading(null); setPhoto(null); }} />}
+        onDone={() => { setReading(null); setPhoto(null); loadWaiting(); }} />}
     </Screen>
   );
 }
@@ -169,10 +188,22 @@ function Review({ entity, reading, photo, payees, onDone }: { entity: string; re
   const [state, setState] = useState<SentState>(null);
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState('');
+  const [checks, setChecks] = useState<BillCheck[]>(reading.checks ?? []);
+  const [dupReason, setDupReason] = useState('');
   useEffect(() => { if (!payee && suggested.payee_id) setPayee(suggested.payee_id); }, [suggested.payee_id]);
 
   const ad = bsToAd(dateBs);
   const amt = Number(amount.replace(/,/g, ''));
+  // the database's checks, re-run as the person fills in payee, bill number, amount and date
+  useEffect(() => {
+    const t = setTimeout(() => {
+      source.checkBill(entity, reading, { payee_id: payee || null, bill_no: billNo ? String(billNo) : null, amount: amt || null }, ad)
+        .then(setChecks).catch(() => { /* keep the last checks; the database checks again on confirm */ });
+    }, 400);
+    return () => clearTimeout(t);
+  }, [payee, billNo, amount, dateBs]);
+  const samePhoto = checks.some((c) => c.code === 'same_photo');
+  const sameBill = checks.some((c) => c.code === 'same_bill');
   const lineRow = lines.find((l) => l.line_id === line);
   const account = lineRow?.account_code ?? f.account_code?.value ?? '';
   const problems = [
@@ -182,15 +213,18 @@ function Review({ entity, reading, photo, payees, onDone }: { entity: string; re
     !account && L('खर्च शीर्षक वा बजेट रेखा छान्नुहोस्', 'choose the budget line'),
     !memo.trim() && L('विवरण लेख्नुहोस्', 'write what it was for'),
     !checked && L('फोटोसँग मिलाएको पुष्टि गर्नुहोस्', 'confirm you compared it with the photo'),
+    samePhoto && L('यही फोटो पहिले नै लेखिएको छ: "यो बिल नलिने" थिच्नुहोस्', 'this photo is already recorded: tap "Do not take this bill"'),
+    sameBill && !dupReason.trim() && L('दोहोरिएको होइन भने कारण लेख्नुहोस्, नत्र "यो बिल नलिने"', 'say why it is not a duplicate, or tap "Do not take this bill"'),
   ].filter(Boolean) as string[];
 
   const confirm = async () => {
     const payload: Row = {
       expense_id: crypto.randomUUID(), amount: amt, account_code: account, payee_id: payee, method,
       ...(line ? { budget_line_id: line } : {}), memo_np: memo.trim(), ...(billNo ? { bill_no: String(billNo) } : {}),
+      ...(sameBill && dupReason.trim() ? { duplicate_reason_np: dupReason.trim() } : {}),
     };
     try {
-      const r = await source.confirmSuggestion(entity, { ...reading, suggested_payload: suggested, suggested_date: f.date_ad?.value ?? null } as any,
+      const r = await source.confirmSuggestion(entity, { ...reading, suggested_payload: reading.suggested_payload ?? suggested, suggested_date: reading.suggested_date ?? f.date_ad?.value ?? null, current_checks: checks } as any,
         'expense.recorded', payload, ad!, fiscalYear(new Date(ad! + 'T12:00')));
       setState({ ok: true, seq: r.seq });
     } catch (e) {
@@ -227,6 +261,21 @@ function Review({ entity, reading, photo, payees, onDone }: { entity: string; re
           <button class="btn btn-quiet" onClick={onDone}>{L('अर्को बिल', 'Next bill')}</button>
         </> : (
           <form class="form" onSubmit={(e) => { e.preventDefault(); if (!problems.length) confirm(); }}>
+            {checks.length > 0 && (
+              <div class={`flags${checks.some((c) => c.block) ? ' flags-block' : ''}`}>
+                <p class="item-title">{L('जाँच (दोहोरिएको बिल, मूल्यसूची):', 'Checks (duplicate bills, price list):')}</p>
+                <ul>{checks.map((c, i) => <li key={i}>{c.block ? '✕ ' : '! '}{L(digits(c.np), c.en)}</li>)}</ul>
+                <p class="item-meta">{L('! भएकोले रोक्दैन, तर पुष्टि गरेपछि लेखा समितिले देख्छ र सबैले जाँचको नाम देख्छन्।',
+                  '! does not stop the entry, but once confirmed the accounts committee sees it and everyone sees which check it raised.')}</p>
+              </div>
+            )}
+            {sameBill && (
+              <div class="field field-check">
+                <label for="dup">{L('यो दोहोरिएको होइन भने किन? (सबैले देख्छन्)', 'If it is not a duplicate, why? (everyone sees this)')}</label>
+                <input id="dup" placeholder={L('जस्तै: दुई पानाको बिल, यो दोस्रो पाना', 'e.g. a two-page bill, this is page two')} value={dupReason}
+                  onInput={(e) => setDupReason((e.target as HTMLInputElement).value)} />
+              </div>
+            )}
             <Field label={L('जम्मा रकम (रु)', 'Total (Rs)')} f={f.total} alts={f.total?.alts}>
               <input inputMode="decimal" value={amount} onInput={(e) => setAmount((e.target as HTMLInputElement).value)} />
             </Field>

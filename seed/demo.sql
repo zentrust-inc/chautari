@@ -308,4 +308,10 @@ select demo.mev('income.recorded', '2026-10-28', '{"amount": 45000, "account_cod
 select demo.as_person(9);
 select demo.mev('loan.notice_given', '2026-11-10', '{"loan_id": "babababa-0000-0000-0000-000000000002", "amount": 20000}', '{}', '[]', null);
 
+-- the village price list (SAMPLE prices, not real): the chair records the committee's decision
+select demo.as_person(3);
+select demo.ev('price.set', '2026-10-15', jsonb_build_object('item_np', i, 'unit', u, 'price', p, 'decision_ref', 'नमुना: कार्यसमिति निर्णय नं. ३'), '{}', '[]', null)
+from (values ('JCB भाडा', 'घण्टा', 2600), ('Petrol', 'लिटर', 175), ('सिमेन्ट', 'बोरा', 850),
+             ('टिमुर बिरुवा', 'गोटा', 25), ('ढुङ्गा', 'ट्याक्टर', 3500)) v(i, u, p);
+
 select demo.as_person(0);
