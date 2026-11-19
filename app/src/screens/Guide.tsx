@@ -53,7 +53,7 @@ const PARTS: Part[] = [
           ['माथि दायाँ ⋮ थिचेर "Add to Home screen" (गृह स्क्रिनमा थप्नुहोस्) छान्नुहोस्।', 'Tap ⋮ at the top right and choose "Add to Home screen".'],
           ['अब यो अरू एपजस्तै खुल्छ। इन्टरनेट नहुँदा पछिल्लो पटक हेरेको हिसाब देखाउँछ।', 'It now opens like any app. Without internet it shows the figures you last saw.'],
         ],
-        tip: ['यो सुविधा वास्तविक एपमा हुन्छ; नमुना पानामा नहुन सक्छ।', 'This works in the real app; the sample page may not offer it.'],
+        tip: ['नमुना पनि यसरी राख्न सकिन्छ, यसको वेब ठेगानाबाट खोल्दा (claude.ai भित्रबाट वा WhatsApp फाइलबाट होइन)। एक पटक इन्टरनेटमा खोलेपछि बिना इन्टरनेट पनि खुल्छ, र इन्टरनेट आउँदा आफैं अद्यावधिक हुन्छ।', 'The sample can be installed this way too, when opened from its web address (not from inside claude.ai or the WhatsApp file). After opening it once with internet it works without internet, and updates itself when there is signal.'],
       },
     ],
   },
