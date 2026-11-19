@@ -15,6 +15,7 @@
 - Corrections are new entries; the old entry stays visible
 - Three privacy circles via "म को हुँ?": the public sees totals, a member sees her own entries, only she sees her ID; whether per-person work hours are public is left to the assembly
 - A rule suggestion (the app suggests; the assembly decides by consent) and a sample SMS notice
+- Cooperative money follows draft bylaws v4.15: one share of Rs 100 per member; members' project loans at one rate for everyone (now 10% a year), up to Rs 1 lakh repaid with interest on 3 months' notice, above that a fixed 3–5 years; the cooperative never lends
 
 ## Run it
 
@@ -22,4 +23,4 @@ Open `demo/index.html` in any browser. No build step, no server, no network need
 
 ## After the meeting (not started)
 
-Real build per the assembly's decisions: Azure hosting (ZenTrust credits), Aakash SMS, member data only in the database and never in this repository. Chautari records the cooperative's money; the money itself moves through the cooperative's bank account. Legal review of the Cooperatives Act and privacy law before any investment features go live.
+Real build per the assembly's decisions: Azure hosting (ZenTrust credits), Aakash SMS, member data only in the database and never in this repository. Chautari records the cooperative's money; the money itself moves through the cooperative's bank account. Legal review of the Cooperatives Act and privacy law before members' project loans (परियोजना ऋण) go live.

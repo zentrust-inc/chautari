@@ -119,9 +119,9 @@ const MEMBERS={
 const RATE_PER_HOUR=100;
 let rawEntries=[
   ["income",{what:"सदस्य शेयर (५ जना × रु. १००)",amount:500},40],
-  ["invest",{member:"m2",amount:50000,rate:10,term:"३ वर्ष"},38],
-  ["invest",{member:"m1",amount:20000,rate:10,term:"३ महिनाको सूचनामा फिर्ता"},36],
-  ["invest",{member:"m4",amount:100000,rate:10,term:"५ वर्ष"},35],
+  ["invest",{member:"m2",amount:50000,rate:10,term:"३ महिनाको सूचनामा ब्याजसहित फिर्ता"},38],
+  ["invest",{member:"m1",amount:20000,rate:10,term:"३ महिनाको सूचनामा ब्याजसहित फिर्ता"},36],
+  ["invest",{member:"m4",amount:200000,rate:10,term:"४ वर्षको तोकिएको अवधि"},35],
   ["work",{member:"m2",task:"पोखरी खन्ने",hours:6},30],
   ["work",{member:"m4",task:"पोखरी खन्ने",hours:6},30],
   ["work",{member:"m5",task:"पोखरी खन्ने",hours:5},30],
@@ -194,8 +194,8 @@ V.money=()=>{
   const rows=chain.filter(e=>["income","expense","correction","invest"].includes(e.kind)).slice().reverse().map(e=>{
     if(e.kind==="invest"){
       const mine=me()&&e.data.member===who();
-      const name=(isKeeper()||mine)?memberName(e.data.member):"एक लगानीकर्ता";
-      return `<div class="item"><div class="l">लगानी: ${name}<div class="mute">${e.date} · वार्षिक ${nd(e.data.rate)}%</div></div><div class="r">+ ${rs(e.data.amount)}<br><span class="tag ok">पुष्टि</span></div></div>`;
+      const name=(isKeeper()||mine)?memberName(e.data.member):"एक सदस्य (नाम गोप्य)";
+      return `<div class="item"><div class="l">परियोजना ऋण: ${name}<div class="mute">${e.date} · वार्षिक ${nd(e.data.rate)}%</div></div><div class="r">+ ${rs(e.data.amount)}<br><span class="tag ok">पुष्टि</span></div></div>`;
     }
     if(e.kind==="expense") return `<div class="item"><img class="bill" src="${e.data.photo||billSVG(e.data.bill)}" onclick="showBill(this.src,'${e.data.what}')" alt="बिल"><div class="l">${e.data.what}<div class="mute">${e.date} · दाना नं. ${nd(e.seq)}</div></div><div class="r">− ${rs(e.data.amount)}<br><span class="tag ok">पुष्टि</span></div></div>`;
     if(e.kind==="correction") return `<div class="item"><div class="l">सच्याइएको: ${e.data.note}<div class="mute">${e.date} · दाना नं. ${nd(e.data.ref)} लाई सच्याउने नयाँ लेखोट</div></div><div class="r">+ ${rs(e.data.amount)}<br><span class="tag ok">पुष्टि</span></div></div>`;
@@ -204,7 +204,7 @@ V.money=()=>{
   const pend=pending.filter(p=>p.kind==="expense");
   return `<h2>समूहको पैसा</h2>
   <div class="stats"><div class="stat"><b>${rs(t.inc+t.inv)}</b><span>आएको</span></div><div class="stat"><b>${rs(t.exp)}</b><span>खर्च</span></div><div class="stat"><b>${rs(t.bal)}</b><span>बाँकी</span></div></div>
-  <p class="mute">आएको मध्ये लगानी ${rs(t.inv)} (वार्षिक १०% ब्याज सहित फिर्ता हुने)। हरेक खर्चको बिलको फोटो छ; थिचेर हेर्नुहोस्।</p>
+  <p class="mute">आएको मध्ये सदस्यको परियोजना ऋण ${rs(t.inv)}: सबैलाई एउटै ब्याज, हाल वार्षिक १०%। रु १ लाखसम्म ३ महिनाको सूचनामा ब्याजसहित फिर्ता; त्यसभन्दा बढी ३–५ वर्षको तोकिएको अवधि (विनियम मस्यौदा ४.१५, दफा ८)। संस्थाले कसैलाई ऋण दिँदैन। हरेक खर्चको बिलको फोटो छ; थिचेर हेर्नुहोस्।</p>
   ${pend.length?`<div class="card"><b>पुष्टि हुन बाँकी</b>${pend.map(p=>`<div class="item"><div class="l">${p.data.what}<div class="mute">${p.date}</div></div><div class="r">− ${rs(p.data.amount)}<br><span class="tag wait">बाँकी</span></div></div>`).join("")}</div>`:""}
   <div class="card">${rows}</div>
   <div class="card"><b>नयाँ खर्च टिप्ने</b>
@@ -275,9 +275,9 @@ V.mine=()=>{
   const inv=confirmed("invest").filter(e=>e.data.member===who());
   const invAmt=inv.reduce((a,e)=>a+e.data.amount,0);
   return `<h2>मेरो खाता — ${m.name}</h2>
-  <div class="stats"><div class="stat"><b>${nd(hrs)}</b><span>मेरो घण्टा</span></div><div class="stat"><b>${rs(100)}</b><span>मेरो शेयर</span></div><div class="stat"><b>${rs(invAmt)}</b><span>मेरो लगानी</span></div></div>
+  <div class="stats"><div class="stat"><b>${nd(hrs)}</b><span>मेरो घण्टा</span></div><div class="stat"><b>${rs(100)}</b><span>मेरो शेयर</span></div><div class="stat"><b>${rs(invAmt)}</b><span>मेरो परियोजना ऋण</span></div></div>
   <div class="card"><b>मेरो काम</b>${mineW.map(e=>`<div class="item"><div class="l">${e.data.task}<div class="mute">${e.date}</div></div><div class="r">${nd(e.data.hours)} घण्टा</div></div>`).join("")||`<p class="mute">अहिलेसम्म छैन।</p>`}</div>
-  <div class="card"><b>मेरो लगानी</b>${inv.map(e=>`<div class="item"><div class="l">${rs(e.data.amount)} · वार्षिक ${nd(e.data.rate)}%<div class="mute">${e.date} · ${e.data.term}</div></div><div class="r">वर्षको ब्याज<br>${rs(e.data.amount*e.data.rate/100)}</div></div>`).join("")}</div>
+  <div class="card"><b>मेरो परियोजना ऋण</b>${inv.map(e=>`<div class="item"><div class="l">${rs(e.data.amount)} · वार्षिक ${nd(e.data.rate)}%<div class="mute">${e.date} · ${e.data.term}</div></div><div class="r">वर्षको ब्याज<br>${rs(e.data.amount*e.data.rate/100)}</div></div>`).join("")}</div>
   <div class="card"><b>मेरो परिचयपत्र</b><p class="mute" style="margin:4px 0">यो आफूबाहेक कसैले देख्दैन।</p><span id="idno">••••••••••</span> <button class="btn small alt" onclick="document.getElementById('idno').textContent='${m.idno}'">देखाउने</button></div>`;
 };
 
