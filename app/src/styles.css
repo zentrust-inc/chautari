@@ -257,3 +257,7 @@ details.guide[open] summary::after { content: '−'; }
 .guide-steps { margin: 4px 0 10px; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
 .guide-steps li::marker { color: var(--accent); font-weight: 600; }
 .guide-tip { background: var(--accent-soft); border-radius: 10px; padding: 8px 12px; font-size: 15px; margin-bottom: 10px; }
+
+.about { margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--line, #ddd); color: var(--muted); font-size: 15px; }
+.about h2 { font-size: 16px; }
+.about p { margin: 4px 0; }

@@ -5,6 +5,10 @@ import { lang } from '../lib/i18n';
 import { go } from '../state';
 import { source } from '../data/source';
 import { Screen } from '../ui';
+import { bsDate, digits } from '../lib/format';
+
+// The rules the app currently follows. Change this line in the same pull request as any new bylaws version.
+const BYLAWS: L = ['सहकारी विनियम ४.१५ (मस्यौदा)', 'Cooperative bylaws v4.15 (draft)'];
 
 type L = [string, string];   // [Nepali, English]
 interface Topic { id: string; title: L; who?: L; steps: L[]; open?: { route: string; label: L }; tip?: L }
@@ -379,6 +383,14 @@ export function Guide() {
           ))}
         </section>
       ))}
+      <footer class="about">
+        <h2>{np ? 'यो एपबारे' : 'About this app'}</h2>
+        <p>{np ? 'संस्करण' : 'Version'} {digits(__VERSION__)} · {np ? 'बनेको मिति' : 'Built'} {bsDate(__BUILD_DATE__)}</p>
+        <p>{np ? 'लागू नियम: ' : 'Rules in use: '}{T(BYLAWS)}</p>
+        <p>{np
+          ? 'गलत अङ्क देख्नुभयो वा एप चलेन भने हिसाब राख्ने पदाधिकारीलाई भन्नुहोस्; स्क्रिनको फोटो भए सजिलो हुन्छ।'
+          : 'If you see a wrong figure or the app does not work, tell the record keeper; a screenshot helps.'}</p>
+      </footer>
     </Screen>
   );
 }
