@@ -1,0 +1,52 @@
+import { useEffect } from 'preact/hooks';
+import { lang, setLang, t } from './lib/i18n';
+import { todayBS } from './lib/format';
+import { pub, loadError, route, loadAll, checkChain, officerRoles, go, me } from './state';
+import { offline, source } from './data/source';
+import { Home } from './screens/Home';
+import { Money } from './screens/Money';
+import { Work } from './screens/Work';
+import { Nature } from './screens/Nature';
+import { Decisions } from './screens/Decisions';
+import { Coop } from './screens/Coop';
+import { Mine } from './screens/Mine';
+import { Tasks } from './screens/Tasks';
+import { Check } from './screens/Check';
+
+const SCREENS: Record<string, (p: any) => preact.JSX.Element> = {
+  home: Home, money: Money, work: Work, nature: Nature, decisions: Decisions, coop: Coop, mine: Mine, tasks: Tasks, check: Check,
+};
+
+export function App() {
+  useEffect(() => { loadAll().then(() => checkChain().catch(() => {})); }, []);
+  const r = route.value in SCREENS ? route.value : 'home';
+  const Screen = SCREENS[r];
+  const showTasks = officerRoles.value.length > 0;
+  const tab = (id: string) => (['money', 'work', 'nature', 'decisions', 'coop'].includes(r) ? 'home' : r) === id;
+
+  return (
+    <div class="app" lang={lang.value === 'np' ? 'ne' : 'en'}>
+      <header class="topbar">
+        <button class="brand" onClick={() => go('home')} aria-label={t('home')}>
+          <span class="brand-mark" aria-hidden="true" />{t('app')}
+        </button>
+        <span class="today">{todayBS()}</span>
+        {source.mode === 'sample' && <span class="sample-badge">{t('sample')}</span>}
+        <button class="lang" onClick={() => setLang(lang.value === 'np' ? 'en' : 'np')}>{t('language')}</button>
+      </header>
+      {offline.value && <p class="offline">{t('offline')}</p>}
+      {loadError.value && !pub.value ? (
+        <main class="screen"><p class="error">{t('error')}</p><button class="btn" onClick={loadAll}>{t('retry')}</button></main>
+      ) : !pub.value ? (
+        <main class="screen"><p class="empty">{t('loading')}</p></main>
+      ) : <Screen />}
+      <nav class="tabbar" aria-label="main">
+        <a href="#" class={tab('home') ? 'on' : ''} onClick={(e) => { e.preventDefault(); go('home'); }}><Icon d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />{t('home')}</a>
+        <a href="#mine" class={tab('mine') ? 'on' : ''}><Icon d="M12 12a4 4 0 1 0 0-8a4 4 0 1 0 0 8 M4 21c0-4 3.6-7 8-7s8 3 8 7" />{me.value ? me.value.name : t('mine')}</a>
+        {showTasks && <a href="#tasks" class={tab('tasks') ? 'on' : ''}><Icon d="M9 6h11 M9 12h11 M9 18h11 M4 6l1 1 2-2 M4 12l1 1 2-2 M4 18l1 1 2-2" />{t('tasks')}</a>}
+        <a href="#check" class={tab('check') ? 'on' : ''}><Icon d="M12 3l7 3v5c0 5-3 8-7 10c-4-2-7-5-7-10V6z M9 12l2 2 4-4" />{t('check')}</a>
+      </nav>
+    </div>
+  );
+}
+const Icon = ({ d }: { d: string }) => <svg viewBox="0 0 24 24" aria-hidden="true"><path d={d} /></svg>;
