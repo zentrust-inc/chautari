@@ -10,6 +10,7 @@ import { normalizeDigits } from './parse.mjs';
 import * as tesseract from './engine-tesseract.mjs';
 import * as claude from './engine-claude.mjs';
 import * as easyocr from './engine-easyocr.mjs';
+import * as mix from './engine-mix.mjs';
 
 // node reader/eval.mjs [--hard] [--claude] [id ...]   --hard scores samples/hard-truth.json into HARD-REPORT.md;
 // --claude reads with engine-claude.mjs (needs ANTHROPIC_API_KEY) and writes *-claude.md
@@ -18,9 +19,10 @@ const args = process.argv.slice(2);
 const hard = args.includes('--hard');
 const truth = JSON.parse(await readFile(join(root, hard ? 'hard-truth.json' : 'truth.json'), 'utf8'));
 const only = args.filter((a) => !a.startsWith('--'));
-const useClaude = args.includes('--claude') || args.includes('--engine=claude');
-const engine = useClaude ? claude : args.includes('--engine=easyocr') ? easyocr : tesseract;
-const lang = useClaude ? `claude ${claude.MODELS.join(' + ')}` : `${engine.name} ${engine.LANG}`;
+const useMix = args.includes('--engine=mix');
+const useClaude = useMix || args.includes('--claude') || args.includes('--engine=claude');
+const engine = useMix ? mix : useClaude ? claude : args.includes('--engine=easyocr') ? easyocr : tesseract;
+const lang = useMix ? `mix ${mix.READERS.join(' + ')}` : useClaude ? `claude ${claude.MODELS.join(' + ')}` : `${engine.name} ${engine.LANG}`;
 
 const asc = (s) => normalizeDigits(String(s ?? ''));
 const lev = (a, b) => { const m = a.length, n = b.length; const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]); for (let j = 1; j <= n; j++) d[0][j] = j;
@@ -94,17 +96,18 @@ const rightTotal = FIELDS.reduce((a, f) => a + tally[f].ok_right, 0) + cashRows.
 md += `\n**Read but wrong, all fields: ${wrongTotal}.** Read and right: ${rightTotal}.\n`;
 if (useClaude) {
   const pages = perBill.length + cashRows.length;
-  const usd = claude.usage.reduce((a, u) => a + u.usd, 0);
+  const usageAll = useMix ? mix.usage.all : claude.usage;
+  const usd = usageAll.reduce((a, u) => a + u.usd, 0);
   const byModel = {};
-  for (const u of claude.usage) { const m = (byModel[u.model] ??= { calls: 0, in: 0, out: 0, usd: 0 }); m.calls++; m.in += u.input_tokens; m.out += u.output_tokens; m.usd += u.usd; }
+  for (const u of usageAll) { const m = (byModel[u.model] ??= { calls: 0, in: 0, out: 0, usd: 0 }); m.calls++; m.in += u.input_tokens; m.out += u.output_tokens; m.usd += u.usd; }
   md += `\n## Cost (list prices)\n\n| model | readings | input tokens | output tokens | USD |\n|---|---|---|---|---|\n`;
   for (const [m, v] of Object.entries(byModel)) md += `| ${m} | ${v.calls} | ${v.in} | ${v.out} | ${v.usd.toFixed(4)} |\n`;
   md += `\n**${pages} pages, USD ${usd.toFixed(3)} in all, USD ${(usd / Math.max(pages, 1)).toFixed(4)} per page.**\n`;
 }
 console.log(md);
 if (!only.length && !process.env.EVAL_NO_WRITE) {
-  const sfx = useClaude ? '-claude' : '';
-  if (hard) { await writeFile(join(root, `HARD-REPORT${sfx}.md`), md); if (useClaude) await writeFile(join(root, 'hard-output-claude.json'), JSON.stringify(outputs, null, 1)); }
+  const sfx = useMix ? '-mix' : useClaude ? '-claude' : '';
+  if (hard) { await writeFile(join(root, `HARD-REPORT${sfx}.md`), md); if (useClaude) await writeFile(join(root, `hard-output${sfx}.json`), JSON.stringify(outputs, null, 1)); }
   else {
     await writeFile(join(root, `READER-REPORT${sfx}.md`), md);
     await writeFile(join(root, `reader-output${sfx}.json`), JSON.stringify(outputs, null, 1));

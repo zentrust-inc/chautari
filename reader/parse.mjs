@@ -395,6 +395,7 @@ export function mergeCashbookPasses(sets) {
         if (!enough(support(open, open))) Object.assign(row, { status: 'check', why: 'readings_differ', alts: { balances: c.bal, amounts: c.amt } });
       }
       else { row.balance = c.bal[0] ?? null; prevSet = c.bal; }
+      if (row.status === 'ok' && c.dates_differ) { row.status = 'check'; row.why = 'readings_differ'; }
       out.push(row); continue;
     }
     let hit = null;

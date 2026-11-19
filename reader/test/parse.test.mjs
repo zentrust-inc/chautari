@@ -141,3 +141,11 @@ test('a cash balance below zero keeps its sign and is marked for the person', ()
   assert.equal(neg.why, 'negative_balance');
   assert.equal(neg.balance, -3640);
 });
+
+test('cash book: an opening row whose date the readings disagree on is not ticked', () => {
+  const a = parseCashbook(['२०८३/३/७  अघिल्लो बाँकी  २९२३५  २९२३५']);
+  const b = parseCashbook(['२०८३/९/७  अघिल्लो बाँकी  २९२३५  २९२३५']);
+  const rows = mergeCashbookPasses([a, structuredClone(a), b]);
+  assert.equal(rows[0].status, 'check');
+  assert.equal(rows[0].why, 'readings_differ');
+});
