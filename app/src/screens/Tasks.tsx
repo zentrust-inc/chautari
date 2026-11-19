@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { lang, t, roleName } from '../lib/i18n';
-import { rs, num, bsDate, hours, fiscalYear } from '../lib/format';
+import { rs, num, bsDate, hours, fiscalYear, digits } from '../lib/format';
 import { me, officerRoles, pub, loadAll } from '../state';
 import { source, DemoWrite, type OfficerQueues } from '../data/source';
 import { Screen, Section, Pill } from '../ui';
@@ -73,7 +73,7 @@ export function Tasks() {
         const q = queues[entity] ?? {};
         const mine = roles.filter((r) => r.entity === entity).map((r) => r.role);
         const myRole = mine.find((r) => signerRoles.includes(r));
-        const total = (q.payments_waiting?.length ?? 0) + (q.work_waiting?.length ?? 0) + (q.questions?.filter((x) => x.status === 'open').length ?? 0) + (q.suggestions?.length ?? 0);
+        const total = (q.payments_waiting?.length ?? 0) + (q.work_waiting?.length ?? 0) + (q.questions?.filter((x) => x.status === 'open').length ?? 0) + (q.suggestions?.length ?? 0) + (q.flagged?.length ?? 0);
         return (
           <Section key={entity} title={nameOf(entity)} note={mine.map(roleName).join(', ')}>
             {total === 0 && <p class="empty">{t('no_tasks')}</p>}
@@ -84,6 +84,15 @@ export function Tasks() {
               </article>
             )}
 
+            {(q.flagged?.length ?? 0) > 0 && (
+              <article class="task">
+                <div class="row-between"><span class="item-title">{np ? 'जाँच देखाएका खर्च (लेखा समितिका लागि)' : 'Spending that raised a check (for the accounts committee)'}</span><span class="item-amount">{num(q.flagged!.length)}</span></div>
+                <ul class="outbox-list">{q.flagged!.map((x) => <li key={x.event_seq}>
+                  {np ? 'इन्ट्री नं.' : 'entry'} {num(x.event_seq)} · {x.payee} · {rs(x.amount)} · {bsDate(x.occurred_on)} · {np ? 'पुष्टि:' : 'confirmed by'} {x.confirmed_by}
+                  <br /><span class="item-meta">{(x.checks ?? []).map((c: Row) => np ? digits(c.np) : c.en).join(' ')}{x.duplicate_reason_np ? ` — ${np ? 'कारण' : 'reason'}: ${x.duplicate_reason_np}` : ''}</span>
+                </li>)}</ul>
+              </article>
+            )}
             {q.payments_waiting?.map((x) => {
               const signed: Row[] = x.signed_by;
               const has = (r: string) => signed.some((s) => s.role === r);

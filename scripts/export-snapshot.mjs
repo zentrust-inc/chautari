@@ -26,7 +26,7 @@ if (!demo) { console.error('this database has no demo schema: refusing to export
 const VIEWS = ['bodies', 'money_status', 'income_and_spending', 'budget_status', 'spending_shares', 'payments',
   'fair_turns', 'project_hours', 'office_holders', 'nature_readings', 'questions', 'rules',
   'mpc_summary', 'loan_register', 'grant_register', 'enterprise_results', 'surplus_allocations',
-  'chain_export', 'chain_heads'];
+  'price_list', 'chain_export', 'chain_heads'];
 
 // the world: read as anon, so anything anon cannot see is not exported
 const pub = {};
@@ -76,6 +76,7 @@ for (const p of people) {
     }
     if (role === 'accounts_committee') {
       o.questions ??= asPerson(p.auth, rows(`public.officer_questions('${entity}')`));
+      o.flagged ??= asPerson(p.auth, rows(`public.officer_flagged_bills('${entity}')`));
     }
   }
 }

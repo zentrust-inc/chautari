@@ -28,6 +28,8 @@ const bills = PICK.map((id) => {
     fields: r.fields, flags: r.flags, items: r.items, items_ok: r.items_ok,
   };
 });
-const data = { note: 'SAMPLE: fictional bills and payees; readings are the reader\'s real output on them.', payees, bills };
+// the sample assumes the hardware shop's bill 0417 is already recorded, so the duplicate check shows (sample only)
+const recorded = [{ payee_id: 'e5e5e5e5-0000-0000-0000-000000000001', bill_no: '0417' }];
+const data = { note: 'SAMPLE: fictional bills and payees; readings are the reader\'s real output on them.', payees, bills, recorded };
 await writeFile(join(root, 'app/src/data/sample-readings.json'), JSON.stringify(data));
 console.log(bills.map((b) => `${b.id} ${Math.round(b.image.length / 1024)} KB`).join(', '));

@@ -20,6 +20,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import NepaliDate from 'nepali-date-converter';
 import { readDocument } from './read.mjs';
+import { dhash as pictureHash } from './dhash.mjs';
 
 const env = (k, d) => process.env[k] ?? d;
 export const WORK_PHOTO_KINDS = ['before', 'after'];
@@ -63,7 +64,7 @@ export function toSuggestion(reading, { payees = [], lines = [] } = {}) {
 }
 
 export function makeServer({ docsDir = env('DOCS_DIR', './documents'), supabaseUrl = env('SUPABASE_URL'), serviceKey = env('SUPABASE_SERVICE_KEY'),
-  allowOrigin = env('ALLOW_ORIGIN', ''), maxBytes = Number(env('MAX_BYTES', 8 << 20)), read = readDocument } = {}) {
+  allowOrigin = env('ALLOW_ORIGIN', ''), maxBytes = Number(env('MAX_BYTES', 8 << 20)), read = readDocument, fp = pictureHash } = {}) {
   const sb = async (path, init = {}) => {
     const res = await fetch(supabaseUrl + path, { ...init, headers: { apikey: serviceKey, authorization: `Bearer ${serviceKey}`, 'content-type': 'application/json', ...(init.headers ?? {}) } });
     if (!res.ok) throw new Error(`database: ${res.status} ${await res.text()}`);
@@ -120,6 +121,8 @@ export function makeServer({ docsDir = env('DOCS_DIR', './documents'), supabaseU
           sb(`/rest/v1/budget_status?entity_id=eq.${entity}`).catch(() => []),
         ]);
         const suggested = toSuggestion(reading, { payees, lines });
+        // the picture fingerprint lets the database spot the same picture handed in again (dhash.mjs)
+        suggested.dhash = await fp(join(dir, `${sha}.${ext}`)).catch(() => null);
         const readerName = `${reading.reader.name} (${reading.reader.engine_version})`;
         const suggestion_id = await sb('/rest/v1/rpc/record_suggestion', { method: 'POST', body: JSON.stringify({
           p_entity: entity, p_doc_sha256: sha, p_doc_kind: 'bill', p_doc_path: `documents/${entity}/${sha}.${ext}`, p_reader: readerName, p_suggested: suggested }) });

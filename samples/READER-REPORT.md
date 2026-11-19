@@ -41,3 +41,16 @@ Legend: ✓ = reader called it "read" (two readings agree and the bill's own sum
 | cb02 | 6 | 5 | 0 | **0** | 5 |
 
 **Read but wrong, all fields: 0.**
+
+
+## Duplicate photos (picture fingerprint, `reader/dhash.mjs`)
+
+Measured 19 Nov 2026 on the SAMPLE bills. The reader keeps a 64-bit picture fingerprint with each suggestion; the database flags a new photo whose fingerprint is within 5 bits of an earlier one (`near_photo`).
+
+| Case | Bits different |
+| --- | --- |
+| The same picture resized, cropped 5% and recompressed (e.g. forwarded on WhatsApp) | 2–4 |
+| The same bill photographed again with a 2° tilt and brighter light | 6–15 |
+| Two different sample bills (closest pair) | 7 |
+
+So the fingerprint catches the same picture handed in again, and does not confuse different bills, but it does **not** catch a genuinely new photo of the same bill. That case is caught by the shop + bill-number check (`same_bill`), which refuses the entry unless the person writes a public reason. The exact same photo (same SHA-256) is always refused (`same_photo`).
