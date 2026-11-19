@@ -22,7 +22,10 @@ export async function version() {
   try { const { stderr, stdout } = await run('tesseract', ['--version']); return (stdout || stderr).split('\n')[0].trim(); } catch { return 'tesseract (not found)'; }
 }
 
-export async function readLines(file, { lang = 'hin+eng', passes = PASSES } = {}) {
+// Which trained models Tesseract uses. Set CHAUTARI_OCR_LANG on the server to change it (see README).
+export const LANG = process.env.CHAUTARI_OCR_LANG || 'nep+hin+eng';
+
+export async function readLines(file, { lang = LANG, passes = PASSES } = {}) {
   const dir = await mkdtemp(join(tmpdir(), 'chautari-read-'));
   try {
     const results = await Promise.all(passes.map(async (p, i) => {

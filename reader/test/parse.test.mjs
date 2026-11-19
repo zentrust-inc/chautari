@@ -110,3 +110,11 @@ test('cash book: another reading can supply the figure that closes the sum', () 
   assert.equal(rows[1].payment, 900);
   assert.equal(rows[1].status, 'ok');
 });
+
+test('a cash balance below zero keeps its sign and is marked for the person', () => {
+  const rows = parseCashbook(['2083/07/29 Timber sale 20,000 34,351', '2083/08/01 Cement 37,991 -3,640', '2083/08/02 Saplings 4,950 8,290']);
+  const neg = rows.find((r) => r.date_bs === '2083/08/01');
+  assert.equal(neg.status, 'check');
+  assert.equal(neg.why, 'negative_balance');
+  assert.equal(neg.balance, -3640);
+});

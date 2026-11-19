@@ -1,0 +1,343 @@
+{
+ "_note": "HARD SAMPLE data: hand-written cash books and faded thermal receipts. Everything is fictional; see samples/README.md.",
+ "bills": [
+  {
+   "file": "hard/fth01.jpg",
+   "id": "fth01",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "phone, faded 55%",
+   "digits": "latin",
+   "vendor": "Sample Petroleum Pump",
+   "vendor_en": "Sample Petroleum Pump",
+   "pan": "100200305",
+   "bill_no": "55977",
+   "date_bs": "2083/08/12",
+   "date_ad": "2026-11-28",
+   "items": [
+    {
+     "name": "Diesel (litre)",
+     "qty": 12.0,
+     "rate": 172,
+     "amount": 2064.0
+    }
+   ],
+   "subtotal": 2064.0,
+   "vat": 0.0,
+   "total": 2064.0,
+   "method": "cash",
+   "suggested_account": "EX-1.08",
+   "note": ""
+  },
+  {
+   "file": "hard/fth02.jpg",
+   "id": "fth02",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "phone, faded 40%",
+   "digits": "latin",
+   "vendor": "Sample Stationers & Printing",
+   "vendor_en": "Sample Stationers & Printing",
+   "pan": "100200304",
+   "bill_no": "9120",
+   "date_bs": "2083/08/16",
+   "date_ad": "2026-12-02",
+   "items": [
+    {
+     "name": "Register (pc)",
+     "qty": 2,
+     "rate": 220,
+     "amount": 440
+    },
+    {
+     "name": "Pen (box)",
+     "qty": 1,
+     "rate": 300,
+     "amount": 300
+    },
+    {
+     "name": "Photocopy (page)",
+     "qty": 40,
+     "rate": 3,
+     "amount": 120
+    }
+   ],
+   "subtotal": 860,
+   "vat": 111.8,
+   "total": 971.8,
+   "method": "cash",
+   "suggested_account": "EX-1.04",
+   "note": ""
+  },
+  {
+   "file": "hard/fth03.jpg",
+   "id": "fth03",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "phone, faded 45%",
+   "digits": "devanagari",
+   "vendor": "नमूना कृषि नर्सरी तथा बीउ केन्द्र",
+   "vendor_en": "Namuna Agro Nursery",
+   "pan": "100200302",
+   "bill_no": "2388",
+   "date_bs": "2083/08/20",
+   "date_ad": "2026-12-06",
+   "items": [
+    {
+     "name": "कफी बिरुवा",
+     "qty": 40,
+     "rate": 45,
+     "amount": 1800
+    },
+    {
+     "name": "अम्रिसो बिरुवा",
+     "qty": 60,
+     "rate": 15,
+     "amount": 900
+    }
+   ],
+   "subtotal": 2700,
+   "vat": 0.0,
+   "total": 2700.0,
+   "method": "cash",
+   "suggested_account": "EX-2.02",
+   "note": ""
+  },
+  {
+   "file": "hard/fth04.jpg",
+   "id": "fth04",
+   "kind": "expense",
+   "layout": "thermal",
+   "quality": "poor, faded 28%",
+   "digits": "latin",
+   "vendor": "Sample Tools & Rental",
+   "vendor_en": "Sample Tools & Rental",
+   "pan": "100200308",
+   "bill_no": "1377",
+   "date_bs": "2083/08/24",
+   "date_ad": "2026-12-10",
+   "items": [
+    {
+     "name": "Chainsaw rent (day)",
+     "qty": 1,
+     "rate": 1500,
+     "amount": 1500
+    },
+    {
+     "name": "Chain file (pc)",
+     "qty": 2,
+     "rate": 350,
+     "amount": 700
+    }
+   ],
+   "subtotal": 2200,
+   "vat": 286.0,
+   "total": 2486.0,
+   "method": "cash",
+   "suggested_account": "EX-1.06",
+   "note": ""
+  }
+ ],
+ "cashbooks": [
+  {
+   "file": "hard/hcb01.jpg",
+   "id": "hcb01",
+   "quality": "phone, hand-written (Kalam)",
+   "digits": "devanagari",
+   "rows": [
+    {
+     "date_bs": "2083/08/03",
+     "particulars": "अघिल्लो बाँकी",
+     "receipt": 31250,
+     "payment": 0,
+     "balance": 31250
+    },
+    {
+     "date_bs": "2083/08/04",
+     "particulars": "सदस्यता शुल्क",
+     "receipt": 300,
+     "payment": 0,
+     "balance": 31550
+    },
+    {
+     "date_bs": "2083/08/06",
+     "particulars": "कोदालो, बेल्चा",
+     "receipt": 0,
+     "payment": 2450,
+     "balance": 29100
+    },
+    {
+     "date_bs": "2083/08/09",
+     "particulars": "बिरुवा ढुवानी",
+     "receipt": 0,
+     "payment": 1800,
+     "balance": 27300
+    },
+    {
+     "date_bs": "2083/08/11",
+     "particulars": "दाउरा बिक्री",
+     "receipt": 6500,
+     "payment": 0,
+     "balance": 33800
+    },
+    {
+     "date_bs": "2083/08/14",
+     "particulars": "भेला खाजा",
+     "receipt": 0,
+     "payment": 925,
+     "balance": 32875
+    },
+    {
+     "date_bs": "2083/08/17",
+     "particulars": "नर्सरी पोलिथिन",
+     "receipt": 0,
+     "payment": 3360,
+     "balance": 29515
+    }
+   ]
+  },
+  {
+   "file": "hard/hcb02.jpg",
+   "id": "hcb02",
+   "quality": "phone, hand-written (Kalam)",
+   "digits": "latin",
+   "rows": [
+    {
+     "date_bs": "2083/08/18",
+     "particulars": "अघिल्लो बाँकी",
+     "receipt": 28215,
+     "payment": 0,
+     "balance": 28215
+    },
+    {
+     "date_bs": "2083/08/19",
+     "particulars": "घाँस बिक्री",
+     "receipt": 1200,
+     "payment": 0,
+     "balance": 29415
+    },
+    {
+     "date_bs": "2083/08/21",
+     "particulars": "तार किला",
+     "receipt": 0,
+     "payment": 7340,
+     "balance": 22075
+    },
+    {
+     "date_bs": "2083/08/22",
+     "particulars": "चिया पानी",
+     "receipt": 0,
+     "payment": 480,
+     "balance": 21595
+    },
+    {
+     "date_bs": "2083/08/25",
+     "particulars": "सदस्यता शुल्क",
+     "receipt": 200,
+     "payment": 0,
+     "balance": 21795
+    },
+    {
+     "date_bs": "2083/08/27",
+     "particulars": "ज्याला",
+     "receipt": 0,
+     "payment": 4500,
+     "balance": 17295
+    }
+   ]
+  },
+  {
+   "file": "hard/hcb03.jpg",
+   "id": "hcb03",
+   "quality": "poor, hand-written (YatraOne)",
+   "digits": "devanagari",
+   "rows": [
+    {
+     "date_bs": "2083/08/28",
+     "particulars": "अघिल्लो बाँकी",
+     "receipt": 17375,
+     "payment": 0,
+     "balance": 17375
+    },
+    {
+     "date_bs": "2083/08/29",
+     "particulars": "काठ बिक्री",
+     "receipt": 15000,
+     "payment": 0,
+     "balance": 32375
+    },
+    {
+     "date_bs": "2083/09/01",
+     "particulars": "सिमेन्ट २ बोरा",
+     "receipt": 0,
+     "payment": 2040,
+     "balance": 30335
+    },
+    {
+     "date_bs": "2083/09/02",
+     "particulars": "मिस्त्री ज्याला",
+     "receipt": 0,
+     "payment": 3000,
+     "balance": 27335
+    },
+    {
+     "date_bs": "2083/09/04",
+     "particulars": "छपाई",
+     "receipt": 0,
+     "payment": 650,
+     "balance": 26685
+    },
+    {
+     "date_bs": "2083/09/06",
+     "particulars": "चन्दा",
+     "receipt": 2500,
+     "payment": 0,
+     "balance": 29185
+    }
+   ]
+  },
+  {
+   "file": "hard/hcb04.jpg",
+   "id": "hcb04",
+   "quality": "phone, hand-written (Kalam)",
+   "digits": "devanagari",
+   "rows": [
+    {
+     "date_bs": "2083/09/07",
+     "particulars": "अघिल्लो बाँकी",
+     "receipt": 29235,
+     "payment": 0,
+     "balance": 29235
+    },
+    {
+     "date_bs": "2083/09/08",
+     "particulars": "बीउ खरिद",
+     "receipt": 0,
+     "payment": 1275,
+     "balance": 27960
+    },
+    {
+     "date_bs": "2083/09/10",
+     "particulars": "सदस्यता शुल्क",
+     "receipt": 100,
+     "payment": 0,
+     "balance": 28060
+    },
+    {
+     "date_bs": "2083/09/12",
+     "particulars": "ढुवानी भाडा",
+     "receipt": 0,
+     "payment": 2200,
+     "balance": 25860
+    },
+    {
+     "date_bs": "2083/09/15",
+     "particulars": "बिरुवा बिक्री",
+     "receipt": 3600,
+     "payment": 0,
+     "balance": 29460
+    }
+   ]
+  }
+ ]
+}
