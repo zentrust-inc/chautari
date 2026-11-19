@@ -137,7 +137,16 @@ Needs `tesseract` 5 and ImageMagick `convert` on the server, with three trained 
 
 **Reading with Claude (decided 2026-11-19).** Set `CHAUTARI_READER=claude` and `ANTHROPIC_API_KEY` on the server, and the reader sends each photo to two Claude models (`CHAUTARI_VLM_MODELS`, default `claude-sonnet-5-5,claude-opus-5-5`). The same checks apply: a figure gets a tick only when both readings agree and the sums fit; anything else is filled in and marked "check". On the hard samples (`node reader/eval.mjs --hard --claude`, report in `samples/HARD-REPORT-claude.md`): faded receipts go from 1 field read to 22 of 32 (the rest are the dates, which lie after the test day, and the payment method, which the receipts do not print), hand-written cash books from 0 to 8 of 24 rows ticked, 0 wrong ticks, about USD 0.027 per page. The photo leaves our server; the key never goes into this repository.
 
-**Claude and Gemini together (recommended).** `CHAUTARI_READER=mix` with `ANTHROPIC_API_KEY` and `GEMINI_API_KEY` (and `CHAUTARI_MIX`, default `claude-sonnet-5-5,gemini-3.8-flash`): two companies' models read each photo, so one model's habit is not repeated by the other. On the hand-written page where both Claude models read ३,३६० as ३,३५० and ९ as ३, Gemini read every figure right; with Gemini added that page went from 2 to 7 of 7 rows ticked, none wrong (`samples/vlm-test/gemini-readings.json`). Use a paid-tier Gemini key for real bills (on the free tier Google may use the data).
+**Two companies' readers together (recommended): `CHAUTARI_READER=mix`.** Default `CHAUTARI_MIX=claude-opus-5-5,vision` with `ANTHROPIC_API_KEY` and `VISION_API_KEY` (Google Cloud Vision, a key limited to that API; first 1,000 pages a month free, then USD 1.50 per 1,000). Gemini (`gemini-3.8-flash`, `GEMINI_API_KEY`) can be added. Measured on the 8 hard samples (2026-11-19, readings in `samples/vlm-test/`), counting a cash-book row wrong if its date is wrong:
+
+| readers | receipt figures ticked (of 24) | cash-book rows ticked (of 24) | **wrong ticks** | USD per page |
+|---|---|---|---|---|
+| Claude Sonnet + Claude Opus | 22 | 10 | **3** (both read month ९ as ३) | 0.027 |
+| Claude Sonnet + Cloud Vision | 22 | 6 | **0** | 0.008 |
+| **Claude Opus + Cloud Vision** | 22 | 11 | **0** | 0.019 |
+| Sonnet + Opus + Cloud Vision | 22 | 12 | **0** | 0.029 |
+
+Two models from one company can make the same mistake together; two companies rarely do. Use paid-tier keys for real bills.
 
 Why `nep+hin+eng` (measured 19 Nov 2026 on the SAMPLE bills): figures read and ticked right went from 37 (`hin+eng`) to 51 (`nep+eng`) and 59 (`nep+hin+eng`), with none ticked wrongly in any of them. The cost is speed: one reading of a bill takes about twice as long (1.3 s instead of 0.6 s on a 2-core machine; the reader makes four readings per photo).
 
