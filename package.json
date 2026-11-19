@@ -1,0 +1,13 @@
+{
+  "name": "chautari",
+  "version": "0.1.0",
+  "private": true,
+  "description": "चौतारी (Chautari): open, transparent records for the Thumki Danda Gairikharka CFUG, the Kakani Multipurpose Cooperative and the Chauthe Guthi",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "test": "tests/run.sh",
+    "verify": "node scripts/verify-chain.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

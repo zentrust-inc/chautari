@@ -1,0 +1,26 @@
+{
+  "name": "chautari-app",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "build:preview": "vite build --mode preview && node ../scripts/make-preview-page.mjs",
+    "snapshot": "node ../scripts/export-snapshot.mjs > src/data/sample-snapshot.json"
+  },
+  "dependencies": {
+    "@fontsource/mukta": "^5.2.8",
+    "@preact/signals": "^2.3.2",
+    "@supabase/supabase-js": "^2.75.0",
+    "nepali-date-converter": "^3.4.2",
+    "preact": "^10.27.2"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12",
+    "vite-plugin-singlefile": "^2.3.0"
+  }
+}

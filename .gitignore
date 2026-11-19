@@ -1,0 +1,10 @@
+node_modules/
+app/dist/
+app/dist-preview/
+.env
+.env.*
+!app/.env.example
+# personal data from the CFUG register never enters the repository
+data/private/
+*.csv
+*.xlsx
