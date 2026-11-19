@@ -8,8 +8,15 @@ export const me = signal<Person | null>(null);
 export const chainReport = signal<WardReport[] | null>(null);
 export const route = signal<string>(location.hash.slice(1) || 'home');
 
-window.addEventListener('hashchange', () => { route.value = location.hash.slice(1) || 'home'; window.scrollTo(0, 0); });
-export const go = (r: string) => { location.hash = r === 'home' ? '' : r; if (r === 'home') route.value = 'home'; };
+// Screens switch in code, never through <a href="#…">: the claude.ai page viewer blocks in-page links.
+// The hash is still set (a plain #name) so a shared link can open a screen and Back works.
+const top = () => { window.scrollTo(0, 0); document.scrollingElement?.scrollTo(0, 0); };
+window.addEventListener('hashchange', () => { const r = location.hash.slice(1) || 'home'; if (r !== route.value) { route.value = r; top(); } });
+export const go = (r: string) => {
+  route.value = r;
+  top();
+  try { if (location.hash.slice(1) !== r) location.hash = r; } catch { /* the viewer may refuse; the screen still changes */ }
+};
 
 export const CFUG = 'thumki-cfug';
 export const MPC = 'kakani-mpc';

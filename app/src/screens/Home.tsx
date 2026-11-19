@@ -47,7 +47,7 @@ export function Home() {
         </button>
       </header>
 
-      <a class="guide-link" href="#help">{t('first_time')} →</a>
+      <button class="guide-link" onClick={() => go('help')}>{t('first_time')} →</button>
 
       <div class="tiles">
         <button class="tile tile-money" onClick={() => go('money')}>
@@ -77,7 +77,7 @@ export function Home() {
       </div>
 
       <section class="section">
-        <div class="row-between"><h2>{t('recent_payments')}</h2><a href="#money" class="link">{t('all_payments')} →</a></div>
+        <div class="row-between"><h2>{t('recent_payments')}</h2><button class="link text-btn" onClick={() => go('money')}>{t('all_payments')} →</button></div>
         <ul class="list">{payments.map((x) => <PaymentRow key={x.voucher_no} x={x} />)}</ul>
       </section>
 
