@@ -6,7 +6,7 @@ import { go } from './state';
 export function Screen({ title, back = true, children }: { title: string; back?: boolean; children: ComponentChildren }) {
   return (
     <main class="screen">
-      {back && <button class="back" onClick={() => history.length > 1 ? history.back() : go('home')}>← {t('back')}</button>}
+      {back && <button class="back" onClick={() => go('home')}>← {t('back')}</button>}
       <h1 class="screen-title">{title}</h1>
       {children}
     </main>

@@ -49,11 +49,11 @@ export function App() {
         <main class="screen"><p class="empty">{t('loading')}</p></main>
       ) : <Screen />}
       <nav class="tabbar" aria-label="main">
-        <a href="#" class={tab('home') ? 'on' : ''} onClick={(e) => { e.preventDefault(); go('home'); }}><Icon d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />{t('home')}</a>
-        <a href="#mine" class={tab('mine') ? 'on' : ''}><Icon d="M12 12a4 4 0 1 0 0-8a4 4 0 1 0 0 8 M4 21c0-4 3.6-7 8-7s8 3 8 7" />{me.value ? me.value.name : t('mine')}</a>
-        {showTasks && <a href="#tasks" class={tab('tasks') ? 'on' : ''}><Icon d="M9 6h11 M9 12h11 M9 18h11 M4 6l1 1 2-2 M4 12l1 1 2-2 M4 18l1 1 2-2" />{t('tasks')}</a>}
-        <a href="#check" class={tab('check') ? 'on' : ''}><Icon d="M12 3l7 3v5c0 5-3 8-7 10c-4-2-7-5-7-10V6z M9 12l2 2 4-4" />{t('check')}</a>
-        <a href="#help" class={tab('help') ? 'on' : ''}><Icon d="M12 21a9 9 0 1 0 0-18a9 9 0 1 0 0 18 M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6 M12 17h.01" />{t('help')}</a>
+        <button class={tab('home') ? 'on' : ''} onClick={() => go('home')}><Icon d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />{t('home')}</button>
+        <button class={tab('mine') ? 'on' : ''} onClick={() => go('mine')}><Icon d="M12 12a4 4 0 1 0 0-8a4 4 0 1 0 0 8 M4 21c0-4 3.6-7 8-7s8 3 8 7" />{me.value ? me.value.name : t('mine')}</button>
+        {showTasks && <button class={tab('tasks') ? 'on' : ''} onClick={() => go('tasks')}><Icon d="M9 6h11 M9 12h11 M9 18h11 M4 6l1 1 2-2 M4 12l1 1 2-2 M4 18l1 1 2-2" />{t('tasks')}</button>}
+        <button class={tab('check') ? 'on' : ''} onClick={() => go('check')}><Icon d="M12 3l7 3v5c0 5-3 8-7 10c-4-2-7-5-7-10V6z M9 12l2 2 4-4" />{t('check')}</button>
+        <button class={tab('help') ? 'on' : ''} onClick={() => go('help')}><Icon d="M12 21a9 9 0 1 0 0-18a9 9 0 1 0 0 18 M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6 M12 17h.01" />{t('help')}</button>
       </nav>
     </div>
   );

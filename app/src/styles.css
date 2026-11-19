@@ -228,8 +228,9 @@ textarea { resize: vertical; }
   padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px));
   background: var(--surface); border-top: 1px solid var(--line);
 }
-.tabbar a { flex: 1; max-width: 140px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; border-radius: 12px; text-decoration: none; color: var(--muted); font-size: 13.5px; font-weight: 600; min-height: 54px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.tabbar a.on { color: var(--accent); background: var(--accent-soft); }
+.tabbar button { border: 0; background: none; font: inherit; cursor: pointer; }
+.tabbar a, .tabbar button { flex: 1; max-width: 140px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; border-radius: 12px; text-decoration: none; color: var(--muted); font-size: 13.5px; font-weight: 600; min-height: 54px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tabbar a.on, .tabbar button.on { color: var(--accent); background: var(--accent-soft); }
 .tabbar svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .sample-badge { background: var(--warn-soft); color: var(--warn); font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
 .today { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -243,9 +244,10 @@ textarea { resize: vertical; }
 .item-amount.muted { color: var(--muted); font-weight: 600; }
 
 /* how-to guide */
-.guide-link { display: block; padding: 10px 14px; border-radius: var(--r); background: var(--water-soft); color: var(--water); font-weight: 600; text-decoration: none; }
+.guide-link { display: block; width: 100%; text-align: left; border: 0; font: inherit; cursor: pointer; padding: 10px 14px; border-radius: var(--r); background: var(--water-soft); color: var(--water); font-weight: 600; text-decoration: none; }
 .guide-index { display: flex; flex-wrap: wrap; gap: 8px; }
-.guide-index a { padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600; }
+.guide-index button { border: 0; font: inherit; cursor: pointer; }
+.guide-index a, .guide-index button { padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600; }
 details.guide { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 0 14px; }
 details.guide[open] { padding-bottom: 14px; }
 details.guide summary { cursor: pointer; padding: 12px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 10px; min-height: 48px; align-items: center; }

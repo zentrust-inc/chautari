@@ -291,7 +291,7 @@ export function Guide() {
         ? 'यो नमुना हो: बटन थिच्दा वास्तविक हिसाबमा केही बदलिँदैन, कुन इन्ट्री थपिन्थ्यो भन्ने मात्र देखिन्छ।'
         : 'This is the sample: buttons change nothing real; they show the entry that would be added.'}</p>}
       <nav class="guide-index" aria-label={np ? 'विषयसूची' : 'Contents'}>
-        {PARTS.map((p, i) => <a key={i} href={`#help`} onClick={(e) => { e.preventDefault(); document.getElementById(`part-${i}`)?.scrollIntoView({ behavior: 'smooth' }); }}>{T(p.title)}</a>)}
+        {PARTS.map((p, i) => <button key={i} onClick={() => document.getElementById(`part-${i}`)?.scrollIntoView({ behavior: 'smooth' })}>{T(p.title)}</button>)}
       </nav>
       {PARTS.map((p, i) => (
         <section class="section" id={`part-${i}`} key={i}>
