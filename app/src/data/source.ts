@@ -14,11 +14,22 @@ export interface Pub {
   enterprise_results: Row[]; surplus_allocations: Row[]; chain_heads: Row[];
 }
 export interface Person { id: string; name: string; house_no?: number; roles: { entity: string; role: string }[] }
-export interface OfficerQueues { payments_waiting?: Row[]; work_waiting?: Row[]; questions?: Row[] }
+export interface OfficerQueues { payments_waiting?: Row[]; work_waiting?: Row[]; questions?: Row[]; suggestions?: Row[] }
 
 export class DemoWrite extends Error {
-  constructor(public entry: { entity: string; type: string; payload: Row; private?: Row }) { super('sample mode'); }
+  constructor(public entry: { entity: string; type: string; payload: Row; private?: Row; evidence?: Row[]; note?: string }) { super('sample mode'); }
 }
+
+// A bill read by the reader: fields with 'ok' or 'check', flags, items. See reader/parse.mjs.
+export interface Reading {
+  suggestion_id?: string; id?: string; image?: string; label?: string; quality?: string;
+  doc: { sha256: string; bytes?: number; ext?: string; kind?: string }; reader: string;
+  fields: Record<string, { value: any; status: 'ok' | 'check'; why?: string; alts?: any[] }>;
+  flags: { field: string; code: string; np: string; en: string }[];
+  items: { name: string; qty: number | null; rate: number | null; amount: number }[];
+}
+// The fields a person can change; the database compares the same ones (confirm_suggestion)
+export const CONFIRM_KEYS = ['amount', 'account_code', 'payee_id', 'method', 'budget_line_id', 'memo_np', 'receipt_no', 'bill_no', 'estimated'];
 
 export interface Source {
   mode: 'live' | 'sample';
@@ -33,7 +44,25 @@ export interface Source {
   myRecord(): Promise<Row | null>;
   myAccount(entity: string): Promise<Row | null>;
   officer(entity: string, roles: string[]): Promise<OfficerQueues>;
-  record(entity: string, type: string, payload: Row, priv?: Row, fiscalYear?: string): Promise<Row>;
+  record(entity: string, type: string, payload: Row, priv?: Row, fiscalYear?: string, occurredOn?: string): Promise<Row>;
+  // the document reader (it suggests; a named person confirms)
+  officerPayees(entity: string): Promise<Row[]>;
+  sampleReadings?(): Promise<{ payees: Row[]; bills: Reading[] }>;
+  readBill?(entity: string, file: File): Promise<Reading>;
+  confirmSuggestion(entity: string, reading: Reading, type: string, payload: Row, occurredOn: string, fiscalYear: string): Promise<Row>;
+  rejectSuggestion(reading: Reading, reason: string): Promise<void>;
+}
+
+// what the person changed from the reader's suggestion (shown in the sample; the database works it out for real)
+export function changedFields(suggested: Row, payload: Row, suggestedDate: string | null, date: string) {
+  const ch = CONFIRM_KEYS.filter((k) => {
+    const a = suggested[k], b = payload[k];
+    if (a == null && b == null) return false;
+    if (k === 'amount' && a != null && b != null) return Number(a) !== Number(b);
+    return JSON.stringify(a) !== JSON.stringify(b);
+  });
+  if ((suggestedDate ?? null) !== date) ch.push('date');
+  return ch;
 }
 
 const VIEWS: (keyof Pub)[] = ['bodies', 'money_status', 'income_and_spending', 'budget_status', 'spending_shares',
@@ -66,6 +95,21 @@ function sampleSource(): Source {
     async myAccount() { await get(); return person()?.my_account ?? null; },
     async officer(entity) { await get(); return person()?.officer?.[entity] ?? {}; },
     async record(entity, type, payload, priv) { throw new DemoWrite({ entity, type, payload, private: priv }); },
+    async officerPayees() { return (await import('./sample-readings.json')).default.payees; },
+    async sampleReadings() { return (await import('./sample-readings.json')).default as any; },
+    async confirmSuggestion(entity, reading, type, payload, occurredOn) {
+      const suggested = (reading as any).suggested_payload ?? {};
+      const changed = changedFields(suggested, payload, (reading as any).suggested_date ?? null, occurredOn);
+      throw new DemoWrite({
+        entity, type,
+        payload: { ...payload, ai_read: { reader: reading.reader, suggestion: '(नमुना)', changed } },
+        evidence: [{ sha256: reading.doc.sha256, kind: 'bill_photo', path: `documents/${entity}/${reading.doc.sha256}.jpg` }],
+      });
+    },
+    async rejectSuggestion(reading, reason) {
+      throw new DemoWrite({ entity: '', type: 'suggestion rejected (not an entry)', payload: { reason, photo_sha256: reading.doc.sha256 },
+        note: 'reject' });
+    },
   };
 }
 
@@ -116,15 +160,39 @@ function liveSource(url: string, key: string): Source {
       if (roles.some((r) => r === 'supervisor' || r === 'accounts_committee'))
         q.work_waiting = ok(await c.rpc('officer_work_waiting', { p_entity: entity }));
       if (roles.includes('accounts_committee')) q.questions = ok(await c.rpc('officer_questions', { p_entity: entity }));
+      if (roles.some((r) => r === 'treasurer' || r === 'ledger_keeper'))
+        q.suggestions = ok(await c.rpc('officer_suggestions', { p_entity: entity }));
       return q;
     },
-    async record(entity, type, payload, priv = {}, fiscalYear) {
+    async record(entity, type, payload, priv = {}, fiscalYear, occurredOn) {
       return ok(await (await sb()).rpc('record_event', {
         p_entity: entity, p_type: type, p_payload: payload, p_private: priv, p_fiscal_year: fiscalYear ?? null,
+        ...(occurredOn ? { p_occurred_on: occurredOn } : {}),
       }));
+    },
+    async officerPayees(entity) { return ok(await (await sb()).rpc('officer_payees', { p_entity: entity })) as Row[]; },
+    async readBill(entity, file) {
+      // the reader runs on our own server; the photo goes nowhere else
+      if (!READER) throw new Error('the reader is not set up (VITE_READER_URL)');
+      const c = await sb(); const { data } = await c.auth.getSession();
+      const res = await fetch(`${READER}/read?entity=${encodeURIComponent(entity)}&kind=bill`, {
+        method: 'POST', body: file,
+        headers: { 'content-type': file.type || 'image/jpeg', authorization: `Bearer ${data.session?.access_token ?? ''}` },
+      });
+      if (!res.ok) throw new Error((await res.text()) || res.statusText);
+      return res.json();
+    },
+    async confirmSuggestion(_entity, reading, type, payload, occurredOn, fiscalYear) {
+      return ok(await (await sb()).rpc('confirm_suggestion', {
+        p_suggestion: reading.suggestion_id, p_type: type, p_payload: payload, p_occurred_on: occurredOn, p_fiscal_year: fiscalYear,
+      }));
+    },
+    async rejectSuggestion(reading, reason) {
+      ok(await (await sb()).rpc('reject_suggestion', { p_suggestion: reading.suggestion_id, p_reason: reason }));
     },
   };
 }
+const READER = import.meta.env.VITE_READER_URL as string | undefined;
 
 const URL_ = import.meta.env.VITE_SUPABASE_URL, KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const source: Source = !__PREVIEW__ && URL_ && KEY ? liveSource(URL_, KEY) : sampleSource();

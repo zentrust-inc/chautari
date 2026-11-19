@@ -225,11 +225,36 @@ const PARTS: Part[] = [
     topics: [
       {
         id: 'todo', title: ['काम बाँकी', 'To do'],
-        who: ['कोषाध्यक्ष, अध्यक्ष, सचिव, सुपरिवेक्षक, लेखा समिति', 'Treasurer, chair, secretary, supervisor, accounts committee'],
+        who: ['कोषाध्यक्ष, अध्यक्ष, सचिव, सुपरिवेक्षक, लेखा समिति, लेखापाल, प्रकृति हेरालु', 'Treasurer, chair, secretary, supervisor, accounts committee, ledger keeper, nature guardian'],
         steps: [
           ['पदमा हुनुहुन्छ भने तल "काम बाँकी" बटन देखिन्छ। त्यहाँ तपाईंको पदअनुसारका काम मात्र आउँछन्।', 'If you hold an office, a "To do" button appears at the bottom, with only the tasks your office allows.'],
         ],
-        tip: ['नमुनामा: हरि (कोषाध्यक्ष), सीता (सचिव), राम (अध्यक्ष), विकास (सुपरिवेक्षक), कमला (लेखा समिति)।', 'In the sample: हरि (treasurer), सीता (secretary), राम (chair), विकास (supervisor), कमला (accounts committee).'],
+        tip: ['नमुनामा: हरि (कोषाध्यक्ष), सीता (सचिव), राम (अध्यक्ष), विकास (सुपरिवेक्षक), कमला (लेखा समिति), गीता (लेखापाल), सरिता (प्रकृति हेरालु)।', 'In the sample: हरि (treasurer), सीता (secretary), राम (chair), विकास (supervisor), कमला (accounts committee), गीता (ledger keeper), सरिता (nature guardian).'],
+      },
+      {
+        id: 'billphoto', title: ['बिलको फोटोबाट खर्च लेख्ने', 'Record spending from a bill’s photo'],
+        who: ['कोषाध्यक्ष वा लेखापाल', 'Treasurer or ledger keeper'],
+        steps: [
+          ['काम बाँकीमा "बिलको फोटोबाट हिसाब" थिच्नुहोस्।', 'In To do, tap "From a bill’s photo".'],
+          ['पूरा बिल देखिने गरी, उज्यालोमा, सिधा माथिबाट फोटो खिच्नुहोस्। एआईले रकम, मिति, बिल नं. र पसल पढ्छ।', 'Photograph the whole bill, in good light, straight from above. The AI reads the amount, date, bill number and shop.'],
+          ['✓ भएको अङ्क दुई पटक पढ्दा मिल्यो र बिलको आफ्नै जोड (उप-जम्मा + कर = जम्मा) मिल्यो। ! भएको अङ्क फोटो हेरेर आफैं ठीक गर्नुहोस्।', 'A figure with ✓ agreed in two readings and fits the bill’s own sums (sub-total + VAT = total). A figure with ! you put right yourself from the photo.'],
+          ['दर्ता भएको पसल र बजेट रेखा छान्नुहोस्, "फोटोसँग मिलाएँ" मा चिनो लगाउनुहोस्, र "मेरो नाममा पुष्टि गर्छु" थिच्नुहोस्।', 'Choose the registered shop and the budget line, tick "I compared it with the photo", and tap "Confirm in my name".'],
+          ['खर्च "हस्ताक्षर पर्खँदै" मा जान्छ। कोषाध्यक्ष र अध्यक्ष वा सचिवको हस्ताक्षरपछि मात्र भुक्तानी हुन्छ।', 'The expense goes to "waiting for signatures". It is paid only after the treasurer and the chair or secretary sign.'],
+          ['दोहोरिएको, अर्कैको वा पढ्नै नसकिने बिल भए "यो बिल नलिने" थिचेर कारण छान्नुहोस्।', 'If the bill is a duplicate, not ours or unreadable, tap "Do not take this bill" and choose why.'],
+        ],
+        tip: ['नमुनामा: "मेरो" मा गीता (लेखापाल) छान्नुहोस्, अनि तीनवटा काल्पनिक बिलमध्ये एउटा छान्नुहोस्। तिनमा एआईले साँच्चै पढेको नतिजा देखिन्छ, गल्तीसमेत।', 'In the sample: choose गीता (ledger keeper) under Mine, then one of the three fictional bills. They show what the AI really read, mistakes included.'],
+        open: { route: 'capture', label: ['बिलको फोटोबाट हिसाब खोल्नुहोस्', 'Open From a bill’s photo'] },
+      },
+      {
+        id: 'readings', title: ['मूलको पानी र वर्षा नाप्ने', 'Record spring flow and rain'],
+        who: ['प्रकृति हेरालु वा लेखापाल', 'Nature guardian or ledger keeper'],
+        steps: [
+          ['काम बाँकीमा "पानी र वर्षा नाप" थिच्नुहोस्।', 'In To do, tap "Water and rain readings".'],
+          ['मूलको पानी: १० लिटरको बाल्टी भरिन कति सेकेन्ड लाग्यो नाप्नुहोस्। ६०० लाई सेकेन्डले भाग गर्दा लिटर प्रति मिनेट आउँछ।', 'Spring flow: time how many seconds a 10-litre bucket takes to fill. 600 divided by the seconds gives litres per minute.'],
+          ['वर्षा: मापकमा जम्मा भएको मिलिमिटर लेख्नुहोस्।', 'Rain: write the millimetres in the gauge.'],
+          ['मूल वा मापक र मिति छानेर "मेरो नाममा लेख्नुहोस्" थिच्नुहोस्। नाप हाम्रो पानी र प्रकृतिको चार्टमा देखिन्छ।', 'Choose the spring or gauge and the date, and tap "Record in my name". The reading shows on the Our water and nature charts.'],
+        ],
+        open: { route: 'readings', label: ['पानी र वर्षा नाप खोल्नुहोस्', 'Open Water and rain readings'] },
       },
       {
         id: 'sign', title: ['भुक्तानीमा हस्ताक्षर र भुक्तानी', 'Sign and release a payment'],
@@ -307,7 +332,8 @@ const PARTS: Part[] = [
           ['हिसाब राख्ने व्यक्तिले फोटोसँग मिलाएर पुष्टि गरेपछि मात्र हिसाबमा चढ्छ।', 'It enters the books only after the record keeper checks it against the photo and confirms.'],
           ['एआईले हस्ताक्षर, स्वीकृति वा कुनै इन्ट्री बदल्न सक्दैन। यो हाम्रै सर्भरमा चल्छ।', 'The AI cannot sign, approve or change any entry. It runs on our own server.'],
         ],
-        tip: ['यो सुविधा बन्दैछ; नमुनामा छैन।', 'This is being built; it is not in the sample yet.'],
+        tip: ['पुष्टि भएको हरेक इन्ट्रीमा "एआईले पढ्यो" र व्यक्तिले कुन कुरा सच्यायो भन्ने सबैले देख्छन्। एआई कति पटक ठीक थियो भन्ने गन्ती पनि सार्वजनिक हुन्छ। बिल पढ्ने काम अहिले नमुना बिलमा मात्र जाँचिएको छ; वास्तविक बिलमा सुरुमा धेरै "!" आउन सक्छ।', 'Every confirmed entry shows everyone that the AI read it and what the person corrected. A count of how often the AI was right is public too. The reader has so far been tested on sample bills only; real bills may show many "!" at first.'],
+        open: { route: 'capture', label: ['बिलको फोटोबाट हिसाब खोल्नुहोस्', 'Open From a bill’s photo'] },
       },
     ],
   },

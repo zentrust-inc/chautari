@@ -12,6 +12,8 @@ import { Coop } from './screens/Coop';
 import { Mine } from './screens/Mine';
 import { Tasks } from './screens/Tasks';
 import { Check } from './screens/Check';
+import { Capture } from './screens/Capture';
+import { Readings } from './screens/Readings';
 import { useState } from 'preact/hooks';
 
 // The how-to guide is loaded only when opened, so it never adds to the first load on 3G.
@@ -22,7 +24,7 @@ function Guide() {
 }
 
 const SCREENS: Record<string, (p: any) => preact.JSX.Element> = {
-  home: Home, money: Money, work: Work, nature: Nature, decisions: Decisions, coop: Coop, mine: Mine, tasks: Tasks, check: Check, help: Guide,
+  home: Home, money: Money, work: Work, nature: Nature, decisions: Decisions, coop: Coop, mine: Mine, tasks: Tasks, check: Check, help: Guide, capture: Capture, readings: Readings,
 };
 
 export function App() {
@@ -30,7 +32,7 @@ export function App() {
   const r = route.value in SCREENS ? route.value : 'home';
   const Screen = SCREENS[r];
   const showTasks = officerRoles.value.length > 0;
-  const tab = (id: string) => (['money', 'work', 'nature', 'decisions', 'coop'].includes(r) ? 'home' : r) === id;
+  const tab = (id: string) => (['money', 'work', 'nature', 'decisions', 'coop'].includes(r) ? 'home' : ['capture', 'readings'].includes(r) ? 'tasks' : r) === id;
 
   return (
     <div class="app" lang={lang.value === 'np' ? 'ne' : 'en'}>
