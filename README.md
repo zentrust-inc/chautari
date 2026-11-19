@@ -25,6 +25,7 @@ Open `demo/index.html` in any browser. No build step and no server; the page wor
 - मेरो (pick a sample person): own record, and मेरो खाता with the project loan and the "give notice" button
 - काम बाँकी (officers): sign and release payments, approve hours, answer questions; in the demo each button shows the exact entry it would add
 - जाँच: the phone re-checks every fingerprint in the record; "change one figure" shows the chain break
+- मद्दत (कसरी चलाउने?): a step-by-step guide to every function, in Nepali and English, each topic with a button that opens its screen (`app/src/screens/Guide.tsx`; update it whenever a function changes)
 
 To rebuild it after a change: `cd app && npm install && npm run build:preview` (writes `demo/index.html`).
 

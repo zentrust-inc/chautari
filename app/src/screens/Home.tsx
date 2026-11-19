@@ -47,6 +47,8 @@ export function Home() {
         </button>
       </header>
 
+      <a class="guide-link" href="#help">{t('first_time')} →</a>
+
       <div class="tiles">
         <button class="tile tile-money" onClick={() => go('money')}>
           <span class="tile-head"><Glyph name="money" />{t('money')}</span>

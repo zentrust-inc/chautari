@@ -241,3 +241,17 @@ textarea { resize: vertical; }
 @media (max-width: 359px) { .tiles, .people { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } .tile:active { transform: none; } }
 .item-amount.muted { color: var(--muted); font-weight: 600; }
+
+/* how-to guide */
+.guide-link { display: block; padding: 10px 14px; border-radius: var(--r); background: var(--water-soft); color: var(--water); font-weight: 600; text-decoration: none; }
+.guide-index { display: flex; flex-wrap: wrap; gap: 8px; }
+.guide-index a { padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600; }
+details.guide { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 0 14px; }
+details.guide[open] { padding-bottom: 14px; }
+details.guide summary { cursor: pointer; padding: 12px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 10px; min-height: 48px; align-items: center; }
+details.guide summary::-webkit-details-marker { display: none; }
+details.guide summary::after { content: '+'; color: var(--accent); font-size: 22px; line-height: 1; }
+details.guide[open] summary::after { content: '−'; }
+.guide-steps { margin: 4px 0 10px; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+.guide-steps li::marker { color: var(--accent); font-weight: 600; }
+.guide-tip { background: var(--accent-soft); border-radius: 10px; padding: 8px 12px; font-size: 15px; margin-bottom: 10px; }
