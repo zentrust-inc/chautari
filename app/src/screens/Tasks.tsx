@@ -52,11 +52,13 @@ export function Tasks() {
 
   const canRead = roles.some((r) => ['treasurer', 'ledger_keeper'].includes(r.role));
   const canMeasure = roles.some((r) => ['ledger_keeper', 'nature_guardian'].includes(r.role));
+  const canLogWork = roles.some((r) => ['ledger_keeper', 'supervisor'].includes(r.role));
   const np = lang.value === 'np';
   return (
     <Screen title={t('tasks')} back={false}>
-      {(canRead || canMeasure) && (
+      {(canRead || canMeasure || canLogWork) && (
         <div class="row-gap">
+          {canLogWork && <button class="btn" onClick={() => go('worklog')}>{np ? 'काम र घण्टा लेख्ने' : 'Record work hours'}</button>}
           {canRead && <button class="btn" onClick={() => go('capture')}>{np ? 'बिलको फोटोबाट हिसाब' : 'From a bill’s photo'}</button>}
           {canMeasure && <button class="btn btn-quiet" onClick={() => go('readings')}>{np ? 'पानी र वर्षा नाप' : 'Water and rain readings'}</button>}
         </div>

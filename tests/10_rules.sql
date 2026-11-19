@@ -42,6 +42,12 @@ create function t.ev(p_type text, p_payload jsonb, p_private jsonb default '{}',
 returns jsonb language sql as $$
   select public.record_event('thumki-cfug', p_type, p_payload, p_private, p_on, p_fy, p_evidence)
 $$;
+-- a before and an after photo, named by their SHA-256 (what the work-hours form attaches)
+create function t.wph(tag text) returns jsonb language sql immutable as $$
+  select jsonb_build_array(
+    jsonb_build_object('sha256', encode(sha256(convert_to(tag || ' before', 'UTF8')), 'hex'), 'kind', 'before'),
+    jsonb_build_object('sha256', encode(sha256(convert_to(tag || ' after', 'UTF8')), 'hex'), 'kind', 'after'))
+$$;
 
 -- ---------------------------------------------------------------------------
 -- Setup: the ward, the CFUG, households and people (by a trusted server job)
@@ -247,11 +253,15 @@ select t.rejects('an entry is corrected only once',
 select t.as_person(4);
 select t.ev('work.logged', jsonb_build_object('work_id', 'abababab-0000-0000-0000-00000000000' || n, 'project', 'pond-4',
             'task_np', 'पोखरी किनार बलियो पार्ने', 'hours', 6, 'paid', true, 'output_qty', 12, 'output_unit', 'मिटर'),
-            jsonb_build_object('person_id', t.p(w)), null, '[{"sha256": "ph01", "kind": "before"}, {"sha256": "ph02", "kind": "after"}]', '2026-11-02')
+            jsonb_build_object('person_id', t.p(w)), null, t.wph('pond ' || n), '2026-11-02')
 from (values (1, 9), (2, 8), (3, 2)) v(n, w);
 select t.rejects('photos are required', $$select t.ev('work.logged', '{"work_id": "abababab-0000-0000-0000-000000000009", "project": "pond-4", "task_np": "x", "hours": 2, "paid": true}', '{"person_id": "bbbbbbbb-0000-0000-0000-000000000009"}', null)$$, 'photos');
+select t.rejects('a before photo alone is not enough',
+  $$select t.ev('work.logged', '{"work_id": "abababab-0000-0000-0000-000000000009", "project": "pond-4", "task_np": "x", "hours": 2, "paid": true}', '{"person_id": "bbbbbbbb-0000-0000-0000-000000000009"}', null, t.wph('z') - 1)$$, 'before/after');
+select t.rejects('a photo must be named by its SHA-256',
+  $$select t.ev('work.logged', '{"work_id": "abababab-0000-0000-0000-000000000009", "project": "pond-4", "task_np": "x", "hours": 2, "paid": true}', '{"person_id": "bbbbbbbb-0000-0000-0000-000000000009"}', null, '[{"sha256": "ph01", "kind": "before"}, {"sha256": "ph02", "kind": "after"}]')$$, 'before/after');
 select t.rejects('no more than 12 hours a day',
-  $$select t.ev('work.logged', '{"work_id": "abababab-0000-0000-0000-000000000008", "project": "pond-4", "task_np": "x", "hours": 7, "paid": true}', '{"person_id": "bbbbbbbb-0000-0000-0000-000000000009"}', null, '[{"sha256":"x"}]', '2026-11-02')$$,
+  $$select t.ev('work.logged', '{"work_id": "abababab-0000-0000-0000-000000000008", "project": "pond-4", "task_np": "x", "hours": 7, "paid": true}', '{"person_id": "bbbbbbbb-0000-0000-0000-000000000009"}', null, t.wph('x'), '2026-11-02')$$,
   'more than 12 hours');
 
 select t.as_person(5);   -- supervisor, household 5
@@ -260,7 +270,7 @@ select t.ev('work.approved', '{"work_id": "abababab-0000-0000-0000-000000000003"
 select t.rejects('no approval of your own household''s hours', $$select t.ev('work.approved', '{"work_id": "abababab-0000-0000-0000-000000000002"}')$$, 'own household');
 select t.as_person(4);
 select t.ev('work.logged', '{"work_id": "abababab-0000-0000-0000-000000000004", "project": "pond-4", "task_np": "x", "hours": 3, "paid": false}',
-            jsonb_build_object('person_id', t.p(5)), null, '[{"sha256":"y"}]', '2026-11-03');
+            jsonb_build_object('person_id', t.p(5)), null, t.wph('y'), '2026-11-03');
 select t.as_person(5);
 select t.rejects('no approval of your own hours', $$select t.ev('work.approved', '{"work_id": "abababab-0000-0000-0000-000000000004"}')$$, 'own hours');
 

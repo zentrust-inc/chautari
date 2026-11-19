@@ -17,6 +17,13 @@ create function demo.ev(p_type text, p_on date, p_payload jsonb, p_private jsonb
 returns jsonb language sql as $$
   select public.record_event('thumki-cfug', p_type, p_payload, p_private, p_on, p_fy, p_evidence)
 $$;
+-- a before and an after photo of a piece of work (stand-ins: the hash of a tag, there is no real photo)
+create function demo.work_photos(tag text) returns jsonb language sql immutable as $$
+  select jsonb_build_array(
+    jsonb_build_object('sha256', encode(sha256(convert_to(tag || ' before', 'UTF8')), 'hex'), 'kind', 'before'),
+    jsonb_build_object('sha256', encode(sha256(convert_to(tag || ' after', 'UTF8')), 'hex'), 'kind', 'after'))
+$$;
+
 create function demo.photo(tag text) returns jsonb language sql immutable as $$
   select jsonb_build_array(jsonb_build_object('sha256', encode(sha256(convert_to(tag, 'UTF8')), 'hex'), 'kind', 'photo'))
 $$;
@@ -121,7 +128,7 @@ select demo.pay(7, '2026-11-02', 2, 'EX-2.01', 2, 9500, 'bank', 'चेक ड�
 select demo.as_person(4);
 select demo.ev('work.logged', d, jsonb_build_object('work_id', demo.id('abababab', n), 'project', proj, 'task_np', task,
             'hours', h, 'paid', paid, 'output_qty', q, 'output_unit', u),
-            jsonb_build_object('person_id', demo.p(w)), demo.photo('work-' || n))
+            jsonb_build_object('person_id', demo.p(w)), demo.work_photos('work-' || n))
 from (values (1,'2026-09-20'::date,'पोखरी ४','किनार बलियो पार्ने',6,true,8,'मिटर',7),
              (2,'2026-09-20','पोखरी ४','किनार बलियो पार्ने',6,true,8,'मिटर',8),
              (3,'2026-09-21','पोखरी ४','ढुङ्गा मिलाउने',6,true,10,'मिटर',9),
@@ -265,7 +272,7 @@ select demo.mpay(1, '2026-09-02', 2, 'EX-MATERIALS', 1, 120000, 'CNC राउ�
 select demo.as_person(8);
 select demo.mev('work.logged', d, jsonb_build_object('work_id', demo.id('a1a1a1a1', n), 'project', 'खोटो संकलन', 'task_np', task,
                 'hours', h, 'paid', true, 'output_qty', q, 'output_unit', 'किलो'),
-                jsonb_build_object('person_id', demo.p(w)), demo.photo('resin-' || n))
+                jsonb_build_object('person_id', demo.p(w)), demo.work_photos('resin-' || n))
 from (values (1,'2026-10-05'::date,9,6,'रिल बनाउने',0),(2,'2026-10-06',9,6,'खोटो संकलन',60),(3,'2026-10-07',9,6,'खोटो संकलन',58),
              (4,'2026-10-08',9,6,'खोटो संकलन',62),(5,'2026-10-05',7,6,'रिल बनाउने',0),(6,'2026-10-06',7,6,'खोटो संकलन',55),
              (7,'2026-10-07',7,6,'खोटो संकलन',57),(8,'2026-10-08',7,6,'खोटो संकलन',60),(9,'2026-10-09',7,6,'खोटो संकलन',59),

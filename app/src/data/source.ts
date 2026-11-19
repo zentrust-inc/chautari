@@ -14,7 +14,9 @@ export interface Pub {
   enterprise_results: Row[]; surplus_allocations: Row[]; chain_heads: Row[];
 }
 export interface Person { id: string; name: string; house_no?: number; roles: { entity: string; role: string }[] }
-export interface OfficerQueues { payments_waiting?: Row[]; work_waiting?: Row[]; questions?: Row[]; suggestions?: Row[] }
+export interface OfficerQueues { payments_waiting?: Row[]; work_waiting?: Row[]; questions?: Row[]; suggestions?: Row[]; workers?: Row[] }
+// a photo attached to an entry: it stays on our own server, the chain carries its SHA-256
+export interface Evidence { sha256: string; kind: string; path: string }
 
 export class DemoWrite extends Error {
   constructor(public entry: { entity: string; type: string; payload: Row; private?: Row; evidence?: Row[]; note?: string }) { super('sample mode'); }
@@ -44,7 +46,10 @@ export interface Source {
   myRecord(): Promise<Row | null>;
   myAccount(entity: string): Promise<Row | null>;
   officer(entity: string, roles: string[]): Promise<OfficerQueues>;
-  record(entity: string, type: string, payload: Row, priv?: Row, fiscalYear?: string, occurredOn?: string): Promise<Row>;
+  record(entity: string, type: string, payload: Row, priv?: Row, fiscalYear?: string, occurredOn?: string, evidence?: Evidence[]): Promise<Row>;
+  // the work-hours form: who the hours can be written for, and keeping a before/after photo
+  officerWorkers(entity: string): Promise<Row[]>;
+  keepPhoto(entity: string, kind: 'before' | 'after', photo: Blob): Promise<Evidence>;
   // the document reader (it suggests; a named person confirms)
   officerPayees(entity: string): Promise<Row[]>;
   sampleReadings?(): Promise<{ payees: Row[]; bills: Reading[] }>;
@@ -63,6 +68,12 @@ export function changedFields(suggested: Row, payload: Row, suggestedDate: strin
   });
   if ((suggestedDate ?? null) !== date) ch.push('date');
   return ch;
+}
+
+// SHA-256 of a photo, as hex. crypto.subtle exists on https and on the phone's own files; the sample needs nothing else.
+export async function sha256Hex(b: Blob): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', await b.arrayBuffer());
+  return [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, '0')).join('');
 }
 
 const VIEWS: (keyof Pub)[] = ['bodies', 'money_status', 'income_and_spending', 'budget_status', 'spending_shares',
@@ -94,7 +105,10 @@ function sampleSource(): Source {
     async myRecord() { await get(); return person()?.my_record ?? null; },
     async myAccount() { await get(); return person()?.my_account ?? null; },
     async officer(entity) { await get(); return person()?.officer?.[entity] ?? {}; },
-    async record(entity, type, payload, priv) { throw new DemoWrite({ entity, type, payload, private: priv }); },
+    async record(entity, type, payload, priv, _fy, _on, evidence) { throw new DemoWrite({ entity, type, payload, private: priv, ...(evidence?.length ? { evidence } : {}) }); },
+    async officerWorkers(entity) { await get(); return person()?.officer?.[entity]?.workers ?? []; },
+    // in the sample the photo stays on the phone; only its fingerprint is shown, as the real entry would carry it
+    async keepPhoto(entity, kind, photo) { const sha256 = await sha256Hex(photo); return { sha256, kind, path: `documents/${entity}/${sha256}.jpg` }; },
     async officerPayees() { return (await import('./sample-readings.json')).default.payees; },
     async sampleReadings() { return (await import('./sample-readings.json')).default as any; },
     async confirmSuggestion(entity, reading, type, payload, occurredOn) {
@@ -164,11 +178,23 @@ function liveSource(url: string, key: string): Source {
         q.suggestions = ok(await c.rpc('officer_suggestions', { p_entity: entity }));
       return q;
     },
-    async record(entity, type, payload, priv = {}, fiscalYear, occurredOn) {
+    async record(entity, type, payload, priv = {}, fiscalYear, occurredOn, evidence) {
       return ok(await (await sb()).rpc('record_event', {
         p_entity: entity, p_type: type, p_payload: payload, p_private: priv, p_fiscal_year: fiscalYear ?? null,
-        ...(occurredOn ? { p_occurred_on: occurredOn } : {}),
+        ...(occurredOn ? { p_occurred_on: occurredOn } : {}), ...(evidence?.length ? { p_evidence: evidence } : {}),
       }));
+    },
+    async officerWorkers(entity) { return ok(await (await sb()).rpc('officer_workers', { p_entity: entity })) as Row[]; },
+    async keepPhoto(entity, kind, photo) {
+      // the photo goes to our own server only (reader/server.mjs /photo), which keeps it under its SHA-256
+      if (!READER) throw new Error('the photo service is not set up (VITE_READER_URL)');
+      const c = await sb(); const { data } = await c.auth.getSession();
+      const res = await fetch(`${READER}/photo?entity=${encodeURIComponent(entity)}&kind=${kind}`, {
+        method: 'POST', body: photo,
+        headers: { 'content-type': photo.type || 'image/jpeg', authorization: `Bearer ${data.session?.access_token ?? ''}` },
+      });
+      if (!res.ok) throw new Error((await res.text()) || res.statusText);
+      return res.json();
     },
     async officerPayees(entity) { return ok(await (await sb()).rpc('officer_payees', { p_entity: entity })) as Row[]; },
     async readBill(entity, file) {

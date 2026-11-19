@@ -6,6 +6,7 @@ import { createServer } from 'node:http';
 import { mkdtemp, readFile, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 import { makeServer, toSuggestion, fiscalYearOf } from '../server.mjs';
 
 const listen = (srv) => new Promise((r) => srv.listen(0, () => r(srv.address().port)));
@@ -62,6 +63,22 @@ test('the service: sign in, keep the photo, suggest to the database', async () =
   assert.deepEqual(Buffer.from(await r.arrayBuffer()), await readFile(kept));
   r = await fetch(`${base}${j.photo_url}`);
   assert.equal(r.status, 401, 'photos only for signed-in people');
+
+  // work photos: kept under their fingerprint, nothing read, the entry's evidence returned
+  const before = Buffer.from('a before photo of pond 4');
+  r = await fetch(`${base}/photo?entity=thumki-cfug&kind=before`, { method: 'POST', body: before, headers: { 'content-type': 'image/jpeg' } });
+  assert.equal(r.status, 401, 'no sign-in, no photo');
+  r = await fetch(`${base}/photo?entity=thumki-cfug&kind=selfie`, { method: 'POST', body: before, headers: { 'content-type': 'image/jpeg', authorization: 'Bearer good' } });
+  assert.equal(r.status, 400, 'only before or after');
+  const n = calls.length;
+  r = await fetch(`${base}/photo?entity=thumki-cfug&kind=before`, { method: 'POST', body: before, headers: { 'content-type': 'image/jpeg', authorization: 'Bearer good' } });
+  assert.equal(r.status, 200);
+  const ev = await r.json();
+  assert.equal(ev.sha256, createHash('sha256').update(before).digest('hex'));
+  assert.equal(ev.kind, 'before');
+  assert.equal(ev.path, `documents/thumki-cfug/${ev.sha256}.jpg`);
+  assert.deepEqual(await readFile(join(docs, 'thumki-cfug', `${ev.sha256}.jpg`)), before);
+  assert.ok(calls.slice(n).every((c) => c.url === '/auth/v1/user'), 'a work photo is not read and nothing is suggested');
   srv.close(); db.close();
 });
 
