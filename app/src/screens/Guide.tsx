@@ -25,6 +25,16 @@ const PARTS: Part[] = [
         ],
       },
       {
+        id: 'rules', title: ['यी नियम अन्तिम हुन्?', 'Are these the final rules?'],
+        steps: [
+          ['अहिले सहकारीका नियम विनियम ४.१५ को मस्यौदा हुन्। भेलाले स्वीकृत गरेपछि मात्र ती लागू हुन्छन्।', 'The cooperative’s rules are for now the draft bylaws v4.15. They apply only once the assembly approves them.'],
+          ['सदस्यको परियोजना ऋण वकिलले हेरेपछि मात्र सुरु हुन्छ।', 'Members’ project loans start only after a lawyer has reviewed them.'],
+          ['भेलाले केही कुरा (जस्तै पालो सार्वजनिक वा निजी, खर्चको सीमा) अझै तय गर्नुपर्छ। तय भएपछि नियम र यो मद्दत पाना सँगै बदलिन्छन्।', 'The assembly still has to settle a few things (for example whether turns are public or private, and the spending limit). When it does, the rules and this guide change together.'],
+        ],
+        tip: ['हरेक नियम कुन विधान वा निर्णयबाट आयो, हाम्रो निर्णय › नियमहरूमा देखिन्छ।', 'Every rule and the section or decision it comes from is under Our decisions › Rules.'],
+        open: { route: 'decisions', label: ['हाम्रो निर्णय खोल्नुहोस्', 'Open Our decisions'] },
+      },
+      {
         id: 'lang', title: ['भाषा र मिति', 'Language and dates'],
         steps: [
           ['माथि दायाँ "English" थिच्नुहोस्; फर्कन "नेपाली" थिच्नुहोस्।', 'Tap "English" at the top right; tap "नेपाली" to switch back.'],
@@ -136,6 +146,15 @@ const PARTS: Part[] = [
         open: { route: 'mine', label: ['मेरो खोल्नुहोस्', 'Open Mine'] },
       },
       {
+        id: 'lostphone', title: ['फोन हरायो वा नम्बर फेरियो', 'Lost phone or new number'],
+        steps: [
+          ['पैसा वा हस्ताक्षर गर्ने शक्ति फोनमा हुँदैन। अर्को फोनबाट आफ्नै नम्बरमा कोड मगाएर भित्र जान सकिन्छ।', 'Nothing in your phone holds money or the power to sign. On another phone you can sign in with a code sent to your own number.'],
+          ['नम्बरै फेरिएको भए हिसाब राख्ने पदाधिकारीलाई भन्नुहोस्।', 'If the number itself has changed, tell the record keeper.'],
+          ['पदाधिकारीले पद छाडेपछि उनको पहुँच बन्द हुन्छ; उनले गरेका इन्ट्री अभिलेखमै रहिरहन्छन्।', 'When an officer leaves office their access ends; the entries they made stay in the record.'],
+        ],
+        tip: ['नयाँ नम्बर थप्ने तरिका भेलाले तय गर्नुपर्छ; तय भएपछि यहाँ अद्यावधिक हुन्छ।', 'How a new number is added is for the assembly to settle; this page will be updated when it does.'],
+      },
+      {
         id: 'myrecord', title: ['वन समूहको मेरो अभिलेख', 'My forest-group record'],
         steps: [
           ['"वन समूहको अभिलेख" ट्याबमा: मेरो काम, कुन मितिमा कति घण्टा। "स्वीकृति पर्खँदै" भनेको सुपरिवेक्षकले अझै हेरेका छैनन्।', 'In the "Forest group record" tab: my work, hours by date. "Waiting for approval" means the supervisor has not checked it yet.'],
@@ -175,6 +194,25 @@ const PARTS: Part[] = [
         ],
         tip: ['सोध्नु शंका होइन; धन्यवादको काम हो।', 'Asking is not an accusation; it is a service to everyone.'],
         open: { route: 'money', label: ['हाम्रो पैसा खोल्नुहोस्', 'Open Our money'] },
+      },
+      {
+        id: 'unanswered', title: ['प्रश्नको जवाफ आएन भने', 'If a question gets no answer'],
+        steps: [
+          ['पहिले हाम्रो निर्णय › प्रश्न र जवाफ हेर्नुहोस्; जवाफ त्यहीँ आउँछ।', 'First look under Our decisions › Questions and answers; the answer appears there.'],
+          ['जवाफ ढिलो भए लेखा समितिका कुनै सदस्यलाई सोध्नुहोस्, वा भेलामा आफैं उठाउनुहोस्। भेलाले नै अन्तिम निर्णय गर्छ।', 'If the answer is slow, ask any member of the accounts committee, or raise it yourself at the assembly. The assembly has the last word.'],
+          ['तपाईंको प्रश्न र जवाफ दुवै अभिलेखमा बस्छन्; पछि कसैले मेटाउन सक्दैन।', 'Your question and the answer both stay in the record; nobody can delete them later.'],
+        ],
+        tip: ['जवाफ दिनुपर्ने समयसीमा भेलाले तय गर्ने कुरा हो; तय भएपछि यहाँ लेखिनेछ।', 'The time limit for an answer is for the assembly to set; it will be written here once set.'],
+        open: { route: 'decisions', label: ['हाम्रो निर्णय खोल्नुहोस्', 'Open Our decisions'] },
+      },
+      {
+        id: 'mydata', title: ['मेरो विवरण र सदस्यता छाड्दा', 'My data, and leaving'],
+        steps: [
+          ['मेरो › मेरो खातामा आफ्नो सबै विवरण देख्न सकिन्छ। स्मार्टफोन नभए सहयोगी वा हिसाब राख्ने पदाधिकारीले छापेर दिन सक्छन्।', 'Mine › My account shows all your own records. If you have no smartphone, a helper or the record keeper can print them for you.'],
+          ['तपाईंको परिचयपत्र तपाईं र तोकिएका पदाधिकारीले मात्र देख्छन्; सबैले देख्ने ठाउँमा तपाईंको नाम आउँदैन।', 'Your identity documents are seen only by you and named officers; your name does not appear where everyone can see.'],
+          ['पुरानो अभिलेख कसैले मेटाउन सक्दैन, त्यसैले सदस्यता छाडे पनि अघिका कारोबार कुल अङ्कमा रहन्छन्।', 'Old entries cannot be deleted, so if you leave, past transactions stay in the totals.'],
+        ],
+        tip: ['सदस्यता छाड्दा शेयर कसरी फिर्ता हुन्छ र व्यक्तिगत विवरण कति समय राखिन्छ भन्ने कुरा वकिलको समीक्षापछि यहाँ लेखिनेछ।', 'How a share is returned on leaving, and how long personal details are kept, will be written here after the lawyer’s review.'],
       },
     ],
   },
@@ -235,6 +273,14 @@ const PARTS: Part[] = [
         ],
       },
       {
+        id: 'moneymoves', title: ['चौतारीले पैसा सार्दैन', 'The app never moves money'],
+        steps: [
+          ['"सूचना दिनुहोस्", "प्रश्न सोध्नुहोस्" वा "स्वीकृत गर्नुहोस्" थिच्दा हिसाबमा सूचना वा सहमति मात्र दर्ता हुन्छ। पैसा आफैं जाँदैन।', 'Tapping "Give notice", "Ask" or "Approve" records a notice or an approval, nothing more. No money moves by itself.'],
+          ['पैसा बैंक वा नगदबाट दुई हस्ताक्षरपछि पदाधिकारीले दिन्छन्, अनि मात्र चौतारीमा भुक्तानी देखिन्छ।', 'Money is paid out through the bank or in cash by officers after two signatures, and only then shows as a payment in चौतारी.'],
+          ['चौतारीमा देखिएको अङ्क बैंक वा हातको नगदसँग नमिले "प्रश्न सोध्नुहोस्"; मिल्नुपर्ने हो।', 'If a figure in चौतारी does not match the bank or the cash in hand, ask; they should match.'],
+        ],
+      },
+      {
         id: 'mistake', title: ['गल्ती भए के हुन्छ?', 'What if there is a mistake?'],
         steps: [
           ['गल्ती सच्याउन नयाँ "सच्याइएको" इन्ट्री थपिन्छ, कारणसहित।', 'A new correction entry is added, with the reason.'],
@@ -262,6 +308,24 @@ const PARTS: Part[] = [
     ],
   },
   {
+    title: ['शब्दकोश', 'Words used here'],
+    topics: [
+      {
+        id: 'glossary', title: ['शब्दको अर्थ', 'What the words mean'],
+        steps: [
+          ['शेयर: सहकारीको सदस्य हुँदा लिने रु १०० को एक कित्ता। प्रत्येक सदस्यको एक।', 'Share: the Rs 100 each member takes on joining the cooperative; one per member.'],
+          ['परियोजना ऋण: सदस्यले सहकारीका परियोजनामा लगाएको पैसा। सबैलाई एउटै ब्याजदर।', 'Project loan: money a member lends to the cooperative’s projects, at one rate for everyone.'],
+          ['पर्म: घरहरूबीच काम साटासाट। कुन घरले कति दिन दियो र पायो।', 'Parma: exchange of work between households: days each house gave and received.'],
+          ['पालो: पैसा आउने कामको अवसर घरअनुसार पालैपालो बाँड्ने क्रम।', 'Turn (पालो): the order in which paid work is shared out among households.'],
+          ['गुठी कोष: चौथे गुठीको स्थायी कोष; यसको मूल रकम खर्च हुँदैन।', 'Guthi fund: the Chauthe Guthi’s permanent fund; its principal is not spent.'],
+          ['संरक्षित पूँजी फिर्ता कोष: वर्षान्तको बचतको ३०%, पूँजी लगाउने सदस्यलाई फिर्ता गर्न छुट्याइने।', 'Protected capital return fund: 30% of the year-end surplus, set aside to return to members who put in capital.'],
+          ['औंठाछाप (hash): हरेक इन्ट्रीको छाप। कुनै अङ्क बदलिए छाप मिल्दैन, त्यसैले बदलिएको तुरुन्तै थाहा हुन्छ।', 'Fingerprint (hash): a seal on every entry. If any figure is changed the seal no longer matches, so a change shows at once.'],
+        ],
+        tip: ['यी अर्थ विनियम ४.१५ को मस्यौदाअनुसार हुन्; भेलाले बदलेमा यहाँ पनि बदलिन्छ।', 'These meanings follow the draft bylaws v4.15; if the assembly changes them, this page changes too.'],
+      },
+    ],
+  },
+  {
     title: ['प्रायः सोधिने प्रश्न', 'Common questions'],
     topics: [
       {
@@ -275,6 +339,14 @@ const PARTS: Part[] = [
       {
         id: 'sample', title: ['यी नाम र अङ्क साँचो हुन्?', 'Are these names and figures real?'],
         steps: [['होइनन्। नमुनाका सबै नाम र अङ्क काल्पनिक हुन्। भेलाले स्वीकृत गरे मात्र वास्तविक हिसाब राखिन्छ।', 'No. Every name and figure in the sample is made up. Real records start only if the assembly approves.']],
+      },
+      {
+        id: 'problem', title: ['गलत अङ्क देखेँ भने', 'If you see a wrong figure'],
+        steps: [
+          ['खर्चको अङ्क हो भने हाम्रो पैसामा त्यो भुक्तानीमुनि "प्रश्न सोध्नुहोस्" थिच्नुहोस्।', 'If it is a payment, tap "Ask about this" under it in Our money.'],
+          ['एपले केही गलत देखाएको वा चलेन भने हिसाब राख्ने पदाधिकारीलाई भन्नुहोस्; के-कहाँ देखिएको हो भन्ने स्क्रिनको फोटो पठाउन सहज हुन्छ।', 'If the app itself shows something wrong or breaks, tell the record keeper; a screenshot of what you saw helps.'],
+          ['सच्याइएको भए पुरानो इन्ट्री मेटिँदैन; नयाँ "सच्याइएको" इन्ट्री थपिन्छ।', 'A fix does not erase the old entry; a new correction entry is added.'],
+        ],
       },
     ],
   },
