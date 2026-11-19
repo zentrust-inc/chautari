@@ -1,6 +1,6 @@
 import { useEffect } from 'preact/hooks';
 import { lang, setLang, t } from './lib/i18n';
-import { todayBS } from './lib/format';
+import { todayBS, digits } from './lib/format';
 import { pub, loadError, route, loadAll, checkChain, officerRoles, go, me } from './state';
 import { offline, source } from './data/source';
 import { Home } from './screens/Home';
@@ -16,6 +16,7 @@ import { Capture } from './screens/Capture';
 import { Readings } from './screens/Readings';
 import { WorkLog } from './screens/WorkLog';
 import { useState } from 'preact/hooks';
+import { start as startOutbox, waitingCount } from './lib/outbox';
 
 // The how-to guide is loaded only when opened, so it never adds to the first load on 3G.
 function Guide() {
@@ -29,7 +30,7 @@ const SCREENS: Record<string, (p: any) => preact.JSX.Element> = {
 };
 
 export function App() {
-  useEffect(() => { loadAll().then(() => checkChain().catch(() => {})); }, []);
+  useEffect(() => { loadAll().then(() => { startOutbox(() => me.value?.id); checkChain().catch(() => {}); }); }, []);
   const r = route.value in SCREENS ? route.value : 'home';
   const Screen = SCREENS[r];
   const showTasks = officerRoles.value.length > 0;
@@ -43,6 +44,7 @@ export function App() {
         </button>
         <span class="today">{todayBS()}</span>
         {source.mode === 'sample' && <span class="sample-badge">{t('sample')}</span>}
+        {waitingCount.value > 0 && <button class="outbox-badge" onClick={() => go('tasks')} aria-label={lang.value === 'np' ? 'पठाउन बाँकी' : 'Waiting to send'}>↑ {digits(waitingCount.value)}</button>}
         <button class="lang" onClick={() => setLang(lang.value === 'np' ? 'en' : 'np')}>{t('language')}</button>
       </header>
       {offline.value && <p class="offline">{t('offline')}</p>}

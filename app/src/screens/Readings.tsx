@@ -2,11 +2,11 @@
 // Same path as every entry: their own name, the database's rules, an entry nobody can change afterwards.
 import { useState } from 'preact/hooks';
 import { lang } from '../lib/i18n';
-import { num, fiscalYear } from '../lib/format';
+import { num, fiscalYear, bsDate } from '../lib/format';
 import { me, officerRoles, pub, go } from '../state';
-import { source, DemoWrite } from '../data/source';
+import { submit } from '../lib/outbox';
 import { Screen, Section } from '../ui';
-import { Sent, type SentState } from './Tasks';
+import { Sent, type SentState, fromOutcome } from './Tasks';
 
 const L = (np: string, en: string) => (lang.value === 'np' ? np : en);
 export const READING_ROLES = ['ledger_keeper', 'nature_guardian'];
@@ -36,8 +36,8 @@ export function Readings() {
   const send = async () => {
     const type = kind === 'spring' ? 'reading.spring' : 'reading.rain';
     const payload = kind === 'spring' ? { spring_id: site, litres_per_minute: v, method: 'बाल्टी र घडी' } : { gauge_id: site, mm: v };
-    try { const r = await source.record(entity, type, payload, {}, fiscalYear(new Date(on + 'T12:00')), on); setState({ ok: true, seq: r.seq }); }
-    catch (e) { setState(e instanceof DemoWrite ? { demo: e.entry } : { error: (e as Error).message }); }
+    const label = `${site} · ${num(v, v % 1 ? 1 : 0)} ${kind === 'spring' ? L('लि/मि', 'l/min') : 'mm'} · ${bsDate(on)}`;
+    setState(fromOutcome(await submit(me.value!.id, entity, type, payload, {}, fiscalYear(new Date(on + 'T12:00')), on, [], label)));
   };
   return (
     <Screen title={L('पानी र वर्षा नाप', 'Water and rain readings')}>

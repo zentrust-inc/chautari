@@ -7,24 +7,16 @@
 import { useEffect, useState } from 'preact/hooks';
 import { lang } from '../lib/i18n';
 import { num, hours as fmtHours, bsDate, fiscalYear } from '../lib/format';
-import { me, officerRoles, pub, go, loadAll } from '../state';
-import { source, DemoWrite, type Evidence } from '../data/source';
+import { me, officerRoles, pub, go } from '../state';
+import { source, sha256Hex } from '../data/source';
+import { submit, newId as newWorkId, type Outcome } from '../lib/outbox';
 import { Screen, Section } from '../ui';
-import { Sent, type SentState } from './Tasks';
+import { Sent, type SentState, fromOutcome } from './Tasks';
 
 type Row = Record<string, any>;
 const L = (np: string, en: string) => (lang.value === 'np' ? np : en);
 export const WORK_LOG_ROLES = ['ledger_keeper', 'supervisor'];
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
-
-// a random id for the entry; older phones may lack crypto.randomUUID
-export function newId(): string {
-  if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
-  const b = crypto.getRandomValues(new Uint8Array(16));
-  b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
-  const h = [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
-  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
-}
 
 // a phone photo is 3–8 MB; on weak signal we send at most 1600 px, which is still clear for a field or a pond
 async function shrink(file: File, max = 1600): Promise<Blob> {
@@ -40,7 +32,8 @@ async function shrink(file: File, max = 1600): Promise<Blob> {
   } catch { return file; }
 }
 
-interface Shot { kind: 'before' | 'after'; preview: string; ev?: Evidence; busy?: boolean; error?: string }
+// a photo is kept on the phone with the entry and sent with it when there is signal
+interface Shot { kind: 'before' | 'after'; preview: string; blob?: Blob; sha256?: string; busy?: boolean }
 
 export function WorkLog() {
   const roles = officerRoles.value.filter((r) => WORK_LOG_ROLES.includes(r.role));
@@ -80,7 +73,7 @@ export function WorkLog() {
   const proj = project === '__other' ? other.trim() : project;
   const hv = Number(h);
   const hoursOk = h !== '' && hv > 0 && hv <= 12 && Math.round(hv * 4) === hv * 4;   // quarter hours at most
-  const photosOk = isSupervisor || (!!shots.before?.ev && !!shots.after?.ev);
+  const photosOk = isSupervisor || (!!shots.before?.blob && !!shots.after?.blob);
   const busy = !!(shots.before?.busy || shots.after?.busy);
   const ready = !!worker && !!proj && !!task.trim() && hoursOk && photosOk && !busy && !!on;
   const w = workers.find((x) => x.person_id === worker);
@@ -90,23 +83,18 @@ export function WorkLog() {
     if (!file) return;
     const preview = URL.createObjectURL(file);
     setShots((s) => ({ ...s, [kind]: { kind, preview, busy: true } }));
-    try {
-      const ev = await source.keepPhoto(entity, kind, await shrink(file));
-      setShots((s) => ({ ...s, [kind]: { kind, preview, ev } }));
-    } catch (e) {
-      setShots((s) => ({ ...s, [kind]: { kind, preview, error: (e as Error).message } }));
-    }
+    const blob = await shrink(file);
+    const sha256 = await sha256Hex(blob).catch(() => undefined);
+    setShots((s) => ({ ...s, [kind]: { kind, preview, blob, sha256 } }));
   };
 
   const send = async () => {
-    const payload: Row = { work_id: newId(), project: proj, task_np: task.trim(), hours: hv, paid };
+    const payload: Row = { work_id: newWorkId(), project: proj, task_np: task.trim(), hours: hv, paid };
     if (qty !== '' && Number(qty) >= 0) { payload.output_qty = Number(qty); if (unit.trim()) payload.output_unit = unit.trim(); }
-    const evidence = (['before', 'after'] as const).map((k) => shots[k]?.ev).filter(Boolean) as Evidence[];
-    try {
-      const r = await source.record(entity, 'work.logged', payload, { person_id: worker }, fiscalYear(new Date(on + 'T12:00')), on, evidence);
-      setState({ ok: true, seq: r.seq });
-      await loadAll();
-    } catch (e) { setState(e instanceof DemoWrite ? { demo: e.entry } : { error: (e as Error).message }); }
+    const photos = (['before', 'after'] as const).filter((k) => shots[k]?.blob).map((k) => ({ kind: k, blob: shots[k]!.blob! }));
+    const label = `${w?.name ?? ''} · ${num(hv, hv % 1 ? 2 : 0)} ${L('घण्टा', 'h')} · ${proj} · ${bsDate(on)}`;
+    const out: Outcome = await submit(me.value!.id, entity, 'work.logged', payload, { person_id: worker }, fiscalYear(new Date(on + 'T12:00')), on, photos, label);
+    setState(fromOutcome(out));
   };
   // several people often do the same work together: keep the work, the hours and the photos, change the person
   const again = () => { setState(null); setWorker(''); setFind(''); };
@@ -117,13 +105,12 @@ export function WorkLog() {
     return (
       <div class="work-photo">
         <label class="btn btn-quiet photo-btn">
-          {s?.busy ? L('पठाउँदै…', 'Sending…') : s ? L('फेरि खिच्नुहोस्', 'Take again')
+          {s?.busy ? L('मिलाउँदै…', 'Preparing…') : s ? L('फेरि खिच्नुहोस्', 'Take again')
             : kind === 'before' ? L('काम अघिको फोटो', 'Photo before') : L('काम पछिको फोटो', 'Photo after')}
           <input type="file" accept="image/*" capture="environment" hidden onChange={(e) => takePhoto(kind, (e.target as HTMLInputElement).files?.[0])} />
         </label>
         {s && <img src={s.preview} alt="" />}
-        {s?.ev && <p class="item-meta">✓ {L('राखियो · औँठाछाप', 'Kept · fingerprint')} {s.ev.sha256.slice(0, 12)}…</p>}
-        {s?.error && <p class="sent error">{s.error}</p>}
+        {s?.blob && <p class="item-meta">✓ {L('फोनमा राखियो', 'Kept on the phone')}{s.sha256 ? ` · ${L('औँठाछाप', 'fingerprint')} ${s.sha256.slice(0, 12)}…` : ''}</p>}
       </div>
     );
   };
@@ -137,15 +124,16 @@ export function WorkLog() {
       )}
       <p class="lede">{nameOf(entity)}</p>
       {state ? (
-        <Section title={L('लेखियो', 'Recorded')}>
+        <Section title={'error' in state ? L('लेखिएन', 'Not recorded') : 'waiting' in state ? L('फोनमा राखियो', 'Kept on the phone') : L('लेखियो', 'Recorded')}>
           <Sent s={state} />
-          {!('error' in state) && <p class="item-meta">{L(`${w?.name ?? ''} · ${num(hv, hv % 1 ? 2 : 0)} घण्टा · ${bsDate(on)}। अब सुपरिवेक्षकले स्वीकृत गर्छन्; काम गर्ने व्यक्तिको नाम सार्वजनिक खातामा देखिँदैन।`,
+          {!('error' in state) && !('waiting' in state) && <p class="item-meta">{L(`${w?.name ?? ''} · ${num(hv, hv % 1 ? 2 : 0)} घण्टा · ${bsDate(on)}। अब सुपरिवेक्षकले स्वीकृत गर्छन्; काम गर्ने व्यक्तिको नाम सार्वजनिक खातामा देखिँदैन।`,
             `${w?.name ?? ''} · ${num(hv, hv % 1 ? 2 : 0)} h · ${bsDate(on)}. A supervisor approves it next; the worker's name does not appear in the public record.`)}</p>}
+          {'error' in state ? <div class="row-gap"><button class="btn" onClick={() => setState(null)}>{L('फारममा फर्केर मिलाउनुहोस्', 'Back to the form to fix it')}</button></div> :
           <div class="row-gap">
             <button class="btn" onClick={again}>{L('अर्को व्यक्ति, उही काम', 'Another person, same work')}</button>
             <button class="btn btn-quiet" onClick={fresh}>{L('नयाँ काम', 'New work')}</button>
             <button class="btn btn-quiet" onClick={() => go('tasks')}>{L('काम बाँकी', 'To do')}</button>
-          </div>
+          </div>}
         </Section>
       ) : (
         <form class="form" onSubmit={(e) => { e.preventDefault(); if (ready) send(); }}>

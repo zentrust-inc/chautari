@@ -18,6 +18,10 @@ export interface OfficerQueues { payments_waiting?: Row[]; work_waiting?: Row[];
 // a photo attached to an entry: it stays on our own server, the chain carries its SHA-256
 export interface Evidence { sha256: string; kind: string; path: string }
 
+// no signal, or our server did not answer: the entry waits on the phone and is sent later
+export class NetworkError extends Error {}
+const looksOffline = (msg: string) => /failed to fetch|networkerror|network request failed|load failed|timeout|fetch failed|jwt expired/i.test(msg);
+
 export class DemoWrite extends Error {
   constructor(public entry: { entity: string; type: string; payload: Row; private?: Row; evidence?: Row[]; note?: string }) { super('sample mode'); }
 }
@@ -49,6 +53,8 @@ export interface Source {
   record(entity: string, type: string, payload: Row, priv?: Row, fiscalYear?: string, occurredOn?: string, evidence?: Evidence[]): Promise<Row>;
   // the work-hours form: who the hours can be written for, and keeping a before/after photo
   officerWorkers(entity: string): Promise<Row[]>;
+  // the same entry, sent once however often it is sent (public.record_event_once); see lib/outbox.ts
+  recordOnce(ref: string, entity: string, type: string, payload: Row, priv: Row, fiscalYear: string, occurredOn: string, evidence: Evidence[]): Promise<Row>;
   keepPhoto(entity: string, kind: 'before' | 'after', photo: Blob): Promise<Evidence>;
   // the document reader (it suggests; a named person confirms)
   officerPayees(entity: string): Promise<Row[]>;
@@ -107,6 +113,9 @@ function sampleSource(): Source {
     async officer(entity) { await get(); return person()?.officer?.[entity] ?? {}; },
     async record(entity, type, payload, priv, _fy, _on, evidence) { throw new DemoWrite({ entity, type, payload, private: priv, ...(evidence?.length ? { evidence } : {}) }); },
     async officerWorkers(entity) { await get(); return person()?.officer?.[entity]?.workers ?? []; },
+    async recordOnce(_ref, entity, type, payload, priv, _fy, _on, evidence) {
+      throw new DemoWrite({ entity, type, payload, private: priv, ...(evidence?.length ? { evidence } : {}) });
+    },
     // in the sample the photo stays on the phone; only its fingerprint is shown, as the real entry would carry it
     async keepPhoto(entity, kind, photo) { const sha256 = await sha256Hex(photo); return { sha256, kind, path: `documents/${entity}/${sha256}.jpg` }; },
     async officerPayees() { return (await import('./sample-readings.json')).default.payees; },
@@ -156,14 +165,23 @@ function liveSource(url: string, key: string): Source {
     async verifyCode(phone, code) {
       ok(await (await sb()).auth.verifyOtp({ phone: '+977' + phone.replace(/\D/g, '').slice(-10), token: code, type: 'sms' }));
     },
-    async signOut() { recordCache = null; await (await sb()).auth.signOut(); },
+    async signOut() {
+      recordCache = null;
+      try { Object.keys(localStorage).filter((k) => k === ME || k.startsWith(WORKERS)).forEach((k) => localStorage.removeItem(k)); } catch { /* fine */ }
+      await (await sb()).auth.signOut();
+    },
     async me() {
       const c = await sb();
       const { data } = await c.auth.getSession();
       if (!data.session) return null;
-      try { recordCache = ok(await c.rpc('my_record')); } catch { return null; }
+      try { recordCache = ok(await c.rpc('my_record')); } catch {
+        // no signal: who is signed in on this phone (name and offices only) was kept at the last sign-in
+        try { return JSON.parse(localStorage.getItem(ME) || 'null'); } catch { return null; }
+      }
       const r = recordCache!;
-      return { id: r.person.id, name: r.person.name, house_no: r.person.house_no, roles: r.roles };
+      const p = { id: r.person.id, name: r.person.name, house_no: r.person.house_no, roles: r.roles };
+      try { localStorage.setItem(ME, JSON.stringify(p)); } catch { /* storage off */ }
+      return p;
     },
     async myRecord() { return recordCache ?? ok(await (await sb()).rpc('my_record')); },
     async myAccount(entity) { try { return ok(await (await sb()).rpc('my_account', { p_entity: entity })); } catch { return null; } },
@@ -184,15 +202,43 @@ function liveSource(url: string, key: string): Source {
         ...(occurredOn ? { p_occurred_on: occurredOn } : {}), ...(evidence?.length ? { p_evidence: evidence } : {}),
       }));
     },
-    async officerWorkers(entity) { return ok(await (await sb()).rpc('officer_workers', { p_entity: entity })) as Row[]; },
+    async officerWorkers(entity) {
+      // kept on the officer's phone (names and house numbers only) so the form works without signal
+      try {
+        const w = ok(await (await sb()).rpc('officer_workers', { p_entity: entity })) as Row[];
+        try { localStorage.setItem(WORKERS + entity, JSON.stringify(w)); } catch { /* storage off */ }
+        return w;
+      } catch (e) {
+        const kept = (() => { try { return JSON.parse(localStorage.getItem(WORKERS + entity) || 'null'); } catch { return null; } })();
+        if (kept) return kept; throw e;
+      }
+    },
+    async recordOnce(ref, entity, type, payload, priv, fiscalYear, occurredOn, evidence) {
+      let res: any;
+      try {
+        res = await (await sb()).rpc('record_event_once', {
+          p_client_ref: ref, p_entity: entity, p_type: type, p_payload: payload, p_private: priv,
+          p_occurred_on: occurredOn, p_fiscal_year: fiscalYear, p_evidence: evidence,
+        });
+      } catch (e) { throw new NetworkError((e as Error).message); }
+      if (res.error) {
+        if (!res.status || res.status >= 500 || res.status === 401 || looksOffline(res.error.message)) throw new NetworkError(res.error.message);
+        throw new Error(res.error.message);
+      }
+      return res.data;
+    },
     async keepPhoto(entity, kind, photo) {
       // the photo goes to our own server only (reader/server.mjs /photo), which keeps it under its SHA-256
       if (!READER) throw new Error('the photo service is not set up (VITE_READER_URL)');
       const c = await sb(); const { data } = await c.auth.getSession();
-      const res = await fetch(`${READER}/photo?entity=${encodeURIComponent(entity)}&kind=${kind}`, {
-        method: 'POST', body: photo,
-        headers: { 'content-type': photo.type || 'image/jpeg', authorization: `Bearer ${data.session?.access_token ?? ''}` },
-      });
+      let res: Response;
+      try {
+        res = await fetch(`${READER}/photo?entity=${encodeURIComponent(entity)}&kind=${kind}`, {
+          method: 'POST', body: photo,
+          headers: { 'content-type': photo.type || 'image/jpeg', authorization: `Bearer ${data.session?.access_token ?? ''}` },
+        });
+      } catch (e) { throw new NetworkError((e as Error).message); }
+      if (res.status >= 500 || res.status === 401) throw new NetworkError(res.statusText);
       if (!res.ok) throw new Error((await res.text()) || res.statusText);
       return res.json();
     },
@@ -219,6 +265,7 @@ function liveSource(url: string, key: string): Source {
   };
 }
 const READER = import.meta.env.VITE_READER_URL as string | undefined;
+const ME = 'chautari.me.v1', WORKERS = 'chautari.workers.';
 
 const URL_ = import.meta.env.VITE_SUPABASE_URL, KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 export const source: Source = !__PREVIEW__ && URL_ && KEY ? liveSource(URL_, KEY) : sampleSource();

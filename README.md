@@ -28,6 +28,7 @@ Open `demo/index.html` in any browser. No build step and no server; the page wor
 - बिलको फोटोबाट हिसाब (treasurer, ledger keeper): photograph a bill; the AI reads it and suggests the entry; the person compares it with the photo and confirms in their own name. The sample has three fictional bills with what the reader really read from them, mistakes included
 - पानी र वर्षा नाप (nature guardian, ledger keeper): record a spring's flow or the rain gauge
 - काम र घण्टा लेख्ने (ledger keeper, supervisor): pick the worker by name or house number, the project and task, the hours, paid or voluntary, and a before and an after photo; it waits for a supervisor's approval. "Another person, same work" keeps the work, hours and photos for the next worker
+- No signal: work hours and water/rain readings are kept on the phone (with their photos) and sent by themselves when there is signal; an ↑ number at the top and "पठाउन बाँकी" in काम बाँकी show what is waiting (`app/src/lib/outbox.ts`)
 - मद्दत (कसरी चलाउने?): a step-by-step guide to every function, in Nepali and English, each topic with a button that opens its screen (`app/src/screens/Guide.tsx`; update it whenever a function changes)
 
 To rebuild it after a change: `cd app && npm install && npm run build:preview` (writes `demo/index.html`).
@@ -47,6 +48,7 @@ supabase/migrations/   the database: every rule lives here, so no screen or logi
   …0900  the cooperative follows draft bylaws v4.15
   …1000  the document reader's suggestions and a person's confirmation
   …1100  the work-hours form: the worker list for officers; work needs a before and an after photo (by SHA-256)
+  …1200  record_event_once: an entry kept on a phone is recorded once, however often it is sent
 seed/demo.sql          sample activity with fictional people (never load into the real database)
 tests/                 the rules as tests (run.sh)
 reader/                the document reader (Tesseract on our own server): photo in, suggested entry out
@@ -103,8 +105,10 @@ Measured 11 Nov 2026: first load 263 KB compressed (budget 300 KB); the home scr
 
 ## Next
 
-- **B:** field forms (work, receipts, readings), the importer, and the document reader: AI reads bills and suggests entries on our own server; a person confirms every entry.
-- **C:** offline queue for writes in the app.
+Field capture happens in this app, not in ODK (decided 2026-11-19): the forms already exist here, ledger keepers learn one tool, and no importer is needed.
+
+- **B:** duplicate-bill and price-list checks in the reader; test the reader on 50 real bills.
+- **C:** done for the field forms (work hours, readings): kept on the phone and sent once when there is signal. Bill reading, signing and approving stay online-only, because they are done against the latest figures.
 - **D:** printed vouchers, cash book and the annual report to the Division Forest Office; nightly public export with OpenTimestamps.
 - **E:** deploy on our own server (ZenTrust's Azure credits), keys held by two officers. Legal review of the Cooperatives Act and privacy law before members' project loans go live.
 

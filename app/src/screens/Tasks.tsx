@@ -5,15 +5,20 @@ import { me, officerRoles, pub, loadAll } from '../state';
 import { source, DemoWrite, type OfficerQueues } from '../data/source';
 import { Screen, Section, Pill } from '../ui';
 import { go } from '../state';
+import { Outbox } from './Outbox';
+import type { Outcome } from '../lib/outbox';
 
 type Row = Record<string, any>;
-export type SentState = null | { ok: true; seq: number } | { demo: Row } | { error: string };
+export type SentState = null | { ok: true; seq: number } | { demo: Row } | { error: string } | { waiting: true };
+export const fromOutcome = (o: Outcome): SentState =>
+  'sent' in o ? { ok: true, seq: o.sent } : 'demo' in o ? { demo: o.demo } : 'problem' in o ? { error: o.problem } : { waiting: true };
 
 // What happened after pressing a button. In sample mode it shows the exact entry the real
 // system would add to the record, so people can see what a signature is.
 export function Sent({ s }: { s: Exclude<SentState, null> }) {
   if ('ok' in s) return <p class="sent ok">✓ {s.seq ? <>{t('sent')} · {lang.value === 'np' ? 'इन्ट्री नं.' : 'entry'} {num(s.seq)}</> : (lang.value === 'np' ? 'भयो' : 'Done')}</p>;
   if ('error' in s) return <p class="sent error">{s.error}</p>;
+  if ('waiting' in s) return <p class="sent waiting">{lang.value === 'np' ? 'फोनमा राखियो। सिग्नल आएपछि आफैं पठाइन्छ; काम बाँकीमा "पठाउन बाँकी" मा देखिन्छ।' : 'Kept on the phone. It is sent by itself when there is signal; see "Waiting to send" in To do.'}</p>;
   return (
     <div class="sent demo">
       <p>{s.demo.note === 'reject' ? (lang.value === 'np' ? 'नमुना: वास्तविक प्रणालीमा यो निर्णय (कारणसहित) राखिन्थ्यो; हिसाबमा केही थपिँदैन' : 'Sample: in the real system this decision (with its reason) would be kept; nothing enters the books') : t('demo_write')}:</p>
@@ -56,6 +61,7 @@ export function Tasks() {
   const np = lang.value === 'np';
   return (
     <Screen title={t('tasks')} back={false}>
+      <Outbox />
       {(canRead || canMeasure || canLogWork) && (
         <div class="row-gap">
           {canLogWork && <button class="btn" onClick={() => go('worklog')}>{np ? 'काम र घण्टा लेख्ने' : 'Record work hours'}</button>}
