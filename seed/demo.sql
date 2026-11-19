@@ -251,6 +251,10 @@ select demo.mev('loan.received', '2026-08-01', '{"loan_id": "babababa-0000-0000-
 select demo.mev('loan.received', '2026-08-15', '{"loan_id": "babababa-0000-0000-0000-000000000003", "lender_kind": "member",
                 "amount": 200000, "rate_pct": 10, "term_months": 48, "decision_ref": "साधारण सभा २०८३/०४/१२ निर्णय नं. ६ (परियोजना ऋण सम्झौता)", "method": "bank"}',
                 jsonb_build_object('person_id', demo.p(4)));
+-- a member who has not given notice yet, so the "give notice" button can be tried in the demo
+select demo.mev('loan.received', '2026-09-01', '{"loan_id": "babababa-0000-0000-0000-000000000004", "lender_kind": "member",
+                "amount": 30000, "rate_pct": 10, "decision_ref": "साधारण सभा २०८३/०४/१२ निर्णय नं. ६ (परियोजना ऋण सम्झौता)", "method": "bank"}',
+                jsonb_build_object('person_id', demo.p(7)));
 select demo.mev('grant.received', '2026-08-20', '{"grant_id": "bcbcbcbc-0000-0000-0000-000000000001", "donor": "ZenTrust",
                 "purpose_np": "CNC मेसिन र युवा तालिम", "amount": 150000, "agreement_ref": "अनुदान सम्झौता ZT-2083-02"}');
 

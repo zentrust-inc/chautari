@@ -104,6 +104,7 @@ const T = {
   fixed_rule: ['रु १ लाखभन्दा बढीको परियोजना ऋण ३–५ वर्षको तोकिएको अवधिको हुन्छ।', 'Above Rs 1 lakh, a project loan runs a fixed 3–5 years.'],
   notice_given: ['सूचना दिइएको', 'Notice given'], repay_from: ['फिर्ता पाउने मिति', 'Repaid from'],
   term_ends: ['अवधि सकिने', 'Term ends'], on_notice: ['सूचनामा फिर्ता', 'withdrawable on notice'], fixed_term: ['तोकिएको अवधि', 'fixed term'],
+  help: ['मद्दत', 'Help'], first_time: ['पहिलो पटक? सबै काम कसरी गर्ने, एक एक चरणमा हेर्नुहोस्', 'First time? See how to use every part, step by step'],
   cash_over: ['हातमा नगद सीमाभन्दा बढी', 'Cash in hand over the limit'],
   late_bank: ['७ दिनभित्र बैंकमा जम्मा भएन', 'Not banked within 7 days'],
   from: ['बाट', 'from'], what_sent: ['पठाइने इन्ट्री', 'Entry to be sent'],
