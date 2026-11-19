@@ -4,6 +4,9 @@
 //   POST /read?entity=thumki-cfug&kind=bill   body: the photo (image/jpeg or image/png), header: Authorization: Bearer <user's token>
 //     -> keeps the photo under DOCS_DIR/<entity>/<sha256>.<ext>, reads it, hands the suggestion to the
 //        database (public.record_suggestion, service key) and returns the reading with its suggestion_id
+//   POST /photo?entity=thumki-cfug&kind=before body: a photo for a work entry (kind before or after), same header
+//     -> keeps it under DOCS_DIR/<entity>/<sha256>.<ext> and returns the evidence the entry carries:
+//        {sha256, kind, path}. Nothing is read from it; the chain carries only the hash.
 //   GET  /documents/<entity>/<sha256>.<ext>   the photo, for signed-in people
 //   GET  /health
 //
@@ -19,6 +22,7 @@ import NepaliDate from 'nepali-date-converter';
 import { readDocument } from './read.mjs';
 
 const env = (k, d) => process.env[k] ?? d;
+export const WORK_PHOTO_KINDS = ['before', 'after'];
 
 export function bestPayee(payees, vendor) {
   if (!vendor) return null;
@@ -90,17 +94,24 @@ export function makeServer({ docsDir = env('DOCS_DIR', './documents'), supabaseU
         return send(res, 200, await readFile(join(docsDir, doc[1], `${doc[2]}.${doc[3]}`)), doc[3] === 'png' ? 'image/png' : 'image/jpeg');
       }
 
-      if (req.method === 'POST' && url.pathname === '/read') {
+      if (req.method === 'POST' && (url.pathname === '/read' || url.pathname === '/photo')) {
         const entity = url.searchParams.get('entity') ?? '';
         if (!/^[a-z0-9-]+$/.test(entity)) return send(res, 400, { error: 'which body? (entity)' });
+        const kind = url.searchParams.get('kind') ?? 'bill';
+        if (url.pathname === '/photo' && !WORK_PHOTO_KINDS.includes(kind)) return send(res, 400, { error: 'kind must be before or after' });
         const type = String(req.headers['content-type'] ?? '');
         const ext = type.includes('png') ? 'png' : type.includes('jpeg') || type.includes('jpg') ? 'jpg' : null;
         if (!ext) return send(res, 415, { error: 'send a JPEG or PNG photo' });
         const chunks = []; let size = 0;
         for await (const c of req) { size += c.length; if (size > maxBytes) return send(res, 413, { error: 'photo too large' }); chunks.push(c); }
         const body = Buffer.concat(chunks);
+        if (!body.length) return send(res, 400, { error: 'empty photo' });
         const sha = createHash('sha256').update(body).digest('hex');
         const dir = join(docsDir, entity); await mkdir(dir, { recursive: true });
+        if (url.pathname === '/photo') {
+          await writeFile(join(dir, `${sha}.${ext}`), body);
+          return send(res, 200, { sha256: sha, kind, path: `documents/${entity}/${sha}.${ext}` });
+        }
         const tmp = join(tmpdir(), `chautari-${sha}.${ext}`); await writeFile(tmp, body);
         const reading = await read(tmp, { kind: 'bill' });
         await rename(tmp, join(dir, `${sha}.${ext}`)).catch(async () => { await writeFile(join(dir, `${sha}.${ext}`), body); });

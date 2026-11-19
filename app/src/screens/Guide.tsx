@@ -268,6 +268,20 @@ const PARTS: Part[] = [
         open: { route: 'tasks', label: ['काम बाँकी खोल्नुहोस्', 'Open To do'] },
       },
       {
+        id: 'worklog', title: ['कामको घण्टा लेख्ने', 'Record work hours'],
+        who: ['लेखापाल वा सुपरिवेक्षक', 'Ledger keeper or supervisor'],
+        steps: [
+          ['काम बाँकीमा "काम र घण्टा लेख्ने" थिच्नुहोस्।', 'In To do, tap "Record work hours".'],
+          ['काम गर्ने व्यक्ति नाम वा घर नम्बरले खोजेर छान्नुहोस्।', 'Find the worker by name or house number and choose them.'],
+          ['परियोजना, काम र मिति छान्नुहोस्; कति घण्टा, र ज्याला पाउने वा स्वयंसेवा हो छान्नुहोस्। एक जनाको एक दिनमा १२ घण्टाभन्दा बढी लेखिँदैन।', 'Choose the project, the task and the date; then the hours, and whether it is paid or voluntary. No more than 12 hours a person a day can be recorded.'],
+          ['काम सुरु हुनुअघि र सकिएपछि उही ठाउँबाट एक-एक फोटो खिच्नुहोस्। फोटो हाम्रै सर्भरमा बस्छ; अभिलेखमा त्यसको औँठाछाप मात्र जान्छ।', 'Take one photo from the same spot before the work starts and one after it ends. The photos stay on our own server; the record carries only their fingerprint.'],
+          ['"मेरो नाममा लेख्नुहोस्" थिच्नुहोस्। धेरै जनाले उही काम गरेका भए "अर्को व्यक्ति, उही काम" थिच्नुहोस्; काम, घण्टा र फोटो उस्तै रहन्छन्।', 'Tap "Record in my name". If several people did the same work, tap "Another person, same work"; the work, hours and photos stay filled in.'],
+          ['त्यसपछि सुपरिवेक्षकले स्वीकृत गर्छन्। स्वीकृत घण्टाको मात्र ज्याला आउँछ, र घरको पालोमा गनिन्छ।', 'A supervisor then approves it. Only approved hours are paid and counted in the household’s turn.'],
+        ],
+        tip: ['काम गर्ने व्यक्तिको नाम सबैले देख्ने ठाउँमा आउँदैन: सबैले घर नम्बरअनुसार घण्टा मात्र देख्छन्, व्यक्तिले आफ्नो काम "मेरो" मा। नमुनामा: "मेरो" मा गीता (लेखापाल) छान्नुहोस्; जुनसुकै फोटो छान्न सकिन्छ, त्यो फोनबाहिर जाँदैन।', 'The worker’s name never appears where everyone can see: everyone sees hours by house number, each person their own work under Mine. In the sample: choose गीता (ledger keeper) under Mine; any photo will do, and it does not leave the phone.'],
+        open: { route: 'worklog', label: ['काम र घण्टा लेख्ने खोल्नुहोस्', 'Open Record work hours'] },
+      },
+      {
         id: 'approve', title: ['कामको घण्टा स्वीकृत गर्ने', 'Approve work hours'],
         who: ['सुपरिवेक्षक', 'Supervisor'],
         steps: [

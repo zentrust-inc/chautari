@@ -56,7 +56,7 @@ const asPerson = (auth, call) => {
 };
 const rows = (fn) => `coalesce((select json_agg(t) from ${fn} t), '[]')`;
 
-const OFFICER_ROLES = ['chair', 'secretary', 'treasurer', 'accounts_committee', 'supervisor'];
+const OFFICER_ROLES = ['chair', 'secretary', 'treasurer', 'accounts_committee', 'supervisor', 'ledger_keeper'];
 for (const p of people) {
   p.my_record = asPerson(p.auth, 'public.my_record()');
   p.my_account = asPerson(p.auth, `public.my_account('kakani-mpc')`);
@@ -64,6 +64,10 @@ for (const p of people) {
   for (const { entity, role } of p.roles) {
     if (!OFFICER_ROLES.includes(role)) continue;
     const o = (p.officer[entity] ??= {});
+    if (role === 'supervisor' || role === 'ledger_keeper') {
+      o.workers ??= asPerson(p.auth, rows(`public.officer_workers('${entity}')`));
+    }
+    if (role === 'ledger_keeper') continue;
     if (role !== 'supervisor') {
       o.payments_waiting ??= asPerson(p.auth, rows(`public.officer_payments_waiting('${entity}')`));
     }

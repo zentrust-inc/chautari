@@ -157,7 +157,7 @@ select t.ok('grant money is spent from the restricted fund, not from surplus',
 -- ---------------------------------------------------------------------------
 select t.as_person(7);
 select t.mev('work.logged', jsonb_build_object('work_id', t.u('70000000', n), 'project', 'खोटो', 'task_np', 'खोटो संकलन', 'hours', h, 'paid', true),
-             jsonb_build_object('person_id', t.p(w)), '2083/84', '[{"sha256":"w"}]', ('2026-10-' || (10 + n))::date)
+             jsonb_build_object('person_id', t.p(w)), '2083/84', t.wph('resin ' || n), ('2026-10-' || (10 + n))::date)
 from (values (1, 9, 6), (2, 9, 5), (3, 2, 6)) v(n, w, h);
 select t.as_person(5);
 select t.mev('work.approved', jsonb_build_object('work_id', t.u('70000000', n)), '{}', null) from generate_series(1, 3) n;

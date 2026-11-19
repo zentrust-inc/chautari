@@ -27,6 +27,7 @@ Open `demo/index.html` in any browser. No build step and no server; the page wor
 - जाँच: the phone re-checks every fingerprint in the record; "change one figure" shows the chain break
 - बिलको फोटोबाट हिसाब (treasurer, ledger keeper): photograph a bill; the AI reads it and suggests the entry; the person compares it with the photo and confirms in their own name. The sample has three fictional bills with what the reader really read from them, mistakes included
 - पानी र वर्षा नाप (nature guardian, ledger keeper): record a spring's flow or the rain gauge
+- काम र घण्टा लेख्ने (ledger keeper, supervisor): pick the worker by name or house number, the project and task, the hours, paid or voluntary, and a before and an after photo; it waits for a supervisor's approval. "Another person, same work" keeps the work, hours and photos for the next worker
 - मद्दत (कसरी चलाउने?): a step-by-step guide to every function, in Nepali and English, each topic with a button that opens its screen (`app/src/screens/Guide.tsx`; update it whenever a function changes)
 
 To rebuild it after a change: `cd app && npm install && npm run build:preview` (writes `demo/index.html`).
@@ -45,6 +46,7 @@ supabase/migrations/   the database: every rule lives here, so no screen or logi
   …0800  fix: the balance check works when the app writes
   …0900  the cooperative follows draft bylaws v4.15
   …1000  the document reader's suggestions and a person's confirmation
+  …1100  the work-hours form: the worker list for officers; work needs a before and an after photo (by SHA-256)
 seed/demo.sql          sample activity with fictional people (never load into the real database)
 tests/                 the rules as tests (run.sh)
 reader/                the document reader (Tesseract on our own server): photo in, suggested entry out
@@ -74,6 +76,7 @@ node scripts/verify-chain.mjs export.json --head <published head>
 | Spending stays within its approved budget line | Constitution s.8, s.15 |
 | Payments only to registered payees; expenses need a receipt photo or are marked estimated, capped at 5% | Plan |
 | Supervisors never approve their own or their household's hours | Plan |
+| Work hours: at most 12 a person a day; a before and an after photo unless a supervisor records them; the worker's name stays private (the public sees hours by house number) | Plan |
 | The cooperative takes no savings, never lends; one share of Rs 100 per member; members from 16 | Bylaws v4.15 s.4, s.6, s.7 |
 | Members' project loans all earn one rate (now 10%); up to Rs 1 lakh back with interest on 3 months' notice given in चौतारी; above Rs 1 lakh a fixed 3–5 years; loans from others at most 10% | Bylaws v4.15 s.8 |
 | Grants are spent only on their purpose and never counted as surplus | Bylaws v4.15 s.15 |
@@ -116,7 +119,7 @@ cd reader && npm install
 node cli.mjs photo.jpg                 # one reading as JSON (add --cashbook for a cash-book page)
 node eval.mjs                          # score against samples/truth.json -> samples/READER-REPORT.md
 node --test test/*.test.mjs            # the reader's checks
-SUPABASE_URL=… SUPABASE_SERVICE_KEY=… DOCS_DIR=/srv/chautari/documents node server.mjs   # the service the app calls
+SUPABASE_URL=… SUPABASE_SERVICE_KEY=… DOCS_DIR=/srv/chautari/documents node server.mjs   # the service the app calls (bills: POST /read; work photos: POST /photo)
 ```
 
 Needs `tesseract` (with `hin` and `eng`) and ImageMagick `convert` on the server. The app finds the service through `VITE_READER_URL`.
