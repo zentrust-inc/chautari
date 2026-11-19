@@ -4,6 +4,8 @@
 **Chautari is not software for managing villagers. It is infrastructure that helps a village manage itself.**
 This repository is the single home of the code, the database, the tests and the one demo.
 
+In Nepali villages, a chautari (चौतारी) is the shaded stone resting platform under a banyan or peepal tree where travelers pause and community members gather to talk, deliberate, and solve problems together—not an administrative office where decisions are imposed from above. should we include in the readme
+
 ## Status
 
 **Demo only.** `demo/index.html` runs on fictional sample people (`seed/demo.sql`). No real village records are stored anywhere. A pilot starts only if the assembly (भेला) approves.
