@@ -25,6 +25,9 @@ function Guide() {
   return G ? <G /> : <main class="screen"><p class="empty">{t('loading')}</p></main>;
 }
 
+// a server that is not yet in real use says so on every screen (set at build time on that server)
+const SERVER_BADGE = import.meta.env.VITE_SERVER_BADGE as string | undefined;
+
 const SCREENS: Record<string, (p: any) => preact.JSX.Element> = {
   home: Home, money: Money, work: Work, nature: Nature, decisions: Decisions, coop: Coop, mine: Mine, tasks: Tasks, check: Check, help: Guide, capture: Capture, readings: Readings, worklog: WorkLog,
 };
@@ -44,6 +47,7 @@ export function App() {
         </button>
         <span class="today">{todayBS()}</span>
         {source.mode === 'sample' && <span class="sample-badge">{t('sample')}</span>}
+        {SERVER_BADGE && <span class="sample-badge">{SERVER_BADGE}</span>}
         {waitingCount.value > 0 && <button class="outbox-badge" onClick={() => go('tasks')} aria-label={lang.value === 'np' ? 'पठाउन बाँकी' : 'Waiting to send'}>↑ {digits(waitingCount.value)}</button>}
         <button class="lang" onClick={() => setLang(lang.value === 'np' ? 'en' : 'np')}>{t('language')}</button>
       </header>

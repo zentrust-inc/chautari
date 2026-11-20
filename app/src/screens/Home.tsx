@@ -52,7 +52,7 @@ export function Home() {
       <div class="tiles">
         <button class="tile tile-money" onClick={() => go('money')}>
           <span class="tile-head"><Glyph name="money" />{t('money')}</span>
-          <span class="tile-figure">{rs(Number(money?.in_bank) + Number(money?.cash_in_hand))}</span>
+          <span class="tile-figure">{rs(Number(money?.in_bank ?? 0) + Number(money?.cash_in_hand ?? 0))}</span>
           <span class="tile-sub">{t('income_year')} {rs(income)} · {t('spent')} {rs(spending)}</span>
           {money?.payments_waiting > 0 && <Pill tone="warn">{num(money.payments_waiting)} {t('payments_waiting')}</Pill>}
         </button>
