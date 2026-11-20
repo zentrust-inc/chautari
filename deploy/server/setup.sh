@@ -83,6 +83,7 @@ docker run --rm -v $S/repo/app:/app -w /app \
   -e VITE_READER_URL="https://$DOMAIN/reader" -e VITE_SERVER_BADGE="परीक्षण · TEST" \
   node:22-bookworm-slim sh -c "npm ci --silent && npm run build --silent" >/dev/null
 rm -rf $S/www && cp -r $S/repo/app/dist $S/www
+chmod 755 $S && chmod -R a+rX $S/www   # the web server (user caddy) reads the app; secrets elsewhere stay root-only
 
 say "web: Caddy with HTTPS for $DOMAIN"
 sed "s|{DOMAIN}|$DOMAIN|g" $S/repo/deploy/server/Caddyfile > /etc/caddy/Caddyfile
