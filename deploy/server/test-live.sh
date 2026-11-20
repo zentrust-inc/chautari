@@ -66,15 +66,18 @@ rd=$(jq -n --arg r "$(cat /proc/sys/kernel/random/uuid)" --arg d "$today" '{p_cl
 r3=$(rpc record_event_once "$rd"); ok "a spring reading is recorded" "$(echo "$r3" | jq '.seq > 0')" "$r3"
 
 # a SAMPLE bill through the reader, then confirmed by गीता
-rb=$(curl -s -X POST "$U/reader/read?entity=thumki-cfug&kind=bill" -H "Authorization: Bearer $TOK" -H 'Content-Type: image/jpeg' --data-binary @$S/repo/samples/bills/hw01.jpg)
+# a fresh copy of the sample photo each run (the database rightly refuses the same photo twice)
+nonce=$(openssl rand -hex 4); cp $S/repo/samples/bills/hw01.jpg /tmp/bill.jpg
+docker run --rm -v /tmp:/t chautari-reader convert /t/bill.jpg -set comment "test $nonce" /t/bill.jpg
+rb=$(curl -s -X POST "$U/reader/read?entity=thumki-cfug&kind=bill" -H "Authorization: Bearer $TOK" -H 'Content-Type: image/jpeg' --data-binary @/tmp/bill.jpg)
 sid=$(echo "$rb" | jq -r .suggestion_id); ok "the reader reads a sample bill and hands in a suggestion" "$([ -n "$sid" ] && [ "$sid" != null ] && echo true || echo false)" "$(echo "$rb" | head -c 300)"
 ws=$(rpc officer_suggestions '{"p_entity":"thumki-cfug"}'); ok "the bill waits for गीता, with its checks" "$(echo "$ws" | jq --arg s "$sid" 'any(.[]; .suggestion_id == $s and (.checks | type) == "array")')"
 payee=$(psqldb -c "select id from ww.payees where entity_id = 'thumki-cfug' and kind = 'shop' order by id limit 1")
 line=$(psqldb -c "select id from ww.budget_lines where entity_id = 'thumki-cfug' and cancelled_seq is null order by id limit 1")
 acct=$(psqldb -c "select account_code from ww.budget_lines where id = '$line'")
-cb=$(jq -n --arg s "$sid" --arg e "$(cat /proc/sys/kernel/random/uuid)" --arg p "$payee" --arg l "$line" --arg a "$acct" --arg d "$today" \
+cb=$(jq -n --arg n "$nonce" --arg s "$sid" --arg e "$(cat /proc/sys/kernel/random/uuid)" --arg p "$payee" --arg l "$line" --arg a "$acct" --arg d "$today" \
   '{p_suggestion:$s, p_type:"expense.recorded", p_occurred_on:$d, p_fiscal_year:"2083/84",
-    p_payload:{expense_id:$e, amount:500, account_code:$a, payee_id:$p, method:"cash", budget_line_id:$l, memo_np:"परीक्षण: नमूना बिल", bill_no:"0417"}}')
+    p_payload:{expense_id:$e, amount:500, account_code:$a, payee_id:$p, method:"cash", budget_line_id:$l, memo_np:"परीक्षण: नमूना बिल", bill_no:("T-" + $n)}}')
 rc=$(rpc confirm_suggestion "$cb"); ok "गीता confirms the bill in her own name" "$(echo "$rc" | jq '.seq > 0')" "$(echo "$rc" | head -c 300)"
 ok "the public entry says the reader read it and what she changed" "$([ "$(psqldb -c "select payload ? 'ai_read' from ww.events where seq = $(echo "$rc" | jq -r '.seq // 0')")" = t ] && echo true || echo false)"
 rc2=$(rpc confirm_suggestion "$cb"); ok "the same bill cannot be confirmed twice" "$(echo "$rc2" | jq 'has("message")')"
