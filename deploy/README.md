@@ -5,7 +5,7 @@ The real चौतारी runs on one machine that the community controls, pai
 
 | What | Where |
 | --- | --- |
-| Machine | `chautari-1` in resource group `rg-chautari`, Central India, Ubuntu 24.04, 2 CPU / 8 GB, 64 GB SSD |
+| Machine | `chautari-1` in resource group `rg-chautari`, Central India, Ubuntu 24.04, 2 CPU / 8 GB (cheapest size the subscription may use, ARM first), 64 GB SSD |
 | Address | https://chautari-zentrust.centralindia.cloudapp.azure.com |
 | Secrets | Key Vault `kv-chautari-e34c1e` (database keys, backup passphrase, the readers' API keys) |
 | Backups | Storage `stchautarie34c1e` in South India, container `backups`, encrypted nightly at 02:30 Nepal time, kept 90 days |

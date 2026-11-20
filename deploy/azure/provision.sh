@@ -5,7 +5,7 @@
 #
 # What it makes (all in resource group rg-chautari, paid from ZenTrust's nonprofit Azure credit):
 #   - budgets first: USD 100 a month and USD 1,500 a year; alerts to the subscription Owner, and to ALERT_EMAIL if given
-#   - one Ubuntu 24.04 machine in Central India (2 CPU, 8 GB), 64 GB SSD, a fixed public address with a name
+#   - one Ubuntu 24.04 machine in Central India (2 CPU, 8 GB; cheapest allowed size, ARM first), 64 GB SSD, a fixed public address with a name
 #   - firewall: only web traffic in (80, 443); no remote login port is open (we manage it with Azure's run-command)
 #   - a Key Vault for the server's secrets (database keys, backup passphrase, the readers' API keys)
 #   - a storage account in South India for the encrypted nightly backups (kept 90 days)
@@ -14,7 +14,7 @@ set -euo pipefail
 REF="${REF:-main}"
 SUB="${SUB:-e34c1e50-2cde-4f6c-82bf-f00720511278}"
 RG=rg-chautari; LOC=centralindia; BLOC=southindia
-VM=chautari-1; SIZE="${SIZE:-Standard_B2as_v2}"; DNS=chautari-zentrust
+VM=chautari-1; DNS=chautari-zentrust
 ALERT_EMAIL="${ALERT_EMAIL:-}"   # optional: an address for the budget alerts, given when running the script
 SFX=$(echo "$SUB" | cut -c1-6)
 KV="kv-chautari-$SFX"; ST="stchautari$SFX"
@@ -50,12 +50,12 @@ az rest --method get --url "https://management.azure.com/subscriptions/$SUB/prov
 say "resource group"
 az group create -n "$RG" -l "$LOC" -o none
 
-say "machine size available in $LOC?"
-if [ -n "$(az vm list-skus -l "$LOC" --size "$SIZE" --resource-type virtualMachines --query "[?length(restrictions)==\`0\`].name" -o tsv)" ]; then
-  echo "$SIZE is available"
-else
-  echo "$SIZE is not available here; using Standard_B2s_v2"; SIZE=Standard_B2s_v2
-fi
+say "machine size: the cheapest 2-CPU / 8 GB size this subscription may use in $LOC"
+pick() { [ -n "$(az vm list-skus -l "$LOC" --size "$1" --resource-type virtualMachines --query "[?name=='$1' && length(restrictions)==\`0\`].name" -o tsv)" ]; }
+SIZE=""; for s in ${SIZES:-Standard_B2ps_v2 Standard_B2as_v2 Standard_B2s_v2}; do if pick "$s"; then SIZE=$s; break; fi; echo "$s: not available to this subscription here"; done
+[ -n "$SIZE" ] || { echo "no 2-CPU / 8 GB size available in $LOC"; exit 1; }
+case "$SIZE" in *p*_v2|*pl*_v2) IMAGE=Canonical:ubuntu-24_04-lts:server-arm64:latest ;; *) IMAGE=Canonical:ubuntu-24_04-lts:server:latest ;; esac
+echo "using $SIZE ($IMAGE)"
 
 say "Key Vault $KV (secrets) and storage $ST in $BLOC (backups)"
 az keyvault show -n "$KV" -o none 2>/dev/null || az keyvault create -n "$KV" -g "$RG" -l "$LOC" --enable-rbac-authorization true --retention-days 90 -o none
@@ -76,7 +76,7 @@ done
 
 say "machine $VM ($SIZE), 64 GB SSD, fixed address $DOMAIN"
 if ! az vm show -g "$RG" -n "$VM" -o none 2>/dev/null; then
-  az vm create -g "$RG" -n "$VM" -l "$LOC" --image Canonical:ubuntu-24_04-lts:server:latest --size "$SIZE" \
+  az vm create -g "$RG" -n "$VM" -l "$LOC" --image "$IMAGE" --size "$SIZE" \
     --os-disk-size-gb 64 --storage-sku StandardSSD_LRS --public-ip-sku Standard --public-ip-address-dns-name "$DNS" \
     --admin-username chautari --generate-ssh-keys --nsg-rule NONE --assign-identity --only-show-errors -o none
 fi
