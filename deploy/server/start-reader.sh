@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # (Re)start the reader with the keys from the Key Vault. Run again after a key is added or changed:
-#   sudo DOMAIN=chautari-zentrust.centralindia.cloudapp.azure.com chautari-start-reader
+#   sudo chautari-start-reader   (the domain comes from /srv/chautari/domain unless DOMAIN is set)
 # Keys stay in the vault and in a root-only file; never in the repository or a log.
 set -euo pipefail
-: "${DOMAIN:?}"
 S=/srv/chautari
+DOMAIN="${DOMAIN:-$(cat $S/domain 2>/dev/null || true)}"; : "${DOMAIN:?no domain: set DOMAIN or write $S/domain}"
 SERVICE_ROLE_KEY=$(grep -m1 "^SERVICE_ROLE_KEY=" $S/supabase/.env | cut -d= -f2- | sed 's/^"//; s/"$//')
 f=/root/.chautari-reader.env; umask 077
 {
