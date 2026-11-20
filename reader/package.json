@@ -11,7 +11,10 @@
     "read": "node cli.mjs"
   },
   "dependencies": {
-    "nepali-date-converter": "^3.4.2"
+    "nepali-date-converter": "^3.4.2",
+    "sarvamai": "^1.1.21"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }
