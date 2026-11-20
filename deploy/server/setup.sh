@@ -72,6 +72,7 @@ for f in $S/repo/supabase/migrations/*.sql; do
     echo "  applying $n"; psqldb < "$f"; psqldb -c "insert into ops.applied (file) values ('$n')"
   fi
 done
+psqldb -c "select ww.harden_public()" >/dev/null   # API roles: read the public views, nothing more (migration 0014)
 docker compose restart rest >/dev/null   # PostgREST reloads the new functions and views
 
 say "photos and the reader"

@@ -37,6 +37,12 @@ w=$(rpc officer_workers '{"p_entity":"thumki-cfug"}'); ok "officer_workers lists
 dil=$(echo "$w" | jq -r '.[] | select(.name=="दिल") | .person_id')
 code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$U/rest/v1/rpc/officer_workers" -H "apikey: $ANON" -H 'Content-Type: application/json' -d '{"p_entity":"thumki-cfug"}')
 ok "the public cannot read the worker list (HTTP $code)" "$([ "$code" != 200 ] && echo true || echo false)"
+code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$U/rest/v1/rpc/record_event" -H "apikey: $ANON" -H 'Content-Type: application/json' \
+  -d '{"p_entity":"thumki-cfug","p_type":"budget.approved","p_payload":{"line_id":"dddddddd-0000-0000-0000-000000000077","account_code":"EX-2.02","amount":1,"title_np":"x"},"p_fiscal_year":"2083/84"}')
+ok "the public cannot record anything (HTTP $code)" "$([ "$code" != 200 ] && echo true || echo false)"
+code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$U/rest/v1/price_list" -H "apikey: $ANON" -H 'Content-Type: application/json' -d '{"entity_id":"thumki-cfug","item_np":"x","unit":"y","price":1,"decision_ref":"z"}')
+ok "the public cannot write through a public view (HTTP $code)" "$([ "$code" != 201 ] && [ "$code" != 200 ] && echo true || echo false)"
+ok "the ww tables are closed to the API roles" "$([ "$(psqldb -c "select has_table_privilege('anon','ww.events','insert') or has_table_privilege('authenticated','ww.events','insert') or has_table_privilege('anon','ww.persons','select')")" = f ] && echo true || echo false)"
 
 # two photos through the reader service (/reader/photo), as the phone sends them
 convert -size 320x240 xc:'#7a6' /tmp/before.jpg 2>/dev/null || docker run --rm -v /tmp:/t chautari-reader convert -size 320x240 xc:'#7a6' /t/before.jpg
