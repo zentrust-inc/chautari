@@ -14,6 +14,8 @@ set -euo pipefail
 umask 077; chmod 600 /var/log/chautari-setup.log 2>/dev/null || true
 export DEBIAN_FRONTEND=noninteractive
 S=/srv/chautari; mkdir -p $S/documents $S/www; cd $S
+echo "$DOMAIN" > $S/domain
+[ -f $S/REAL_USE ] || touch $S/TEST_SERVER   # TEST until real use is approved (see deploy/README.md)
 say() { printf '\n== %s\n' "$*"; }
 
 say "system: updates, swap, firewall"
