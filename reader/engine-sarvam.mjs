@@ -4,7 +4,9 @@
 // Price checked 2026-11-20: Rs 0.50 a page (plus GST), paid from prepaid Sarvam credit.
 //
 // This sends the photo to an outside service (Sarvam's servers, India).
-// Settings: SARVAM_API_KEY (required), CHAUTARI_SARVAM_CONTENT (printed | handwritten | mixed, default mixed).
+// Settings: SARVAM_API_KEY (required), CHAUTARI_SARVAM_CONTENT (mixed or handwritten, default mixed).
+// Never 'printed': on the faintest sample receipt (fth04) it wrote a Nepali story with invented amounts
+// (2026-11-20, samples/vlm-test/SARVAM-REPORT.md). 'mixed' left those figures out instead, which fails safe.
 // CHAUTARI_READINGS_CACHE replays readings made elsewhere: {"<file name>": {"sarvam-vision": [lines]}}.
 import { createReadStream } from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -13,7 +15,7 @@ import { SarvamAIClient } from 'sarvamai';
 
 export const name = 'sarvam';
 export const ID = 'sarvam-vision';
-export const CONTENT = process.env.CHAUTARI_SARVAM_CONTENT || 'mixed';
+export const CONTENT = process.env.CHAUTARI_SARVAM_CONTENT === 'handwritten' ? 'handwritten' : 'mixed';
 export const usage = [];
 export async function version() { return `sarvam-vision (doc-ai parse, ne-IN, ${CONTENT})`; }
 
@@ -27,6 +29,7 @@ async function cached(file) {
 const DONE = new Set(['completed', 'partially_completed', 'failed', 'rejected']);
 
 export async function readOne(file, content = CONTENT) {
+  if (content === 'printed') throw new Error("sarvam: 'printed' mode invents text on faint bills; use mixed");
   const hit = await cached(file);
   if (hit) return hit;
   if (!process.env.SARVAM_API_KEY) throw new Error('SARVAM_API_KEY is not set');
