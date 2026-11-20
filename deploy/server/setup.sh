@@ -11,6 +11,7 @@
 # The database holds TEST data only until the lawyer's review; the app shows a TEST badge.
 set -euo pipefail
 : "${REF:?}" "${KV:?}" "${ST:?}" "${DOMAIN:?}"
+umask 077; chmod 600 /var/log/chautari-setup.log 2>/dev/null || true
 export DEBIAN_FRONTEND=noninteractive
 S=/srv/chautari; mkdir -p $S/documents $S/www; cd $S
 say() { printf '\n== %s\n' "$*"; }
@@ -33,11 +34,11 @@ if [ ! -f $S/supabase/.env ]; then
   if chautari-kv get supabase-env > /tmp/env.b64 2>/dev/null && [ -s /tmp/env.b64 ]; then
     echo "restoring the Supabase secrets kept in the Key Vault"
     curl -fsSL https://raw.githubusercontent.com/supabase/supabase/master/docker/setup.sh -o /root/supabase-setup.sh
-    sh /root/supabase-setup.sh -y --project-dir supabase
+    sh /root/supabase-setup.sh -y --project-dir supabase > /root/supabase-setup.log 2>&1   # it prints keys: keep them out of logs
     base64 -d /tmp/env.b64 > $S/supabase/.env
   else
     curl -fsSL https://raw.githubusercontent.com/supabase/supabase/master/docker/setup.sh -o /root/supabase-setup.sh
-    sh /root/supabase-setup.sh -y --project-dir supabase
+    sh /root/supabase-setup.sh -y --project-dir supabase > /root/supabase-setup.log 2>&1   # it prints keys: keep them out of logs
   fi
   rm -f /tmp/env.b64
 fi
@@ -57,7 +58,8 @@ docker compose pull -q db auth rest api-gw
 docker compose up -d --no-deps db
 for i in $(seq 1 60); do docker inspect -f '{{.State.Health.Status}}' supabase-db 2>/dev/null | grep -q healthy && break; sleep 5; done
 docker compose up -d --no-deps auth rest api-gw
-set -a; . ./.env; set +a
+envget() { grep -m1 "^$1=" $S/supabase/.env | cut -d= -f2- | sed 's/^"//; s/"$//'; }
+ANON_KEY=$(envget ANON_KEY)
 
 say "database: our migrations"
 psqldb() { docker exec -i supabase-db psql -X -q -v ON_ERROR_STOP=1 -U supabase_admin -d postgres "$@"; }

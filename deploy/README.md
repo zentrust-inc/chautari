@@ -5,7 +5,7 @@ The real चौतारी runs on one machine that the community controls, pai
 
 | What | Where |
 | --- | --- |
-| Machine | `chautari-1` in resource group `rg-chautari`, Central India, Ubuntu 24.04, 2 CPU / 8 GB (cheapest size the subscription may use, ARM first), 64 GB SSD |
+| Machine | `chautari-1` in resource group `rg-chautari`, Central India, Ubuntu 24.04, 2 CPU / 8 GB (Standard_B2as_v2, about USD 36 a month), 64 GB SSD |
 | Address | https://chautari-zentrust.centralindia.cloudapp.azure.com |
 | Secrets | Key Vault `kv-chautari-e34c1e` (database keys, backup passphrase, the readers' API keys) |
 | Backups | Storage `stchautarie34c1e` in South India, container `backups`, encrypted nightly at 02:30 Nepal time, kept 90 days |
@@ -39,3 +39,11 @@ Until both keys are in, the reader uses Tesseract on the machine.
 A new machine from `provision.sh` takes the Supabase secrets back from the Key Vault (`supabase-env`). The database and
 photos come back from the newest backup: download `db.sql.gz.gpg` and `documents.tgz.gpg`, decrypt them with the
 `backup-passphrase` secret (`gpg -d`), and load the dump with `psql`.
+
+## Before real use (checklist)
+
+1. Lawyer's answer on members' data on a server in India.
+2. Wipe the test database and photos; **new Supabase keys** (`utils/rotate-new-api-keys.sh` / fresh `.env`): the first
+   setup on 20 Nov 2026 printed a signing key into its log, which was seen during setup.
+3. SMS sign-in (Aakash SMS) set up; remove the TEST badge (`VITE_SERVER_BADGE`).
+4. Two officers hold the keys (Key Vault access); the founder's access is time-limited.

@@ -4,7 +4,8 @@
 # Keys stay in the vault and in a root-only file; never in the repository or a log.
 set -euo pipefail
 : "${DOMAIN:?}"
-S=/srv/chautari; set -a; . $S/supabase/.env; set +a
+S=/srv/chautari
+SERVICE_ROLE_KEY=$(grep -m1 "^SERVICE_ROLE_KEY=" $S/supabase/.env | cut -d= -f2- | sed 's/^"//; s/"$//')
 f=/root/.chautari-reader.env; umask 077
 {
   echo "SUPABASE_URL=http://127.0.0.1:8000"; echo "SUPABASE_SERVICE_KEY=$SERVICE_ROLE_KEY"

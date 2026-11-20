@@ -5,7 +5,7 @@
 #
 # What it makes (all in resource group rg-chautari, paid from ZenTrust's nonprofit Azure credit):
 #   - budgets first: USD 100 a month and USD 1,500 a year; alerts to the subscription Owner, and to ALERT_EMAIL if given
-#   - one Ubuntu 24.04 machine in Central India (2 CPU, 8 GB; cheapest allowed size, ARM first), 64 GB SSD, a fixed public address with a name
+#   - one Ubuntu 24.04 machine in Central India (2 CPU, 8 GB, B2as_v2 about USD 36 a month), 64 GB SSD, a fixed public address with a name
 #   - firewall: only web traffic in (80, 443); no remote login port is open (we manage it with Azure's run-command)
 #   - a Key Vault for the server's secrets (database keys, backup passphrase, the readers' API keys)
 #   - a storage account in South India for the encrypted nightly backups (kept 90 days)
@@ -51,8 +51,9 @@ say "resource group"
 az group create -n "$RG" -l "$LOC" -o none
 
 say "machine size: the cheapest 2-CPU / 8 GB size this subscription may use in $LOC"
-pick() { [ -n "$(az vm list-skus -l "$LOC" --size "$1" --resource-type virtualMachines --query "[?name=='$1' && length(restrictions)==\`0\`].name" -o tsv)" ]; }
-SIZE=""; for s in ${SIZES:-Standard_B2ps_v2 Standard_B2as_v2 Standard_B2s_v2}; do if pick "$s"; then SIZE=$s; break; fi; echo "$s: not available to this subscription here"; done
+# a size may be restricted in some zones only (reason NotAvailableForSubscription, type Zone); we create without a zone
+pick() { [ -n "$(az vm list-skus -l "$LOC" --size "$1" --resource-type virtualMachines --query "[?name=='$1' && length(restrictions[?type=='Location'])==\`0\`].name" -o tsv)" ]; }
+SIZE=""; for s in ${SIZES:-Standard_B2as_v2 Standard_B2s_v2}; do if pick "$s"; then SIZE=$s; break; fi; echo "$s: not available to this subscription here"; done
 [ -n "$SIZE" ] || { echo "no 2-CPU / 8 GB size available in $LOC"; exit 1; }
 case "$SIZE" in *p*_v2|*pl*_v2) IMAGE=Canonical:ubuntu-24_04-lts:server-arm64:latest ;; *) IMAGE=Canonical:ubuntu-24_04-lts:server:latest ;; esac
 echo "using $SIZE ($IMAGE)"
