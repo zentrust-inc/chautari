@@ -1,0 +1,26 @@
+# चौतारी on our own server. {DOMAIN} is filled in by setup.sh. HTTPS certificates come from Let's Encrypt automatically.
+{DOMAIN} {
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+	}
+	@api path /rest/* /auth/*
+	handle @api {
+		reverse_proxy 127.0.0.1:8000
+	}
+	handle_path /reader/* {
+		request_body {
+			max_size 10MB
+		}
+		reverse_proxy 127.0.0.1:8787
+	}
+	handle {
+		root * /srv/chautari/www
+		@sw path /sw.js
+		header @sw Cache-Control no-cache
+		try_files {path} /index.html
+		file_server
+	}
+}
