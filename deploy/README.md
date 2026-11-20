@@ -30,7 +30,7 @@ The bill reader uses Claude + Google Cloud Vision (decided 19 Nov 2026). Their k
 `sarvam-api-key`. Then restart the reader:
 
     az vm run-command invoke -g rg-chautari -n chautari-1 --command-id RunShellScript \
-      --scripts 'DOMAIN=chautari-zentrust.centralindia.cloudapp.azure.com chautari-start-reader'
+      --scripts 'chautari-start-reader'
 
 Until both keys are in, the reader uses Tesseract on the machine.
 
